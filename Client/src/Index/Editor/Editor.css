@@ -1,0 +1,23 @@
+.toolbar{
+	padding-top: 3vh;
+	padding-bottom: 2vh;
+	padding-left: 2vh
+}
+
+.btn-toolbar{
+	position: absolute;
+	right: 5vh;
+}
+
+pre{
+	overflow-x: hidden;
+	overflow-y: auto;
+	word-break: normal;
+	word-wrap:  break-word;
+	white-space: pre-wrap;
+}
+
+.alert{
+	margin-left: 1rem;
+	margin-right: 1rem;
+}

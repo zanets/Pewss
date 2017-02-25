@@ -1,0 +1,16 @@
+.login-panel {
+	height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+	width:40%;
+}
+
+.mounted {
+	position: absolute;;
+	height: 100%;
+	width: 100%;
+}

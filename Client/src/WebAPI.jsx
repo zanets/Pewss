@@ -1,0 +1,73 @@
+import jq from 'jquery';
+class WebAPI{
+
+	getClassList(success, fail, always){
+		jq.get('/api/uses/class', success).fail(fail).always(always);
+	}
+
+	getSourceList(success, fail, always){
+		jq.get('/api/uses/source', success).fail(fail).always(always);
+	}
+
+	simulate(meta, success, fail, always){
+		jq.post('/api/uses/simulate', {
+			generator: meta.generator,
+			scheduler: meta.scheduler,
+			simulator: meta.simulator,
+			platform: meta.platform,
+			settings: meta.settings
+		}, success).fail(fail).always(always);
+	}
+
+	getSourceCode(meta, success, fail, always){
+		jq.get('/api/uses/source_content', {
+			category: meta.category,
+			name: meta.name,
+			owner: meta.owner
+		}, success).fail(fail).always(always);
+	}
+
+	setSourceCode(meta, success, fail, always){
+		jq.ajax({
+			url: `/api/uses/source_content/${meta.name}`,
+			data: {
+				name: meta.name,
+				category: meta.category,
+				content: meta.content,
+				owner: meta.owner
+			},
+			type: 'patch'
+		}).done(success).fail(fail).always(always);
+	}
+
+	newFile(meta, success, fail, always){
+		jq.post(`/api/uses/source_content/${meta.name}`, {
+			name: meta.name,
+			category: meta.category,
+			content: meta.content,
+			owner: meta.owner
+		}, success).fail(fail).always(always);
+	}
+
+	compile(meta, success, fail, always){
+		jq.post('/api/uses/compile', {
+			name: meta.name,
+			category: meta.category,
+			owner: meta.owner
+		}, success).fail(fail).always(always);
+	}
+	/*
+	setPublic(meta, success, fail, always){
+		jq.ajax({
+			url: `/api/users/public/${meta.name}`,
+			data: {
+				name: meta.name,
+				category: meta.category
+			},
+			type: 'patch'
+		}).done(success).fail(fail).always(always);
+	}
+	*/
+}
+
+export default new WebAPI();

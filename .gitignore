@@ -1,0 +1,15 @@
+node_modules/
+build/
+npm-debug.log
+*.swp
+*.swo
+*~
+simulator.conf
+plugins/
+yarn.lock
+.yarnclean
+.eslintrc.json
+Server/MongoDB/
+.DS_Store
+*.class
+*.jar

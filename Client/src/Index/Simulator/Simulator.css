@@ -1,0 +1,37 @@
+.card {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border: none;
+}
+
+.modal-lg {
+	max-width: 95%;
+}
+
+pre{
+	overflow-x: hidden;
+	overflow-y: auto;
+	word-break: normal;
+	word-wrap:  break-word;
+	white-space: pre-wrap;
+}
+
+.jumbotron > *{
+	margin-left: 35%;
+}
+
+.mdlabel{
+	color: darkgrey;
+}
+
+td > .btn-sm{
+	font-size: 1.1rem;
+}
+
+.modal-footer{
+	border-top-width: 0px;
+}
+
+.modal-header{
+	border-bottom-width: 0px;
+}

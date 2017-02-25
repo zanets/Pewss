@@ -1,0 +1,6 @@
+bin/
+build.properties
+simulate-logs/
+gson-2.6.2.jar
+USES.jar
+.DS_Store
