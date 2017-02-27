@@ -1,7 +1,7 @@
-import { 
-	HomeManager, 
-	FT, 
-	FC 
+import {
+	HomeManager,
+	FT,
+	FC
 } from './HomeManager.js';
 
 const BaseDir = __dirname;
@@ -14,27 +14,29 @@ module.exports = class User {
 		this.Files = Property.Files || [];
 	}
 
+	addFile(category, name){
+
+	}
+
 	removeFile(category, name){
 		// remove file
 
 		// update this
 	}
 
-	addPublicFile(){
-		// update database
-
+	addPublicFile(category, name){
 		// update this
+		this.Public.push({name, category});
 	}
 
-	removePublicFile(){
-		// update database
-
+	removePublicFile(category, name){
 		// update this
+		this.Public = this.Public.filter(_file =>
+			!(_file.category === category && _file.name === name)
+		);
 	}
 
-	changePassword(Password){
-		// update database
-
+	updatePassword(Password){
 		// update this
 		this.Password = Password;
 	}
@@ -54,5 +56,17 @@ module.exports = class User {
 			Public: this.Public,
 			Files: this.Files
 		};
+	}
+
+	getFiles(){
+		return this.Files;
+	}
+
+	getClassFiles(){
+		return this.getFiles().filter(_file => _file.type === FT.class);
+	}
+
+	getSourceFiles(){
+		return this.getFiles().filter(_file => _file.type === FT.java);
 	}
 }

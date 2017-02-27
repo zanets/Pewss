@@ -8,11 +8,9 @@ import Https from 'https';
 
 import SSLController from './SSLController.js';
 import SimController from './SimController.js';
-SimController.init();
-
 import UserManager from './UserManager.js';
 
-import {JSON_strategy, JSON_isLogin} from './Passport/Json.js';
+import JSON_strategy from './Passport/Json.js';
 
 // initialize modules and variables
 const CWD = require('process').cwd();
@@ -57,13 +55,19 @@ APP.use('/', Express.static(`${CWD}/Client/build`));
                  --authenticate-- fail    => /login
 */
 
-APP.get('/index', JSON_isLogin, (req, res) => {
-    
+const isLogin = (req, res, next) => {
+    if(req.isAuthenticated())
+         return next();
+    else
+        res.redirect('/login');
+};
+
+APP.get('/index', isLogin, (req, res) => {
     res.status(200).sendFile(`${CWD}/Client/Index.html`);
 });
 
-APP.get('/', (req, res) => {
-    res.redirect('/login');
+APP.get('/', isLogin, (req, res) => {
+    res.redirect('/index');
 });
 
 APP.get('/login', (req, res) => {
@@ -80,7 +84,7 @@ APP.post('/login', Passport.authenticate('json'), (req, res) => {
     });
 });
 
-APP.get('/logout', (req, res) => {
+APP.get('/logout', isLogin, (req, res) => {
     req.logout();
     res.redirect('/login');
 });
@@ -88,18 +92,31 @@ APP.get('/logout', (req, res) => {
 // ======================
 // api for uses
 //
+// always check user first
 
-APP.get('/api/uses/class', (req, res) => {
-    const files = SimController.getClsList(req.user.name);
+const getUser = (req) => {
+    return UserManager.getUser(req.user.name);
+};
+
+APP.get('/api/uses/class', isLogin, (req, res) => {
+    const user = getUser(req);
+    if(user === null)
+        res.sendStatus(401);
+
+    const files = user.getClassFiles();
     res.status(200).json(files);
 });
 
-APP.get('/api/uses/source', (req, res) => {
-    const files = SimController.getSrcList(req.user.name);
+APP.get('/api/uses/source', isLogin, (req, res) => {
+    const user = getUser(req);
+    if(user === null)
+        res.sendStatus(401);
+
+    const files = user.getSourceFiles();
     res.status(200).json(files);
 });
 
-APP.post('/api/uses/simulate', (req, res) => {
+APP.post('/api/uses/simulate', isLogin, (req, res) => {
     SimController.simulate({
         generator: req.body.generator,
         scheduler: req.body.scheduler,
@@ -119,7 +136,7 @@ APP.post('/api/uses/simulate', (req, res) => {
 });
 
 // get source code
-APP.get('/api/uses/source_content', (req, res) => {
+APP.get('/api/uses/source_content', isLogin, (req, res) => {
     SimController.getSrcContent({
         name: req.query.name,
         category: req.query.category,
@@ -139,7 +156,7 @@ APP.param('file_name', (req, res, next, id) => {
 });
 
 // update source file
-APP.patch("/api/uses/source_content/:file_name", (req, res) => {
+APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
     SimController.setSrcContent({
         name: req.body.name,
         category: req.body.category,
@@ -156,7 +173,7 @@ APP.patch("/api/uses/source_content/:file_name", (req, res) => {
 });
 
 // create new source file
-APP.post("/api/uses/source_content/:file_name", (req, res) => {
+APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
     SimController.newFile({
         name: req.body.name,
         category: req.body.category,
@@ -173,7 +190,7 @@ APP.post("/api/uses/source_content/:file_name", (req, res) => {
 });
 
 // compile source file
-APP.post("/api/uses/compile", (req, res) => {
+APP.post("/api/uses/compile", isLogin, (req, res) => {
     SimController.compile({
         name: req.body.name,
         category: req.body.category,

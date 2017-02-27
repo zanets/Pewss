@@ -23,12 +23,12 @@ class HomeManager{
 		let files = [];
 
 		for(const category in FC){
-			
-			const path = `${HomeDir}/${userName}/${category}`;
-			const name = Utils.trimExtension(file.name);
 
+			const path = `${HomeDir}/${userName}/${category}`;
 			await FileManager.scanDirRecursive(path).then((_files) => {
+
 				_files.forEach((file) => {
+					const name = Utils.trimExtension(file.name);
 					files.push({
 						name: name,
 						path : file.path,

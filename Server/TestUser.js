@@ -10,7 +10,6 @@ const getUsers = async () => {
 const testUsers = ['darg', 'oeg'];
 
 MongoController.connect().then(async () => {
-	
 	let users = await getUsers();
 	if(users.length === 0){
 		console.log("======= No user. =======");
@@ -18,16 +17,16 @@ MongoController.connect().then(async () => {
 			await UserManager.createUser(name, name);
 			console.log(`Create test user ${name}`);
 		}
-		
+
 		users = await getUsers();
 	}
-
-	for(const name of testUsers){
-		await UserManager.removeUser(name);
+	console.log(users[0]);
+	await UserManager.modUser(users[0], {$updatePassword: 'sdf'});
+	await UserManager.modUser(users[0], {$addPublicFile: {category: 'a', name:'a-name'}});
+	await UserManager.modUser(users[0], {$addPublicFile: {category: 'c', name:'c-name'}});
+	await UserManager.modUser(users[0], {$removePublicFile: {category: 'c', name:'c-name'}});
+	//await UserManager.modUser(users[0], {$removePublicFile: {category: 'a', name:'a-name'}});
+	for(const user of users){
+		//await UserManager.removeUser(user);
 	}
 });
-
-
-
-
-

@@ -23,11 +23,5 @@ const JSON_Strategy = (passport, users) => {
     }));
 };
 
-const JSON_isLogin = (req, res, next) => {
-    if(req.isAuthenticated())
-        return next();
-    res.redirect('/login');
-};
 
-
-module.exports = {JSON_Strategy, JSON_isLogin};
+module.exports = JSON_Strategy;

@@ -9,7 +9,7 @@ module.exports = class FileManager{
 		await this.scanDir(dirPath).then((_entries) => {
 			entries = _entries;
 		}).catch((err) => {
-			throw err;
+			//console.log(err);
 		});
 
 		for(let name of entries){
@@ -23,7 +23,7 @@ module.exports = class FileManager{
 				throw err;
 			});
 		}
-		
+
 		return files;
 	}
 
@@ -65,7 +65,7 @@ module.exports = class FileManager{
 			fs.unlink(path, (err) => {
 				if(err)
 					rej(err);
-				else 
+				else
 					res();
 			});
   		});
@@ -76,7 +76,7 @@ module.exports = class FileManager{
 			fs.writeFile(path, content, (err) => {
 				if(err)
 					rej(err);
-				else 
+				else
 					res();
 			});
 		});
