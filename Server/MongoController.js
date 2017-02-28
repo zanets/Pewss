@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 import assert from 'assert';
-
+import {eErrHandler} from './Utils.js'
 class MongoController {
 	constructor(){
 		this.url = 'mongodb://localhost:6000/SimPlatform';
@@ -9,9 +9,9 @@ class MongoController {
 
 	async connect(){
 		if(this.db === null)
-			this.db = await MongoClient.connect(this.url);
+			this.db = await MongoClient.connect(this.url).catch(eErrHandler);
 		assert.ok(this.db !== null, 'Connect to MongoDB fail');
-	}	
+	}
 
 	isConnect(){
 		return this.db !== null;
@@ -22,7 +22,7 @@ class MongoController {
 	}
 
 	async isCollectionExist(name){
-		const collections = await this.db.collections();
+		const collections = await this.db.collections().catch(eErrHandler);
 
 		if(collections === null)
 			return false;
@@ -43,19 +43,19 @@ class MongoController {
 	async insertDocument(collectionName, doc){
 		assert.ok(this.isCollectionExist(collectionName), 'Collection NOT exist.');
 		const collection = this.db.collection(collectionName);
-		await collection.insertOne(doc);
+		await collection.insertOne(doc).catch(eErrHandler);
 	}
 
 	async updateDocument(collectionName, select, property){
 		assert.ok(this.isCollectionExist(collectionName), 'Collection NOT exist.');
 		const collection = this.db.collection(collectionName);
-		await collection.updateOne(select, {$set:property});
+		await collection.updateOne(select, {$set:property}).catch(eErrHandler);
 	}
 
 	async removeDocument(collectionName, select){
 		assert.ok(this.isCollectionExist(collectionName), 'Collection NOT exist.');
 		const collection = this.db.collection(collectionName);
-		await collection.deleteOne(select);
+		await collection.deleteOne(select).catch(eErrHandler);
 	}
 
 

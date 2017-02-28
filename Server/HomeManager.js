@@ -1,47 +1,33 @@
 import FileManager from './FileManager.js';
-import Utils from './Utils.js';
-const HomeDir = `${__dirname}/Home`;
+import {FT, FC, HomeDir} from './Utils.js';
 
-// file type
-const FT = {
-	class: 'class',
-	java: 'java',
-	unknown: null
-};
-
-// file category
-const FC = {
-	scheduler: 'scheduler',
-	generator: 'generator',
-	platform: 'platform',
-	simulator: 'simulator'
-};
 
 class HomeManager{
 
 	static async scan(userName){
-		let files = [];
+		let resFiles = [];
 
 		for(const category in FC){
 
 			const path = `${HomeDir}/${userName}/${category}`;
-			await FileManager.scanDirRecursive(path).then((_files) => {
+			await FileManager.scanDirRecursive(path).then(_fs => {
 
-				_files.forEach((file) => {
-					const name = Utils.trimExtension(file.name);
-					files.push({
+				_fs.forEach(_f => {
+					const name = this.trimExtension(_f.name);
+					resFiles.push({
 						name: name,
-						path : file.path,
+						path : _f.path,
 						jpath: `${userName}.${category}.${name}`,
-						type: this.getFileType(file.name),
-						category: FC[category]
+						type: this.getFileType(_f.name),
+						category: FC[category],
+						owner: userName
 					});
 				});
 			}).catch((err) => {
 				throw err;
 			});
 		}
-		return files;
+		return resFiles;
 	}
 
 	static getFileType(filename){
@@ -52,6 +38,16 @@ class HomeManager{
 		else
 			return FT.unknown;
 	}
+
+	static trimExtension(filename){
+		['.java', '.class'].forEach((extension) => {
+		const pos = filename.indexOf(extension);
+		filename = (pos === -1) ?
+			filename :
+			filename.slice(0, pos);
+		});
+		return filename;
+	}
 }
 
-module.exports = {FT, FC, HomeManager};
+module.exports = HomeManager;

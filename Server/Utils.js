@@ -1,41 +1,68 @@
+// file type
+const FT = {
+	class: 'class',
+	java: 'java',
+	unknown: null
+};
+
+// file category
+const FC = {
+	scheduler: 'scheduler',
+	generator: 'generator',
+	platform: 'platform',
+	simulator: 'simulator'
+};
+
 const BaseDir = __dirname;
 
-module.exports = class Utils{
-    static trimExtension(filename){
-		['.java', '.class'].forEach((extension) => {
-			const pos = filename.indexOf(extension);
-			filename = (pos === -1) ? filename : filename.slice(0, pos);
+const HomeDir = `${BaseDir}/Home`;
+
+const ignoreFiles = () => {
+	['.DS_Store'].forEach(ignore => {
+		files = files.filter(file => {
+			ignore === file.name
 		});
-		return filename;
-	}
+	});
+	return files;
+};
 
-	static ignoreFiles(files){
-		['.DS_Store'].forEach((ignore) => {
-			files = files.filter((file) => {
-				ignore === file.name
-			});
-		});
-		return files;
-	}
+const getSimArgument = () => {
+	let argvs = '';
+	Object.keys(client).forEach(key => {
+		const argv = client[key];
 
-    static getSimLibrary(){
+		argvs += `${key}=`;
 
-    }
+		if(argv.constructor === Array)
+			for(const v of argv)
+				argvs += `${v},`;
+		else
+			argvs += argv;
 
-    static getSimArgument(client){
-        let argvs = '';
-        Object.keys(client).forEach((key) => {
-            const argv = client[key];
+		argvs += '\r\n';
+	});
+};
 
-            argvs += `${key}=`;
+const pErrHandler = (err) => {
+	console.error(err);
+};
 
-            if(argv.constructor === Array)
-                for(const v of argv)
-                    argvs += `${v},`;
-            else
-                argvs += argv;
+const eErrHandler = (err) => {
+	console.error(err);
+	process.exit(-1);
+};
 
-            argvs += '\r\n';
-        });
-    }
-}
+const thErrHandler = (err) => {
+	throw err;
+};
+
+module.exports = {
+	FT,
+	FC,
+	BaseDir,
+	HomeDir,
+	ignoreFiles,
+	pErrHandler,
+	eErrHandler,
+	thErrHandler
+};

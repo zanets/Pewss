@@ -1,5 +1,5 @@
 import fs from 'fs';
-
+import {pErrHandler} from './Utils.js';
 module.exports = class FileManager{
 
 	static async scanDirRecursive(dirPath, files){
@@ -8,9 +8,7 @@ module.exports = class FileManager{
 
 		await this.scanDir(dirPath).then((_entries) => {
 			entries = _entries;
-		}).catch((err) => {
-			//console.log(err);
-		});
+		}).catch(pErrHandler);
 
 		for(let name of entries){
 			const path = `${dirPath}/${name}`;
@@ -19,9 +17,7 @@ module.exports = class FileManager{
 					await this.scanRecursive(path ,files);
 				else
 					files.push({name, path});
-			}).catch((err) => {
-				throw err;
-			});
+			}).catch(pErrHandler);
 		}
 
 		return files;

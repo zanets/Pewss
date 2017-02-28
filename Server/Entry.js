@@ -9,11 +9,11 @@ import Https from 'https';
 import SSLController from './SSLController.js';
 import SimController from './SimController.js';
 import UserManager from './UserManager.js';
+import {FT, FC, BaseDir} from './Utils.js';
 
 import JSON_strategy from './Passport/Json.js';
 
 // initialize modules and variables
-const CWD = require('process').cwd();
 const APP = Express();
 const PORT = 8083;
 
@@ -24,7 +24,7 @@ Https.createServer(SSLController, APP).listen(PORT, () => {
     console.log(`\n[Server] Https server listening on port ${PORT}.`.green);
 });
 
-// insert middleware
+// use middleware
 APP.use(Session({
   secret: 'dknfbfndmdkefnj',
   resave: false,
@@ -38,10 +38,10 @@ APP.use(Compression());
 APP.use(Passport.initialize());
 APP.use(Passport.session());
 
-APP.use('/build', Express.static(`${CWD}/Client/build`));
-APP.use('/vs', Express.static(`${CWD}/node_modules/monaco-editor/min/vs`));
-APP.use('/node_modules', Express.static(`${CWD}/node_modules`));
-APP.use('/', Express.static(`${CWD}/Client/build`));
+APP.use('/build', Express.static(`${BaseDir}/Client/build`));
+APP.use('/vs', Express.static(`${BaseDir}/node_modules/monaco-editor/min/vs`));
+APP.use('/node_modules', Express.static(`${BaseDir}/node_modules`));
+APP.use('/', Express.static(`${BaseDir}/Client/build`));
 
 // ======================
 // html request
@@ -63,7 +63,7 @@ const isLogin = (req, res, next) => {
 };
 
 APP.get('/index', isLogin, (req, res) => {
-    res.status(200).sendFile(`${CWD}/Client/Index.html`);
+    res.status(200).sendFile(`${BaseDir}/Client/Index.html`);
 });
 
 APP.get('/', isLogin, (req, res) => {
@@ -71,7 +71,7 @@ APP.get('/', isLogin, (req, res) => {
 });
 
 APP.get('/login', (req, res) => {
-    res.status(200).sendFile(`${CWD}/Client/Login.html`);
+    res.status(200).sendFile(`${BaseDir}/Client/Login.html`);
 });
 
 // ======================
@@ -94,29 +94,41 @@ APP.get('/logout', isLogin, (req, res) => {
 //
 // always check user first
 
-const getUser = (req) => {
-    return UserManager.getUser(req.user.name);
+const isUser = (req) => {
+    return UserManager.isUserExist(req.user.name);
 };
 
 APP.get('/api/uses/class', isLogin, (req, res) => {
-    const user = getUser(req);
-    if(user === null)
-        res.sendStatus(401);
 
-    const files = user.getClassFiles();
-    res.status(200).json(files);
+    if(!isUser(req)){
+        res.sendStatus(401);
+        return;
+    }
+
+    const resFiles = [];
+    resFiles.concat();
+    const privateFiles = user.getFiles(FT.class);
+    res.status(200).json(resFiles);
 });
 
 APP.get('/api/uses/source', isLogin, (req, res) => {
-    const user = getUser(req);
-    if(user === null)
-        res.sendStatus(401);
 
-    const files = user.getSourceFiles();
+    if(!isUser(req)){
+        res.sendStatus(401);
+        return;
+    }
+
+    const files = user.getFiles(FT.java);
     res.status(200).json(files);
 });
 
 APP.post('/api/uses/simulate', isLogin, (req, res) => {
+
+    if(!isUser(req)){
+        res.sendStatus(401);
+        return;
+    }
+
     SimController.simulate({
         generator: req.body.generator,
         scheduler: req.body.scheduler,
