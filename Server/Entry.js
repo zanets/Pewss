@@ -6,7 +6,7 @@ import Passport from 'passport';
 import Session from 'express-session';
 import Https from 'https';
 
-import SSLController from './SSLController.js';
+import SSLManager from './SSLManager.js';
 import SimController from './SimController.js';
 import UserManager from './UserManager.js';
 import {FT, FC, BaseDir} from './Utils.js';
@@ -20,7 +20,7 @@ const PORT = 8083;
 JSON_strategy(Passport, UserManager.getUsers());
 
 // current express not support https.
-Https.createServer(SSLController, APP).listen(PORT, () => {
+Https.createServer(SSLManager, APP).listen(PORT, () => {
     console.log(`\n[Server] Https server listening on port ${PORT}.`.green);
 });
 
@@ -123,7 +123,7 @@ APP.get('/api/uses/source', isLogin, (req, res) => {
         res.sendStatus(401);
 });
 
-/* request data: { env, generator, scheduler, simulator, platform, arguments } */
+/* request data: { env, generator, scheduler, simulator, platform, argums } */
 APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
 	const _u = isUser(req);
@@ -134,7 +134,7 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
         scheduler: req.body.scheduler,
         simulator: req.body.simulator,
         platform: req.body.platform,
-        arguments: req.body.arguments
+        argums: req.body.argums
     }, (err, stdout, stderr) => {
         if (err){
             console.log(`${err},${stdout},${stderr}`);

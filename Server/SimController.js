@@ -1,34 +1,48 @@
-import {execFile as exec} from 'child_process';
+import {spawn} from 'child_process';
 import UserManager from './UserManager.js';
-import envConfig from './Sim/envConfig.js';
-import Utils from './Utils.js';
+import {SimDir} from './Utils.js';
+import envSettings from './Sim/envConfig.json';
 
-class SimController {
+module.exports = class SimController {
 
-	constructor(){
+	static simulate(data){
+		const envLibrary = this.getEnvLibrary(data.env);
+		const envArgument = this.getEnvArgument(data.argums);
+		const JavaArguments = `-cp ${envLibrary} com.use.CLILauncher --generator ${data.generator} --scheduler ${data.scheduler} --simulator ${data.simulator} --platform ${data.platform}`;
+		console.log(`Simulate with [ library ] ${envLibrary} \n\t [ arguments ] ${envArgument}`);
+		const javaProc = spawn('java', JavaArguments.split(' '));
+		javaProc.stdin.write(envArgument);
+		javaProc.stdin.end();
+
+		return new Promise((res, rej) => {
+
+			let _res = {status: null, msg: ''};
+
+			javaProc.stdout.on("data", (chunk) => {
+				_res.status = 'stdin';
+				_res.msg += chunk;
+			});
+
+			javaProc.stderr.on("data", (chunk) => {
+				_res.status = 'stderr';
+				_res.msg += chunk;
+			});
+
+			javaProc.on('close', (code) => {
+				res(_res);
+			})
+
+		});
+	}
+
+	static compile(){
 
 	}
 
-	async simulate(data, cb){
-		const simLibrary = this.getSimLibrary(data.env);
-		const simArgument = this.getSimArgument(data.arguments);
-
-		const parameter = `-cp ${simLibrary} com.use.CLILauncher --generator ${data.generator} --scheduler ${data.scheduler} --simulator ${data.simulator} --platform ${data.platform}`;
-
-		const java = exec('java', parameter.split(' '), {encoding: 'utf-8'}, cb);
-
-		java.stdin.write(simArgument);
-		java.stdin.end();
-	}
-
-	compile(){
-
-	}
-
-	getSimArgument(arguments){
+	static getEnvArgument(argums){
 		let argvs = '';
-		Object.keys(arguments).forEach(key => {
-			const argv = arguments[key];
+		Object.keys(argums).forEach(key => {
+			const argv = argums[key];
 
 			argvs += `${key}=`;
 
@@ -43,11 +57,14 @@ class SimController {
 		return argvs;
 	}
 
-	getSimLibrary(env){
+	static getEnvLibrary(env){
+		const _libs = envSettings[env].lib;
+		let libs = '';
+		for(const _lib of _libs)
+			libs += `${SimDir}/env/${_lib}:`;
 
+		return libs;
 	}
 
 
 }
-
-module.exports = new SimController();

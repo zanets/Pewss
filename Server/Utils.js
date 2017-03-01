@@ -4,7 +4,6 @@ const FT = {
 	java: 'java',
 	unknown: null
 };
-
 // file category
 const FC = {
 	scheduler: 'scheduler',
@@ -12,10 +11,9 @@ const FC = {
 	platform: 'platform',
 	simulator: 'simulator'
 };
-
 const BaseDir = __dirname;
-
 const HomeDir = `${BaseDir}/Home`;
+const SimDir = `${BaseDir}/Sim`;
 
 const ignoreFiles = () => {
 	['.DS_Store'].forEach(ignore => {
@@ -44,6 +42,7 @@ module.exports = {
 	FC,
 	BaseDir,
 	HomeDir,
+	SimDir,
 	ignoreFiles,
 	pErrHandler,
 	eErrHandler,

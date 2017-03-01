@@ -1,12 +1,13 @@
 import fs from 'fs';
 import {pErrHandler} from './Utils.js';
-module.exports = class FileManager{
+
+module.exports = class FileScanner{
 
 	static async scanDirRecursive(dirPath, files){
 		files = files || [];
 		let entries = [];
 
-		await this.scanDir(dirPath).then((_entries) => {
+		this.scanDir(dirPath).then((_entries) => {
 			entries = _entries;
 		}).catch(pErrHandler);
 
@@ -47,7 +48,7 @@ module.exports = class FileManager{
 
 	static async isDir(path){
 		let stat = null;
-		await this.stat(path).then((_stat) => {
+		this.stat(path).then((_stat) => {
 			stat = _stat;
 		}).catch((err) => {
 			throw err;

@@ -1,8 +1,8 @@
-import FileManager from './FileManager.js';
+import FileScanner from './FileScanner.js';
 import {FT, FC, HomeDir} from './Utils.js';
 
 
-class HomeManager{
+module.exports = class HomeScanner{
 
 	static async scan(userName){
 		let resFiles = [];
@@ -10,7 +10,7 @@ class HomeManager{
 		for(const category in FC){
 
 			const path = `${HomeDir}/${userName}/${category}`;
-			await FileManager.scanDirRecursive(path).then(_fs => {
+			await FileScanner.scanDirRecursive(path).then(_fs => {
 
 				_fs.forEach(_f => {
 					const name = this.trimExtension(_f.name);
@@ -49,5 +49,3 @@ class HomeManager{
 		return filename;
 	}
 }
-
-module.exports = HomeManager;

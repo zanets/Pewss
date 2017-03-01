@@ -1,4 +1,4 @@
-import HomeManager from './HomeManager.js';
+import HomeScanner from './HomeScanner.js';
 import {FT, FC, pErrHandler} from './Utils.js';
 class User {
 
@@ -62,7 +62,7 @@ class User {
 	}
 
 	async scanHome(){
-		await HomeManager.scan(this.Name).then(Files => {
+		await HomeScanner.scan(this.Name).then(Files => {
 			this.Files = Files;
 		}).catch(pErrHandler);
 	}
