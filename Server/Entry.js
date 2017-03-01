@@ -95,46 +95,46 @@ APP.get('/logout', isLogin, (req, res) => {
 // always check user first
 
 const isUser = (req) => {
-    return UserManager.isUserExist(req.user.name);
+    return UserManager.isUserExist(req.user.name) ?
+        req.user.name :
+        false;
 };
 
+
+/* no request data */
 APP.get('/api/uses/class', isLogin, (req, res) => {
 
-    if(!isUser(req)){
-        res.sendStatus(401);
-        return;
-    }
+	const _u = isUser(req);
 
-    const resFiles = [];
-    resFiles.concat();
-    const privateFiles = user.getFiles(FT.class);
-    res.status(200).json(resFiles);
+    if(_u)
+        res.status(200).json(UserManager.getClassFiles(_u));
+    else
+        res.sendStatus(401);
 });
 
+/* no request data */
 APP.get('/api/uses/source', isLogin, (req, res) => {
 
-    if(!isUser(req)){
-        res.sendStatus(401);
-        return;
-    }
+	const _u = isUser(req);
 
-    const files = user.getFiles(FT.java);
-    res.status(200).json(files);
+    if(_u)
+        res.status(200).json(UserManager.getJavaFiles(_u));
+    else
+        res.sendStatus(401);
 });
 
-APP.post('/api/uses/simulate', isLogin, (req, res) => {
+/* request data: { env, generator, scheduler, simulator, platform, arguments } */
+APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
-    if(!isUser(req)){
-        res.sendStatus(401);
-        return;
-    }
+	const _u = isUser(req);
 
-    SimController.simulate({
+    await SimController.simulate({
+        env: req.body.env
         generator: req.body.generator,
         scheduler: req.body.scheduler,
         simulator: req.body.simulator,
         platform: req.body.platform,
-        settings: req.body.settings
+        arguments: req.body.arguments
     }, (err, stdout, stderr) => {
         if (err){
             console.log(`${err},${stdout},${stderr}`);
@@ -147,7 +147,7 @@ APP.post('/api/uses/simulate', isLogin, (req, res) => {
     });
 });
 
-// get source code
+/* request data: { filename, category, owner } */
 APP.get('/api/uses/source_content', isLogin, (req, res) => {
     SimController.getSrcContent({
         name: req.query.name,
@@ -168,6 +168,7 @@ APP.param('file_name', (req, res, next, id) => {
 });
 
 // update source file
+/* request data: {filename, category, content, owner} */
 APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
     SimController.setSrcContent({
         name: req.body.name,
@@ -185,6 +186,7 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
 });
 
 // create new source file
+/* request data: {filename, category, content, owner} */
 APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
     SimController.newFile({
         name: req.body.name,
@@ -202,6 +204,7 @@ APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
 });
 
 // compile source file
+/* request data: {filename, category, owner} */
 APP.post("/api/uses/compile", isLogin, (req, res) => {
     SimController.compile({
         name: req.body.name,
@@ -224,15 +227,37 @@ APP.param('public_target', (req, res, next, id) => {
   next();
 });
 
-/*
+
 APP.patch("/api/users/public/:public_target", (req, res) => {
-    UserManager.add_public(req.body.path, req.body.owner, req.body.category);
-    UserManager.load_users();
-    res.sendStatus(200);
+
+    const _u = isUser(req);
+
+    if(_u){
+        await UserManager.modUser(testUsers[0],
+            {$addPublicFile:
+                {type: FT.class, category: 'a', name:'a-name'}
+            }
+        );
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(401);
+    }
+
 });
 
 APP.delete("/api/users/public/:public_target", (req, res) => {
-    UserManager.del_public(req.body);
-    res.sendStatus(200);
+
+    const _u = isUser(req);
+
+    if(_u){
+        await UserManager.modUser(testUsers[0],
+            {$removePublicFile:
+                {type: FT.class, category: 'a', name:'a-name'}
+            }
+        );
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(401);
+    }
+
 });
-*/

@@ -26,23 +26,6 @@ const ignoreFiles = () => {
 	return files;
 };
 
-const getSimArgument = () => {
-	let argvs = '';
-	Object.keys(client).forEach(key => {
-		const argv = client[key];
-
-		argvs += `${key}=`;
-
-		if(argv.constructor === Array)
-			for(const v of argv)
-				argvs += `${v},`;
-		else
-			argvs += argv;
-
-		argvs += '\r\n';
-	});
-};
-
 const pErrHandler = (err) => {
 	console.error(err);
 };

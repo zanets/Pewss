@@ -13,7 +13,7 @@ class UserManager {
 	/* use it in internal */
 	getUser(userName){
 		const u = this.Users.find(_u => _u.Name === userName);
-		return u !== undefined ? u : null;
+		return u ? u : null;
 	}
 
 	getUsersCount(){
@@ -40,7 +40,7 @@ class UserManager {
 			const tarUser = new User(UserProperty);
 			await tarUser.scanHome();
 			// update user data to db
-			await this.updateUser(tarUser);
+			await this.updateDB(tarUser);
 			this.Users.push(tarUser);
 		}
 	}
@@ -66,7 +66,7 @@ class UserManager {
 	}
 
 	// update user data in DB
-	async updateUser(userName){
+	async updateDB(userName){
 		const tarUser = this.getUser(userName);
 		if(tarUser === null)
 			return -1;
@@ -82,7 +82,7 @@ class UserManager {
 	// op: $removeFile | $addPublicFile | $removePublicFile | $updatePassword
 	async modUser(userName, operate){
 		const tarUser = this.getUser(userName);
-		if(tarUser === null)
+		if(!tarUser)
 			return -1;
 
 		const op = Object.keys(operate)[0];
@@ -97,13 +97,13 @@ class UserManager {
 		else if(op === '$updatePassword')
 			tarUser.updatePassword(v);
 
-		await this.updateUser(tarUser).catch(eErrHandler);
+		await this.updateDB(tarUser).catch(eErrHandler);
 		return 0;
 	}
 
 	getClassFiles(userName){
 		const tarUser = this.getUser(userName);
-		if(tarUser === null)
+		if(!tarUser)
 			return -1;
 		let resFiles = [];
 		// private files
