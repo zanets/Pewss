@@ -7,7 +7,7 @@ class User {
 		this.Password = Property.Password;
 		/* Public { type, category, name } */
 		this.Public = Property.Public || [];
-		/* File { type, category, name, path, jpath } */
+		/* File { type, category, name, path, jpath} */
 		this.Files = Property.Files || [];
 	}
 
@@ -63,6 +63,7 @@ class User {
 
 	async scanHome(){
 		await HomeScanner.scan(this.Name).then(Files => {
+			console.log(Files);
 			this.Files = Files;
 		}).catch(pErrHandler);
 	}
@@ -74,6 +75,21 @@ class User {
 			Public: this.Public,
 			Files: this.Files
 		};
+	}
+
+	getFile(type, category, fileName){
+		const tarFile = this.Files.find(_f => {
+			return (_f.type === type && _f.category === category && _f.name === fileName);
+		});
+		return tarFile ? tarFile : null;
+	}
+
+	async getFileContent(category, fileName){
+		const tarFile =	this.Files.find(_f => {
+			return (_f.name === fileName && _f.category === category);
+		});
+		// open file and return source code
+		return await HomeScanner.readFile(tarFile.path).catch(pErrHandler);
 	}
 }
 

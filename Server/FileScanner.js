@@ -7,7 +7,7 @@ module.exports = class FileScanner{
 		files = files || [];
 		let entries = [];
 
-		this.scanDir(dirPath).then((_entries) => {
+		await this.scanDir(dirPath).then((_entries) => {
 			entries = _entries;
 		}).catch(pErrHandler);
 
@@ -48,7 +48,7 @@ module.exports = class FileScanner{
 
 	static async isDir(path){
 		let stat = null;
-		this.stat(path).then((_stat) => {
+		await this.stat(path).then((_stat) => {
 			stat = _stat;
 		}).catch((err) => {
 			throw err;
@@ -75,6 +75,17 @@ module.exports = class FileScanner{
 					rej(err);
 				else
 					res();
+			});
+		});
+	}
+
+	static readFile(path){
+		return new Promise((res, rej) => {
+			fs.readFile(path, (err, content) => {
+				if(err)
+					rej(err)
+				else
+					res(content);
 			});
 		});
 	}

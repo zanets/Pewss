@@ -1,5 +1,22 @@
 {
-	"workflow":{
-		"lib": ["workflow-test.jar", "USES.jar"]
+	"workflow": {
+		"lib": ["workflow-test.jar", "USES.jar", "gson-2.6.2.jar"],
+		"builtin": [
+			{
+				"category": "simulator",
+				"name": "StaticWorkflowSimulator",
+				"jpath": "com.use.simulator.StaticWorkflowSimulator"
+			},
+			{
+				"category": "generator",
+				"name": "ForkJoinDAGGenerator",
+				"jpath": "com.use.generator.ForkJoinDAGGenerator"
+			},
+			{
+				"category": "platform",
+				"name": "WorkflowPlatformHeterogeneous",
+				"jpath": "com.use.resource.platform.WorkflowPlatformHeterogeneous"
+			}
+		]
 	}
 }

@@ -8,10 +8,8 @@ module.exports = class HomeScanner{
 		let resFiles = [];
 
 		for(const category in FC){
-
 			const path = `${HomeDir}/${userName}/${category}`;
 			await FileScanner.scanDirRecursive(path).then(_fs => {
-
 				_fs.forEach(_f => {
 					const name = this.trimExtension(_f.name);
 					resFiles.push({
@@ -47,5 +45,9 @@ module.exports = class HomeScanner{
 			filename.slice(0, pos);
 		});
 		return filename;
+	}
+
+	static async readFile(path){
+		return await FileScanner.readFile(path);
 	}
 }

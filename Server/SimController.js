@@ -1,6 +1,6 @@
 import {spawn} from 'child_process';
 import UserManager from './UserManager.js';
-import {SimDir} from './Utils.js';
+import {SimDir, HomeDir} from './Utils.js';
 import envSettings from './Sim/envConfig.json';
 
 module.exports = class SimController {
@@ -32,11 +32,39 @@ module.exports = class SimController {
 				res(_res);
 			})
 
+			javaProc.on('error', (code) => {
+				rej(_res);
+			})
+
 		});
 	}
 
-	static compile(){
+	static compile(data){
+		const envLibrary = this.getEnvLibrary(data.env);
+		const JavaArguments = `-cp ${envLibrary} ${HomeDir}/${data.owner}/${data.category}/${data.name}.java`;
+		console.log(JavaArguments);
+		const javaProc = spawn('javac', JavaArguments.split(' '));
+		return new Promise((res, rej) => {
+			let _res = {status: null, msg: ''};
 
+			javaProc.stdout.on("data", (chunk) => {
+				_res.status = 'stdin';
+				_res.msg += chunk;
+			});
+
+			javaProc.stderr.on("data", (chunk) => {
+				_res.status = 'stderr';
+				_res.msg += chunk;
+			});
+
+			javaProc.on('close', (code) => {
+				res(_res);
+			})
+
+			javaProc.on('error', (code) => {
+				rej(_res);
+			})
+		});
 	}
 
 	static getEnvArgument(argums){
@@ -62,9 +90,15 @@ module.exports = class SimController {
 		let libs = '';
 		for(const _lib of _libs)
 			libs += `${SimDir}/env/${_lib}:`;
-
+		libs += `${HomeDir}`;
 		return libs;
 	}
 
+	static getEnvs(){
+		return Object.keys(envSettings);
+	}
 
+	static getBuiltin(env){
+		return envSettings[env].builtin;
+	}
 }

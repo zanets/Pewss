@@ -100,6 +100,16 @@ const isUser = (req) => {
         false;
 };
 
+/* no request data */
+APP.get('/api/uses/envs', isLogin, (req, res) => {
+
+	const _u = isUser(req);
+
+    if(_u)
+        res.status(200).json(SimController.getEnvs());
+    else
+        res.sendStatus(401);
+});
 
 /* no request data */
 APP.get('/api/uses/class', isLogin, (req, res) => {
@@ -127,28 +137,56 @@ APP.get('/api/uses/source', isLogin, (req, res) => {
 APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
 	const _u = isUser(req);
+    if(!_u){
+        res.sendStatus(401);
+        return;
+    }
 
-    await SimController.simulate({
+    SimController.simulate({
         env: req.body.env
         generator: req.body.generator,
         scheduler: req.body.scheduler,
         simulator: req.body.simulator,
         platform: req.body.platform,
         argums: req.body.argums
-    }, (err, stdout, stderr) => {
-        if (err){
-            console.log(`${err},${stdout},${stderr}`);
-            res.status(500).json({
-                err, stdout, stderr
-            });
-        } else {
-            res.status(200).json({stdout,stderr});
-        }
+    }).then(res => {
+        res.status(200).json(res);
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+});
+
+// compile source file
+/* request data: {filename, category, owner} */
+APP.post("/api/uses/compile", isLogin, (req, res) => {
+
+    const _u = isUser(req);
+    if(!_u){
+        res.sendStatus(401);
+        return;
+    }
+
+    SimController.compile({
+        env: req.body.env,
+        name: req.body.name,
+        category: req.body.category,
+        owner: req.body.owner
+    }).then(res => {
+        res.status(200).json(res);
+    }).catch(err => {
+        res.status(500).json(err);
     });
 });
 
 /* request data: { filename, category, owner } */
 APP.get('/api/uses/source_content', isLogin, (req, res) => {
+
+    const _u = isUser(req);
+    if(!_u){
+        res.sendStatus(401);
+        return;
+    }
+
     SimController.getSrcContent({
         name: req.query.name,
         category: req.query.category,
@@ -170,6 +208,13 @@ APP.param('file_name', (req, res, next, id) => {
 // update source file
 /* request data: {filename, category, content, owner} */
 APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
+
+    const _u = isUser(req);
+    if(!_u){
+        res.sendStatus(401);
+        return;
+    }
+
     SimController.setSrcContent({
         name: req.body.name,
         category: req.body.category,
@@ -188,6 +233,13 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
 // create new source file
 /* request data: {filename, category, content, owner} */
 APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
+
+    const _u = isUser(req);
+    if(!_u){
+        res.sendStatus(401);
+        return;
+    }
+
     SimController.newFile({
         name: req.body.name,
         category: req.body.category,
@@ -198,22 +250,6 @@ APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
             console.trace(err.message);
             res.status(500).json({err});
         } else {
-            res.sendStatus(200);
-        }
-    });
-});
-
-// compile source file
-/* request data: {filename, category, owner} */
-APP.post("/api/uses/compile", isLogin, (req, res) => {
-    SimController.compile({
-        name: req.body.name,
-        category: req.body.category,
-        owner: req.body.owner
-    }, (err, stdout, stderr) => {
-        if (err){
-            res.status(500).json({err, stdout, stderr});
-        } else{
             res.sendStatus(200);
         }
     });

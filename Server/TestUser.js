@@ -21,8 +21,10 @@ MongoController.connect().then(async () => {
 	await UserManager.modUser(testUsers[0], {$addPublicFile: {type: FT.class, category: 'c', name:'c-name'}});
 	await UserManager.modUser(testUsers[0], {$removePublicFile: {type: FT.class, category: 'c', name:'c-name'}});
 
-	console.log(UserManager.getClassFiles(testUsers[1]));
+	const javaFiles = UserManager.getJavaFiles(testUsers[0]);
 
+	const code = await UserManager.getJavaContent(testUsers[0], javaFiles[0].category, javaFiles[0].name);
+	console.log(code+"");
 	for(const user of testUsers){
 		await UserManager.removeUser(user);
 	}

@@ -122,6 +122,13 @@ class UserManager {
 			return -1;
 		return tarUser.getFiles(FT.java)
 	}
+
+	async getJavaContent(userName, category, fileName){
+		const tarUser = this.getUser(userName);
+		if(tarUser === null)
+			return -1;
+		return await tarUser.getFileContent(category, fileName);
+	}
 }
 
 module.exports = new UserManager();
