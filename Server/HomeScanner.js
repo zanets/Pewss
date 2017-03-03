@@ -50,4 +50,4 @@ module.exports = class HomeScanner{
 	static async readFile(path){
 		return await FileScanner.readFile(path);
 	}
-}
+};

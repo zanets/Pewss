@@ -30,7 +30,7 @@ APP.use(Session({
   resave: false,
   saveUninitialized: false,
   cookie: { secure: true }
-}))
+}));
 
 APP.use(BodyParser.json());
 APP.use(BodyParser.urlencoded({ extended: true }));
@@ -143,7 +143,7 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
     }
 
     SimController.simulate({
-        env: req.body.env
+        env: req.body.env,
         generator: req.body.generator,
         scheduler: req.body.scheduler,
         simulator: req.body.simulator,
@@ -269,7 +269,7 @@ APP.patch("/api/users/public/:public_target", (req, res) => {
     const _u = isUser(req);
 
     if(_u){
-        await UserManager.modUser(testUsers[0],
+        UserManager.modUser(testUsers[0],
             {$addPublicFile:
                 {type: FT.class, category: 'a', name:'a-name'}
             }
@@ -286,7 +286,7 @@ APP.delete("/api/users/public/:public_target", (req, res) => {
     const _u = isUser(req);
 
     if(_u){
-        await UserManager.modUser(testUsers[0],
+        UserManager.modUser(testUsers[0],
             {$removePublicFile:
                 {type: FT.class, category: 'a', name:'a-name'}
             }

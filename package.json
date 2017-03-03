@@ -48,11 +48,14 @@
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.16.1",
     "express-session": "^1.14.1",
     "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.2.24",
     "passport-local": "^1.0.0",
     "react-addons-shallow-compare": "^15.4.1",
-    "react-modal": "^1.5.2"
+    "react-modal": "^1.5.2",
+    "write-good": "^0.10.0"
   }
 }

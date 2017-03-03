@@ -1,6 +1,6 @@
 
 import UserManager from './UserManager.js';
-import MongoController from './MongoController.js'
+import MongoController from './MongoController.js';
 import {FT, FC} from './Utils.js';
 
 const testUsers = ['darg', 'oeg'];

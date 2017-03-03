@@ -120,7 +120,7 @@ class UserManager {
 		const tarUser = this.getUser(userName);
 		if(tarUser === null)
 			return -1;
-		return tarUser.getFiles(FT.java)
+		return tarUser.getFiles(FT.java);
 	}
 
 	async getJavaContent(userName, category, fileName){

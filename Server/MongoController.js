@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb';
 import assert from 'assert';
-import {eErrHandler} from './Utils.js'
+import {eErrHandler} from './Utils.js';
+
 class MongoController {
 	constructor(){
 		this.url = 'mongodb://localhost:6000/SimPlatform';

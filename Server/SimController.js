@@ -30,11 +30,11 @@ module.exports = class SimController {
 
 			javaProc.on('close', (code) => {
 				res(_res);
-			})
+			});
 
 			javaProc.on('error', (code) => {
 				rej(_res);
-			})
+			});
 
 		});
 	}
@@ -59,11 +59,11 @@ module.exports = class SimController {
 
 			javaProc.on('close', (code) => {
 				res(_res);
-			})
+			});
 
 			javaProc.on('error', (code) => {
 				rej(_res);
-			})
+			});
 		});
 	}
 
@@ -101,4 +101,4 @@ module.exports = class SimController {
 	static getBuiltin(env){
 		return envSettings[env].builtin;
 	}
-}
+};

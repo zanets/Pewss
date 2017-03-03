@@ -83,10 +83,10 @@ module.exports = class FileScanner{
 		return new Promise((res, rej) => {
 			fs.readFile(path, (err, content) => {
 				if(err)
-					rej(err)
+					rej(err);
 				else
 					res(content);
 			});
 		});
 	}
-}
+};

@@ -18,7 +18,7 @@ const SimDir = `${BaseDir}/Sim`;
 const ignoreFiles = () => {
 	['.DS_Store'].forEach(ignore => {
 		files = files.filter(file => {
-			ignore === file.name
+			ignore === file.name;
 		});
 	});
 	return files;
