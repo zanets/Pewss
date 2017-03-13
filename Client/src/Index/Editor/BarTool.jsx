@@ -15,7 +15,7 @@ import {
 const propTypes = {
 	fileNew: PropTypes.func.isRequired,
 	fileEdit: PropTypes.object.isRequired,
-	sourceList: PropTypes.object.isRequired,
+	sourceList: PropTypes.array.isRequired,
 	setFileEdit: PropTypes.func.isRequired,
 	toggleMainLoader: PropTypes.func.isRequired,
 	toggleModalInfo: PropTypes.func.isRequired,
@@ -40,14 +40,18 @@ export default class BarTool extends React.Component{
 	}
 
 	getFileList(){
-		const sl = this.props.sourceList;
+		const files = this.props.sourceList;
+
 		let cmps = [];
-		for(const key in sl){
+		for(const file of files){
+			/*
 			cmps.push(
 				<DropdownItem key={uuid.v4()} header>
 					{key}
 				</DropdownItem>
 			);
+			*/
+
 			for(const file of sl[key]){
 				cmps.push(
 					<DropdownItem key={uuid.v4()} onClick={this.setFileSelect.bind(this, file, true)}>
@@ -104,7 +108,7 @@ export default class BarTool extends React.Component{
 				isOpen: {$set: true},
 				code: {$set: res.data},
 				originCode: {$set: res.data}
-			});	
+			});
 		}, (res)=>{
 			this.props.toggleModalInfo(true, res.error, 'danger');
 		}, (res)=>{
@@ -176,7 +180,7 @@ export default class BarTool extends React.Component{
 		const pubColor = this.props.fileEdit.isPub ? 'primary' : 'secondary';
 		return (
 			<ButtonToolbar>
-				
+
 					<ButtonDropdown isOpen={this.state.isDropdownOpen} toggle={this.toggleDropdown.bind(this)}>
 						<DropdownToggle caret>
 							{this.state.fileSelect.name === '' ? 'Select File ' : this.state.fileSelect.name}
@@ -196,7 +200,7 @@ export default class BarTool extends React.Component{
 						<span className="fa fa-asterisk fa-lg"/>{' Compile'}
 					</Button>
 					<Button onClick={this.clkPub.bind(this)} color={pubColor} disabled={!this.isFileOpen.apply(this)}>
-						<span className="fa fa-group fa-lg"/>{' Publish'}	
+						<span className="fa fa-group fa-lg"/>{' Publish'}
 					</Button>
 					<Button onClick={this.clkNew.bind(this)}>
 						<span className="fa fa-file-code-o fa-lg"/>{' New File'}
@@ -204,7 +208,7 @@ export default class BarTool extends React.Component{
 					<Button onClick={this.clkSaveAs.bind(this)}>
 						<span className="fa fa-plus fa-lg"/>{' Save as'}
 					</Button>
-				
+
 			</ButtonToolbar>
 		);
 	}

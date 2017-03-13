@@ -1,11 +1,11 @@
 import React, {PropTypes} from 'react';
 import jq from 'jquery';
 import uuid from 'node-uuid';
-import Status from './Status.jsx';
+import Status from '../../Status.jsx';
 import ModalRes from './ModalRes.jsx';
 import ModalSettings from './ModalSettings.jsx';
 import update from 'immutability-helper';
-import {default as API} from '../../WebAPI.jsx';
+import {default as API} from '../../../../WebAPI.jsx';
 import {
 	Button
 } from 'reactstrap';
@@ -59,17 +59,18 @@ export default class Task extends React.Component{
 			return;
 
 		this.setState({resStatus: Status.RUNNING});
-
+		// TODO: filer stderr and stdout
 		API.simulate({
+			env: "workflow",
 			generator: this.props.generator.jpath,
 			scheduler: this.props.scheduler.jpath,
 			simulator: this.props.simulator.jpath,
 			platform: this.props.platform.jpath,
-			settings: this.state.settings
+			argums: this.state.settings
 		},(res)=>{
 			this.setState({
 				resStatus: Status.FIN_OK,
-				res: this.filter(res.stdout, Status.FIN_OK)
+				res: this.filter(res.msg, Status.FIN_OK)
 			});
 		},(res)=>{
 			this.setState({
@@ -80,6 +81,7 @@ export default class Task extends React.Component{
 	}
 
 	filter(raw, status){
+		console.log(raw);
 		const f_start = '<uses-dbg-start>',
 			f_end = '<uses-dbg-end>';
 		let p_start = 0,

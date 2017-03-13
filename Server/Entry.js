@@ -7,6 +7,7 @@ import Session from 'express-session';
 import Https from 'https';
 
 import SSLManager from './SSLManager.js';
+import MongoController from './MongoController.js';
 import SimController from './SimController.js';
 import UserManager from './UserManager.js';
 import {FT, FC, BaseDir} from './Utils.js';
@@ -17,7 +18,12 @@ import JSON_strategy from './Passport/Json.js';
 const APP = Express();
 const PORT = 8083;
 
-JSON_strategy(Passport, UserManager.getUsers());
+MongoController.connect().then(async () => {
+	await UserManager.loadUsers();
+    JSON_strategy(Passport, UserManager.getUsers());
+});
+
+
 
 // current express not support https.
 Https.createServer(SSLManager, APP).listen(PORT, () => {
@@ -95,6 +101,7 @@ APP.get('/logout', isLogin, (req, res) => {
 // always check user first
 
 const isUser = (req) => {
+
     return UserManager.isUserExist(req.user.name) ?
         req.user.name :
         false;
@@ -126,7 +133,7 @@ APP.get('/api/uses/class', isLogin, (req, res) => {
 APP.get('/api/uses/source', isLogin, (req, res) => {
 
 	const _u = isUser(req);
-
+    console.log(UserManager.getJavaFiles(_u));
     if(_u)
         res.status(200).json(UserManager.getJavaFiles(_u));
     else
@@ -142,15 +149,15 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
         return;
     }
 
-    SimController.simulate({
+    await SimController.simulate({
         env: req.body.env,
         generator: req.body.generator,
         scheduler: req.body.scheduler,
         simulator: req.body.simulator,
         platform: req.body.platform,
         argums: req.body.argums
-    }).then(res => {
-        res.status(200).json(res);
+    }).then(_res => {
+        res.status(200).json(_res);
     }).catch(err => {
         res.status(500).json(err);
     });

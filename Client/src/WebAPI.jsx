@@ -11,11 +11,12 @@ class WebAPI{
 
 	simulate(meta, success, fail, always){
 		jq.post('/api/uses/simulate', {
+			env: meta.env,
 			generator: meta.generator,
 			scheduler: meta.scheduler,
 			simulator: meta.simulator,
 			platform: meta.platform,
-			settings: meta.settings
+			argums: meta.argums
 		}, success).fail(fail).always(always);
 	}
 

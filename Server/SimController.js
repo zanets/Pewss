@@ -9,7 +9,7 @@ module.exports = class SimController {
 		const envLibrary = this.getEnvLibrary(data.env);
 		const envArgument = this.getEnvArgument(data.argums);
 		const JavaArguments = `-cp ${envLibrary} com.use.CLILauncher --generator ${data.generator} --scheduler ${data.scheduler} --simulator ${data.simulator} --platform ${data.platform}`;
-		console.log(`Simulate with [ library ] ${envLibrary} \n\t [ arguments ] ${envArgument}`);
+		console.log(`Simulate with ${JavaArguments}`);
 		const javaProc = spawn('java', JavaArguments.split(' '));
 		javaProc.stdin.write(envArgument);
 		javaProc.stdin.end();
@@ -29,10 +29,12 @@ module.exports = class SimController {
 			});
 
 			javaProc.on('close', (code) => {
+				console.log('close');
 				res(_res);
 			});
 
 			javaProc.on('error', (code) => {
+				console.log('error');
 				rej(_res);
 			});
 

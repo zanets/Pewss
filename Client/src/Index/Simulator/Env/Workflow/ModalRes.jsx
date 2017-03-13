@@ -1,8 +1,8 @@
 import React, {PropTypes} from 'react';
 import uuid from 'node-uuid';
-import Status from './Status.jsx';
-import RDag from '../Debugger/RDag.jsx';
-import RTimeline from '../Debugger/RTimeline.jsx';
+import Status from '../../Status.jsx';
+import RDag from './RDag.jsx';
+import RTimeline from './RTimeline.jsx';
 import {
 	Nav,
 	NavItem,

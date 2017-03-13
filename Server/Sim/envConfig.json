@@ -5,17 +5,20 @@
 			{
 				"category": "simulator",
 				"name": "StaticWorkflowSimulator",
-				"jpath": "com.use.simulator.StaticWorkflowSimulator"
+				"jpath": "com.use.simulator.StaticWorkflowSimulator",
+				"owner": "admin"
 			},
 			{
 				"category": "generator",
 				"name": "ForkJoinDAGGenerator",
-				"jpath": "com.use.generator.ForkJoinDAGGenerator"
+				"jpath": "com.use.generator.ForkJoinDAGGenerator",
+				"owner": "admin"
 			},
 			{
 				"category": "platform",
 				"name": "WorkflowPlatformHeterogeneous",
-				"jpath": "com.use.resource.platform.WorkflowPlatformHeterogeneous"
+				"jpath": "com.use.resource.platform.WorkflowPlatformHeterogeneous",
+				"owner": "admin"
 			}
 		]
 	}

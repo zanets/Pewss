@@ -2,7 +2,9 @@ import assert from 'assert';
 import MongoController from './MongoController.js';
 import User from './User.js';
 import { BaseDir, eErrHandler, FT, FC } from './Utils.js';
+import envConfig from './Sim/envConfig.json';
 
+// TODO: divide file manager
 class UserManager {
 
 	constructor(){
@@ -13,7 +15,20 @@ class UserManager {
 	/* use it in internal */
 	getUser(userName){
 		const u = this.Users.find(_u => _u.Name === userName);
-		return u ? u : null;
+		return u
+			? u
+			: null;
+	}
+
+	getUsers(){
+		let res = [];
+		for(const user of this.Users){
+			res.push({
+				name: user.Name,
+				passwd: user.Password
+			});
+		}
+		return res;
 	}
 
 	getUsersCount(){
@@ -43,6 +58,7 @@ class UserManager {
 			await this.updateDB(tarUser);
 			this.Users.push(tarUser);
 		}
+		console.log(this.Users);
 	}
 
 	// remove user from DB
@@ -113,6 +129,9 @@ class UserManager {
 			if(_u.Name === userName) return;
 			resFiles = resFiles.concat(_u.getPublicFiles(FT.class));
 		});
+		// builtin files
+		resFiles = resFiles.concat(envConfig.workflow.builtin);
+
 		return resFiles;
 	}
 

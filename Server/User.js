@@ -44,15 +44,19 @@ class User {
 	}
 
 	getFiles(type){
+
 		const typeFiles = this.Files.filter(_f => _f.type === type);
 		const resFiles = [];
 		typeFiles.forEach(_f => {
 			resFiles.push({
 				type: _f.type,
 				category: _f.category,
-				name: _f.name
+				name: _f.name,
+				jpath: _f.jpath,
+				owner: this.Name
 			});
 		});
+
 		return resFiles;
 	}
 
@@ -86,7 +90,7 @@ class User {
 
 	async getFileContent(category, fileName){
 		const tarFile =	this.Files.find(_f => {
-			return (_f.name === fileName && _f.category === category);
+			return (_f.name === fileName && _f.category === category && _f.type === FT.java);
 		});
 		// open file and return source code
 		return await HomeScanner.readFile(tarFile.path).catch(pErrHandler);

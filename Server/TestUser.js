@@ -24,8 +24,8 @@ MongoController.connect().then(async () => {
 	const javaFiles = UserManager.getJavaFiles(testUsers[0]);
 
 	const code = await UserManager.getJavaContent(testUsers[0], javaFiles[0].category, javaFiles[0].name);
-	console.log(code+"");
+	console.log(code + "");
 	for(const user of testUsers){
-		await UserManager.removeUser(user);
+		//await UserManager.removeUser(user);
 	}
 });

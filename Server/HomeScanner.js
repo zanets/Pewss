@@ -25,6 +25,7 @@ module.exports = class HomeScanner{
 				throw err;
 			});
 		}
+		resFiles = this.ignoreFiles(resFiles);
 		return resFiles;
 	}
 
@@ -49,5 +50,14 @@ module.exports = class HomeScanner{
 
 	static async readFile(path){
 		return await FileScanner.readFile(path);
+	}
+
+	static ignoreFiles(files){
+		['.DS_Store'].forEach(ignore => {
+			files = files.filter(file =>
+				ignore !== file.name
+			);
+		});
+		return files;
 	}
 };

@@ -11,18 +11,12 @@ const FC = {
 	platform: 'platform',
 	simulator: 'simulator'
 };
-const BaseDir = __dirname;
-const HomeDir = `${BaseDir}/Home`;
-const SimDir = `${BaseDir}/Sim`;
-
-const ignoreFiles = () => {
-	['.DS_Store'].forEach(ignore => {
-		files = files.filter(file => {
-			ignore === file.name;
-		});
-	});
-	return files;
-};
+import process from "process";
+const BaseDir = process.cwd();
+const ServerDir = `${BaseDir}/Server`;
+const ClientDir = `${BaseDir}/Client`;
+const HomeDir = `${ServerDir}/Home`;
+const SimDir = `${ServerDir}/Sim`;
 
 const pErrHandler = (err) => {
 	console.error(err);
@@ -43,7 +37,6 @@ module.exports = {
 	BaseDir,
 	HomeDir,
 	SimDir,
-	ignoreFiles,
 	pErrHandler,
 	eErrHandler,
 	thErrHandler

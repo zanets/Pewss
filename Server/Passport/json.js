@@ -16,9 +16,11 @@ const JSON_Strategy = (passport, users) => {
         passwordField: 'passwd',
         session: true,
     }, (name, passwd, done) => {
-        const user = users.find((u) => {
+
+        const user = users.find(u =>
             u.name === name && u.passwd === passwd
-        });
+        );
+
         done(null, (user === undefined) ? false : user);
     }));
 };

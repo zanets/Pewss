@@ -1,16 +1,16 @@
 import React from 'react';
-import { Task as WorkflowTask } from './Task/Workflow/Task.jsx'
+import { default as WorkflowTask } from './Env/Workflow/Task.jsx'
 import ReactDOM from 'react-dom';
 import uuid from 'node-uuid';
-import { 
-	Input, 
-	Button, 
-	FormGroup, 
-	Label, 
-	Table, 
-	Modal, 
-	ModalHeader, 
-	ModalBody, 
+import {
+	Input,
+	Button,
+	FormGroup,
+	Label,
+	Table,
+	Modal,
+	ModalHeader,
+	ModalBody,
 	ModalFooter,
 	Jumbotron,
 	Col
@@ -31,13 +31,14 @@ export default class Simulator extends React.Component {
 	}
 
 	fixClassName(raw){
-		let fixed = raw;
-		for(const cate in fixed){
-			fixed[cate].map(v => {
-				while(v.name.indexOf('/') >= 0)
-					v.name = v.name.replace('/', '.');
-				return v;
-			});
+		let fixed = {
+			generator: [],
+			scheduler: [],
+			platform: [],
+			simulator: []
+		};
+		for(const files of raw){
+			fixed[files.category].push(files);
 		}
 		return fixed;
 	}
@@ -51,15 +52,15 @@ export default class Simulator extends React.Component {
 
 	newTask(){
 		let tasks = this.state.tasks;
-		
-		tasks.push({	
+
+		tasks.push({
 			id: uuid.v4(),
 			generator: JSON.parse(ReactDOM.findDOMNode(this.refs.igenerator).value),
 			scheduler: JSON.parse(ReactDOM.findDOMNode(this.refs.ischeduler).value),
 			simulator: JSON.parse(ReactDOM.findDOMNode(this.refs.isimulator).value),
 			platform: JSON.parse(ReactDOM.findDOMNode(this.refs.iplatform).value)
 		});
-		
+
 		this.setState({tasks: tasks});
 		this.toggleNewTaskModal(false);
 	}
@@ -70,20 +71,20 @@ export default class Simulator extends React.Component {
 	}
 
 	delTask(id){
-		const newTasks = this.state.tasks.filter( task => 
+		const newTasks = this.state.tasks.filter( task =>
 			id !== task.id
 		);
 		this.setState({tasks: newTasks});
 	}
 
 	getTaskComponent(){
-		return this.state.tasks.map(ele => 
-			<Task key={ele.id} ref={ele.id} {...ele} del={this.delTask.bind(this)}/>
+		return this.state.tasks.map(ele =>
+			<WorkflowTask key={ele.id} ref={ele.id} {...ele} del={this.delTask.bind(this)}/>
 		);
 	}
 
 	getOptionComponent(arr){
-		return arr.map(ele => 
+		return arr.map(ele =>
 			<option key={uuid.v4()} value={JSON.stringify(ele)}>
 				{`${ele.name} @ ${ele.owner}`}
 			</option>
@@ -91,12 +92,13 @@ export default class Simulator extends React.Component {
 	}
 
 	render() {
-		const nullTaskHint = this.state.tasks.length === 0 ? 
-							<Jumbotron>
-								<h2>There is no simulation task.</h2>
-								<h5>Press <span className="fa fa-plus fa-1x"/> to create.</h5>
-							</Jumbotron> : 
-							'';
+		const nullTaskHint =
+			this.state.tasks.length === 0
+				?	<Jumbotron>
+						<h2>There is no simulation task.</h2>
+						<h5>Press <span className="fa fa-plus fa-1x"/> to create.</h5>
+					</Jumbotron>
+				:'';
 		return (
 			<div className='card card-default'>
 				<div className="card-block">
@@ -151,9 +153,9 @@ export default class Simulator extends React.Component {
 						  		<span className="fa fa-check"/>
 						  	</Button>
 						</ModalFooter>
-					</Modal>				
+					</Modal>
 					{/*---------------- task list -------------*/}
-					
+
 					<Table hover responsive style={{marginTop: '30px'}}>
 		  			<thead>
 		  				<tr>
@@ -176,4 +178,3 @@ export default class Simulator extends React.Component {
 		);
 	}
 }
-
