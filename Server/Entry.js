@@ -91,6 +91,10 @@ APP.get('/login', (req, res) => {
     res.status(200).sendFile(`${BaseDir}/Client/Login.html`);
 });
 
+APP.get('/api/uses/username', (req, res) => {
+    res.status(200).send({name: req.user.name});
+});
+
 // ======================
 // authentication api
 //
@@ -103,7 +107,9 @@ APP.post('/login', Passport.authenticate('json'), (req, res) => {
 
 APP.get('/logout', isLogin, (req, res) => {
     req.logout();
-    res.redirect('/login');
+		res.status(200).send({
+        redirect: '/login'
+    });
 });
 
 // ======================

@@ -3,7 +3,7 @@ import MongoController from './MongoController.js';
 import HomeManager from './HomeManager.js';
 import {FT, FC} from './Utils.js';
 
-const testUsers = ['darg', 'oeg'];
+const testUsers = ['darg', 'otk'];
 
 UserManager.init().then(async () => {
     await UserManager.loadUsers();

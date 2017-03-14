@@ -10,7 +10,12 @@ import {
 	NavbarBrand,
 	NavLink,
 	NavItem,
-	Collapse
+	Collapse,
+	Button,
+	Dropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem
 } from 'reactstrap';
 
 require("bootstrap/dist/css/bootstrap.css");
@@ -25,7 +30,8 @@ const INIT_STATE = {
 	ready: false,
 	classList: null,
 	sourceList: null,
-	page: null
+	page: null,
+	isMemberOpen: false
 };
 
 class Index extends React.Component {
@@ -36,6 +42,9 @@ class Index extends React.Component {
 	}
 
 	componentDidMount(){
+		API.getUserName((data) => {
+			this.username = data.name;
+		});
 		this.toSimulator();
 	}
 
@@ -71,6 +80,14 @@ class Index extends React.Component {
 		});
 	}
 
+	logout(){
+		API.logout();
+	}
+
+	toggleMember(){
+		this.setState({isMemberOpen: !this.state.isMemberOpen});
+	}
+
 	render () {
 		const page = (this.state.page === PAGES.EDI) ?
 			<Editors source_list={this.state.sourceList}/> :
@@ -80,19 +97,40 @@ class Index extends React.Component {
 			<div className={'fixedDiv'}>
 				<Navbar color="primary" inverse toggleable>
 					<NavbarBrand>
-						{'Workflow Simulation Platform'}
+						{'Parallel Extendable Workflow Scheduling Simulator'}
 					</NavbarBrand>
 					<Nav className="ml-auto" navbar>
 						<NavItem>
-							<NavLink href='#' onClick={this.toSimulator.bind(this)}>
+							<NavLink href='#' onClick={this.toSimulator.bind(this)} style={{paddingTop:'1.3rem'}}>
 						 		{'Simulator'}
 							</NavLink>
 						</NavItem>
 						<NavItem>
-							<NavLink href='#' onClick={this.toEditor.bind(this)}>
+							<NavLink href='#' onClick={this.toEditor.bind(this)} style={{paddingTop:'1.3rem'}}>
 								{'Editor'}
 							</NavLink>
 						</NavItem>
+						<NavItem>
+							<NavLink href='#'>
+								<Dropdown isOpen={this.state.isMemberOpen} toggle={this.toggleMember.bind(this)}>
+        					<DropdownToggle>
+          					<i className="fa fa-user-circle-o fa-2x" ></i>
+        					</DropdownToggle>
+        					<DropdownMenu right>
+										<DropdownItem disabled>
+											{this.username}
+										</DropdownItem>
+          					<DropdownItem>
+											{'Profile '}
+										</DropdownItem>
+          					<DropdownItem onClick={this.logout.bind(this)}>
+											{'Logout '}
+										</DropdownItem>
+        					</DropdownMenu>
+      					</Dropdown>
+							</NavLink>
+						</NavItem>
+
 					</Nav>
 				</Navbar>
 				<Loader loaded={this.state.ready} zIndex={100}>

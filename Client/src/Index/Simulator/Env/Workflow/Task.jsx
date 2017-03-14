@@ -81,7 +81,6 @@ export default class Task extends React.Component{
 	}
 
 	filter(raw, status){
-		console.log(raw);
 		const f_start = '<uses-dbg-start>',
 			f_end = '<uses-dbg-end>';
 		let p_start = 0,

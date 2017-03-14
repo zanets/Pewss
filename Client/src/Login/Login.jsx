@@ -54,12 +54,12 @@ class Login extends React.Component {
 							</FormGroup>
 						</Form>
 						<hr/>
-						<a className="btn btn-secondary fa fa-arrow-right" onClick={this.login.bind(this)}/>
+						<a className="btn btn-secondary fa fa-sign-in" onClick={this.login.bind(this)}/>
 					</CardBlock>
 				</Card>
 			</div>
 		);
 	}
 }
- 
+
 ReactDOM.render(<Login/>, mounted);
