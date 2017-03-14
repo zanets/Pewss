@@ -60,18 +60,31 @@ class WebAPI{
 			owner: meta.owner
 		}, success).fail(fail).always(always);
 	}
-	/*
-	setPublic(meta, success, fail, always){
+
+	addPublish(meta, success, fail, always){
 		jq.ajax({
 			url: `/api/users/public/${meta.name}`,
 			data: {
 				name: meta.name,
-				category: meta.category
+				category: meta.category,
+				type: meta.type
 			},
 			type: 'patch'
 		}).done(success).fail(fail).always(always);
 	}
-	*/
+
+	deletePublish(meta, success, fail, always){
+		jq.ajax({
+			url: `/api/users/public/${meta.name}`,
+			data: {
+				name: meta.name,
+				category: meta.category,
+				type: meta.type
+			},
+			type: 'delete'
+		}).done(success).fail(fail).always(always);
+	}
+
 }
 
 export default new WebAPI();

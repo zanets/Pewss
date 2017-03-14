@@ -64,9 +64,9 @@ APP.use('/', Express.static(`${BaseDir}/Client/build`));
 
 const isLogin = (req, res, next) => {
     if(req.isAuthenticated())
-         return next();
+    	return next();
     else
-        res.redirect('/login');
+    	res.redirect('/login');
 };
 
 const getJPath = (env, meta) => {
@@ -293,14 +293,14 @@ APP.param('public_target', (req, res, next, id) => {
 });
 
 
-APP.patch("/api/users/public/:public_target", (req, res) => {
+APP.patch("/api/users/public/:public_target", async (req, res) => {
 
     const usrName = isUser(req);
 
     if(usrName){
-        UserManager.modUser(testUsers[0],
-            {$addPublicFile:
-                {type: FT.class, category: 'a', name:'a-name'}
+        await UserManager.modUser(usrName,
+            {$addPublish:
+                {type: req.body.type, category: req.body.category, name:req.body.name}
             }
         );
         res.sendStatus(200);
@@ -310,14 +310,14 @@ APP.patch("/api/users/public/:public_target", (req, res) => {
 
 });
 
-APP.delete("/api/users/public/:public_target", (req, res) => {
+APP.delete("/api/users/public/:public_target", async (req, res) => {
 
     const usrName = isUser(req);
 
     if(usrName){
-        UserManager.modUser(testUsers[0],
-            {$removePublicFile:
-                {type: FT.class, category: 'a', name:'a-name'}
+        await UserManager.modUser(usrName,
+            {$removePublish:
+                {type: req.body.type, category: req.body.category, name:req.body.name}
             }
         );
         res.sendStatus(200);

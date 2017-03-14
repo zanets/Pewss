@@ -81,14 +81,14 @@ export default class Editor extends React.Component{
 	toggleModalInfo(isOpen, msg, color, showDetail, detailmsg){
 		const n = update(this.state.ModalInfo, {
 			isOpen: {$set: isOpen},
-			msg: {$set: msg}, 
+			msg: {$set: msg},
 			color: {$set: color},
 			showDetail: {$set: showDetail},
 			detailmsg: {$set: detailmsg}
 		});
 		this.setState({ModalInfo: n});
 	}
-	
+
 	toggleModalNewFile(isOpen) {
 		isOpen = isOpen || !this.state.ModalNewFile.isOpen;
 		const n = update(this.state.ModalNewFile, {isOpen: {$set: isOpen}});
@@ -109,7 +109,7 @@ export default class Editor extends React.Component{
 							/>
 						</Col>
 						<Col xs="7">
-							<BarTool 
+							<BarTool
 								sourceList={this.state.sourceList}
 								fileNew={this.fileNew.bind(this)}
 								fileEdit={{
@@ -130,9 +130,9 @@ export default class Editor extends React.Component{
 					</Row>
 					<ModalInfo {...this.state.ModalInfo} toggle={this.toggleModalInfo.bind(this)}/>
 					<ModalNewFile {...this.state.ModalNewFile} toggle={this.toggleModalNewFile.bind(this)}/>
-					<MonacoEditor 
-						ref='monaco' 
-						language='java' 
+					<MonacoEditor
+						ref='monaco'
+						language='java'
 						value={this.state.fileEdit.code}
 						onChange={this.sourceOnChange.bind(this)}
 						options={{
@@ -144,7 +144,7 @@ export default class Editor extends React.Component{
 						}}
 					/>
 				</Loader>
-			</div>	
+			</div>
 		);
 	}
 }

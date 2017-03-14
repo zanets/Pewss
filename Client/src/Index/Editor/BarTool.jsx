@@ -104,7 +104,6 @@ export default class BarTool extends React.Component{
 			owner: this.state.fileSelect.owner,
 			name: this.state.fileSelect.name
 		}, (res)=>{
-			console.log(res);
 			this.props.setFileEdit({
 				name: {$set: this.state.fileSelect.name},
 				category: {$set: this.state.fileSelect.category},
@@ -155,21 +154,52 @@ export default class BarTool extends React.Component{
 			owner: this.props.fileEdit.owner,
 			name: this.props.fileEdit.name,
 			category:this.props.fileEdit.category
-		},(res)=>{
-			console.log(res);
+		}, (res) => {
+
 			if(res.status === 'stderr')
 				this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.msg);
-			else if(res.status === 'stdout')
-				this.props.toggleModalInfo(true, 'Compile success.', 'info', false, res.msg);
-		},(res)=>{
+			else
+				this.props.toggleModalInfo(true, 'Compile success.', 'success', false, '');
+		}, (res) => {
 			this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.msg);
-		},(res)=>{
+		}, (res) => {
 			this.props.toggleMainLoader(false);
 		});
 	}
 
 	clkPub(){
-
+		this.props.toggleMainLoader(true);
+		if(this.props.fileEdit.isPub){
+			API.deletePublish({
+				name: this.props.fileEdit.name,
+				category:this.props.fileEdit.category,
+				type: 'class'
+			}, (res) => {
+				this.props.toggleModalInfo(true, 'Set private success', 'success', false, '');
+				this.props.setFileEdit({
+					isPub: {$set: false},
+				});
+			}, (res) => {
+				this.props.toggleModalInfo(true, 'Set private fail', 'danger', true, res);
+			}, (res) => {
+				this.props.toggleMainLoader(false);
+			});
+		} else {
+			API.addPublish({
+				name: this.props.fileEdit.name,
+				category:this.props.fileEdit.category,
+				type: 'class'
+			}, (res) => {
+				this.props.toggleModalInfo(true, 'Set publish success', 'success', false, '');
+				this.props.setFileEdit({
+					isPub: {$set: true},
+				});
+			}, (res) => {
+				this.props.toggleModalInfo(true, 'Set publish fail', 'danger', true, res);
+			}, (res) => {
+				this.props.toggleMainLoader(false);
+			});
+		}
 	}
 
 	clkNew(){
@@ -183,7 +213,7 @@ export default class BarTool extends React.Component{
 	}
 
 	clkSaveAs(){
-		this.props.toggleModalNewFile(true);
+
 	}
 
 	render(){

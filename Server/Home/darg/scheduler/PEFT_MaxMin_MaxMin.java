@@ -70,7 +70,7 @@ public class PEFT_MaxMin_MaxMin extends com.use.scheduler.AWorkflowScheduler {
 				for(IResNode srcAttr : srcAttrList){
 					float eft = (float) this.getEFT(task, srcAttr);
 					float oct = (float) this.secondOCTTable.getElement(task.getId(), srcAttr.getId()).get();
-					// System.out.println("task : "+ task.getId() +" eft : " + eft + " oct : "+oct + " total : " + (oct+eft));
+					System.out.println("task : "+ task.getId() +" eft : " + eft + " oct : "+oct + " total : " + (oct+eft));
 					oEftList.put(srcAttr, eft + oct);
 				}
 
