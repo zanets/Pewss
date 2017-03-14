@@ -1,100 +1,50 @@
-import HomeScanner from './HomeScanner.js';
 import {FT, FC, pErrHandler} from './Utils.js';
-class User {
+module.exports = class User {
 
-	constructor(Property){
-		this.Name = Property.Name;
-		this.Password = Property.Password;
+	constructor(property){
+		this.name = property.name;
+		this.passwd = property.passwd;
 		/* Public { type, category, name } */
-		this.Public = Property.Public || [];
-		/* File { type, category, name, path, jpath} */
-		this.Files = Property.Files || [];
+		this.publics = property.publics || [];
 	}
 
-	/* add source file */
-	addFile(category, name){
-
-	}
-
-	/* remove both class and source file */
-	removeFile(category, name){
-		// remove file
-
+	addPublic(fileType, fileCategory, fileName){
 		// update this
+		this.publics.push({
+			type: fileType,
+			category: fileCategory,
+			name: fileName,
+			owner: this.name
+		});
 	}
 
-	addPublicFile(type, category, name){
+	removePublic(fileType, fileCategory, fileName){
 		// update this
-		this.Public.push({type, name, category, owner: this.Name});
-	}
-
-	removePublicFile(type, category, name){
-		// update this
-		this.Public = this.Public.filter(_f =>
-			_f.type !== type ||
-			_f.category !== category ||
-			_f.name !== name
+		this.publics = this.publics.filter(f =>
+			f.type     !== fileType     ||
+			f.category !== fileCategory ||
+			f.name     !== fileName
 		);
 	}
 
-	getPublicFiles(type){
-		return type === undefined ?
-				this.Public :
-				this.Public.filter(_f =>_f.type === type);
+	getPublicsByType(fileType){
+		return fileType === undefined
+			? this.publics
+			: this.publics.filter(f =>
+				f.type === fileType
+			);
 	}
 
-	getFiles(type){
-
-		const typeFiles = this.Files.filter(_f => _f.type === type);
-		const resFiles = [];
-		typeFiles.forEach(_f => {
-			resFiles.push({
-				type: _f.type,
-				category: _f.category,
-				name: _f.name,
-				jpath: _f.jpath,
-				owner: this.Name
-			});
-		});
-
-		return resFiles;
-	}
-
-	updatePassword(Password){
+	updatePassword(passwd){
 		// update this
-		this.Password = Password;
-	}
-
-	async scanHome(){
-		await HomeScanner.scan(this.Name).then(Files => {
-			console.log(Files);
-			this.Files = Files;
-		}).catch(pErrHandler);
+		this.passwd = passwd;
 	}
 
 	getProperty(){
 		return {
-			Name: this.Name,
-			Password: this.Password,
-			Public: this.Public,
-			Files: this.Files
+			name: this.name,
+			passwd: this.passwd,
+			publics: this.publics
 		};
 	}
-
-	getFile(type, category, fileName){
-		const tarFile = this.Files.find(_f => {
-			return (_f.type === type && _f.category === category && _f.name === fileName);
-		});
-		return tarFile ? tarFile : null;
-	}
-
-	async getFileContent(category, fileName){
-		const tarFile =	this.Files.find(_f => {
-			return (_f.name === fileName && _f.category === category && _f.type === FT.java);
-		});
-		// open file and return source code
-		return await HomeScanner.readFile(tarFile.path).catch(pErrHandler);
-	}
-}
-
-module.exports = User;
+};

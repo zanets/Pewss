@@ -40,19 +40,26 @@ export default class BarTool extends React.Component{
 	}
 
 	getFileList(){
-		const files = this.props.sourceList;
+		const files = {
+			scheduler: [],
+			platform: [],
+			simulator: [],
+			generator: []
+		};
+
+		for(const file of this.props.sourceList)
+			files[file.category].push(file);
 
 		let cmps = [];
-		for(const file of files){
-			/*
+		for(const key in files){
+
 			cmps.push(
 				<DropdownItem key={uuid.v4()} header>
 					{key}
 				</DropdownItem>
 			);
-			*/
 
-			for(const file of sl[key]){
+			for(const file of files[key]){
 				cmps.push(
 					<DropdownItem key={uuid.v4()} onClick={this.setFileSelect.bind(this, file, true)}>
 						{`${file.name} @ ${file.owner}`}

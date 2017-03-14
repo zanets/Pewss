@@ -7,7 +7,7 @@ const JSON_Strategy = (passport, users) => {
     });
 
     passport.deserializeUser((name, done) => {
-        const user = users.find(u => (u.name === name));
+        const user = users[name];
         done(null, (user === undefined) ? false : user);
     });
 
@@ -16,14 +16,12 @@ const JSON_Strategy = (passport, users) => {
         passwordField: 'passwd',
         session: true,
     }, (name, passwd, done) => {
-
-        const user = users.find(u =>
-            u.name === name && u.passwd === passwd
-        );
-
-        done(null, (user === undefined) ? false : user);
+        let user = users[name];
+        if(user === undefined || user.passwd !== passwd)
+            done(null, false);
+        else
+            done(null, user);
     }));
 };
-
 
 module.exports = JSON_Strategy;

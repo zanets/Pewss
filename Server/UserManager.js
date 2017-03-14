@@ -4,35 +4,27 @@ import User from './User.js';
 import { BaseDir, eErrHandler, FT, FC } from './Utils.js';
 import envConfig from './Sim/envConfig.json';
 
-// TODO: divide file manager
 class UserManager {
 
 	constructor(){
-		this.Users = [];
+		this.Users = {};
 		this.CollectionName = 'User';
 	}
 
 	/* use it in internal */
 	getUser(userName){
-		const u = this.Users.find(_u => _u.Name === userName);
-		return u
-			? u
-			: null;
+		const u = this.Users[userName];
+		return u === undefined
+			? null
+			: u;
 	}
 
 	getUsers(){
-		let res = [];
-		for(const user of this.Users){
-			res.push({
-				name: user.Name,
-				passwd: user.Password
-			});
-		}
-		return res;
+		return this.Users;
 	}
 
 	getUsersCount(){
-		return this.Users.length;
+		return Object.keys(this.Users).length;
 	}
 
 	isUserExist(userName){
@@ -46,49 +38,42 @@ class UserManager {
 
 		// load user data from db
 		const UserProperties = await MongoController.getDocument(this.CollectionName);
-
-		this.Users=[];
+		this.Users={};
 
 		// create user instance
-		for(const UserProperty of UserProperties){
-			// scan and update user file list
-			const tarUser = new User(UserProperty);
-			await tarUser.scanHome();
-			// update user data to db
-			await this.updateDB(tarUser);
-			this.Users.push(tarUser);
+		for(const property of UserProperties){
+			const tarUser = new User(property);
+			this.Users[property.name] = tarUser;
 		}
-		console.log(this.Users);
 	}
 
 	// remove user from DB
 	async removeUser(userName){
 		assert.ok(MongoController.isConnect(), 'DB NOT connected');
 
-		await MongoController.removeDocument(this.CollectionName, {Name: userName})
-			.then(() => {
-				this.Users = this.Users.filter(_User => _User.Name !== userName);
-			})
+		await MongoController.removeDocument(this.CollectionName, {name: userName})
+			.then(() =>
+				delete this.Users[userName]
+			)
 			.catch(eErrHandler);
 	}
 
 	// create new user to DB
-	async createUser(Name, Password){
-		const newUser = new User({Name, Password});
+	async createUser(name, passwd){
+		const newUser = new User({name, passwd});
 		await MongoController.insertDocument(this.CollectionName, newUser.getProperty())
 			.catch(eErrHandler);
-		this.Users.push(newUser);
-		return Name;
+		this.Users[name] = newUser;
+		return name;
 	}
 
 	// update user data in DB
-	async updateDB(userName){
-		const tarUser = this.getUser(userName);
-		if(tarUser === null)
-			return -1;
+	async updateDB(tarUser){
+		assert.ok(tarUser !== null, `User ${tarUser.name} NOT exist`);
+
 		await MongoController.updateDocument(
 			this.CollectionName,
-			{Name: tarUser.Name},
+			{name: tarUser.name},
 			tarUser.getProperty()
 		).catch(eErrHandler);
 		return 0;
@@ -96,57 +81,22 @@ class UserManager {
 
 	// operate: {op: v}
 	// op: $removeFile | $addPublicFile | $removePublicFile | $updatePassword
-	async modUser(userName, operate){
-		const tarUser = this.getUser(userName);
-		if(!tarUser)
-			return -1;
-
+	async modUser(usrName, operate){
+		const tarUser = this.getUser(usrName);
+		assert.ok(tarUser !== null, `User ${usrName} NOT exist`);
 		const op = Object.keys(operate)[0];
 		const v = operate[op];
 
-		if(op === '$removeFile')
-			tarUser.removeFile(v.category, v.name);
-		else if(op === '$addPublicFile')
-			tarUser.addPublicFile(v.type, v.category, v.name);
+
+		if(op === '$addPublicFile')
+			tarUser.addPublic(v.type, v.category, v.name);
 		else if(op === '$removePublicFile')
-			tarUser.removePublicFile(v.type, v.category, v.name);
+			tarUser.removePublic(v.type, v.category, v.name);
 		else if(op === '$updatePassword')
 			tarUser.updatePassword(v);
 
 		await this.updateDB(tarUser).catch(eErrHandler);
 		return 0;
-	}
-
-	getClassFiles(userName){
-		const tarUser = this.getUser(userName);
-		if(!tarUser)
-			return -1;
-		let resFiles = [];
-		// private files
-		resFiles = resFiles.concat(tarUser.getFiles(FT.class));
-		// publish files
-		this.Users.forEach(_u => {
-			if(_u.Name === userName) return;
-			resFiles = resFiles.concat(_u.getPublicFiles(FT.class));
-		});
-		// builtin files
-		resFiles = resFiles.concat(envConfig.workflow.builtin);
-
-		return resFiles;
-	}
-
-	getJavaFiles(userName){
-		const tarUser = this.getUser(userName);
-		if(tarUser === null)
-			return -1;
-		return tarUser.getFiles(FT.java);
-	}
-
-	async getJavaContent(userName, category, fileName){
-		const tarUser = this.getUser(userName);
-		if(tarUser === null)
-			return -1;
-		return await tarUser.getFileContent(category, fileName);
 	}
 }
 

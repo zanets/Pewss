@@ -1,7 +1,6 @@
 import FileScanner from './FileScanner.js';
 import {FT, FC, HomeDir} from './Utils.js';
 
-
 module.exports = class HomeScanner{
 
 	static async scan(userName){
@@ -9,14 +8,14 @@ module.exports = class HomeScanner{
 
 		for(const category in FC){
 			const path = `${HomeDir}/${userName}/${category}`;
-			await FileScanner.scanDirRecursive(path).then(_fs => {
-				_fs.forEach(_f => {
-					const name = this.trimExtension(_f.name);
+			await FileScanner.scanDirRecursive(path).then(fs => {
+				fs.forEach(f => {
+					const name = this.trimExtension(f.name);
 					resFiles.push({
 						name: name,
-						path : _f.path,
+						path : f.path,
 						jpath: `${userName}.${category}.${name}`,
-						type: this.getFileType(_f.name),
+						type: this.getFileType(f.name),
 						category: FC[category],
 						owner: userName
 					});
@@ -40,10 +39,10 @@ module.exports = class HomeScanner{
 
 	static trimExtension(filename){
 		['.java', '.class'].forEach((extension) => {
-		const pos = filename.indexOf(extension);
-		filename = (pos === -1) ?
-			filename :
-			filename.slice(0, pos);
+			const pos = filename.indexOf(extension);
+			filename = (pos === -1)
+				? filename
+				: filename.slice(0, pos);
 		});
 		return filename;
 	}
