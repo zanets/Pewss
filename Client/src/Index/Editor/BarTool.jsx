@@ -213,7 +213,7 @@ export default class BarTool extends React.Component{
 	}
 
 	clkSaveAs(){
-		
+		this.props.toggleModalNewFile(true);
 	}
 
 	render(){

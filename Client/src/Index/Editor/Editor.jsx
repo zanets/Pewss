@@ -129,7 +129,15 @@ export default class Editor extends React.Component{
 						</Col>
 					</Row>
 					<ModalInfo {...this.state.ModalInfo} toggle={this.toggleModalInfo.bind(this)}/>
-					<ModalNewFile {...this.state.ModalNewFile} toggle={this.toggleModalNewFile.bind(this)}/>
+					<ModalNewFile {...this.state.ModalNewFile}
+						fileEdit={{
+							code: this.state.fileEdit.code
+						}}
+						toggle={this.toggleModalNewFile.bind(this)}
+						setFileEdit={this.setFileEdit.bind(this)}
+						toggleMainLoader={this.toggleMainLoader.bind(this)}
+						toggleModalInfo={this.toggleModalInfo.bind(this)}
+					/>
 					<MonacoEditor
 						ref='monaco'
 						language='java'

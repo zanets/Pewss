@@ -1,7 +1,7 @@
 import HomeController from './HomeController.js';
 
 import assert from 'assert';
-import { BaseDir, pErrHandler, eErrHandler, FT, FC } from './Utils.js';
+import { BaseDir, pErrHandler, eErrHandler, FT, FC, HomeDir } from './Utils.js';
 class HomeManager{
 
     constructor(){
@@ -36,6 +36,11 @@ class HomeManager{
 
     async setFileContent(meta){
         const path = this.getPath(meta);
+        return await HomeController.writeFile(path, meta.content).catch(pErrHandler);
+    }
+
+    async newFile(meta){
+        const path = `${HomeDir}/${meta.owner}/${meta.category}/${meta.name}.java`;
         return await HomeController.writeFile(path, meta.content).catch(pErrHandler);
     }
 
@@ -79,6 +84,8 @@ class HomeManager{
 
         return res;
 	}
+
+
 
     // meta: {type, owner, category, name}
     getJPath(meta){

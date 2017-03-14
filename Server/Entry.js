@@ -259,7 +259,7 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
         owner: req.body.owner,
 		type: FT.java
 	}).then(_res => {
-		res.status(200).send('Compile complete')
+		res.status(200).send('Save complete')
 	}).catch(err => {
 		res.status(500).send(err.msg);
 	});
@@ -267,7 +267,7 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 
 // create new source file
 /* request data: {filename, category, content, owner} */
-APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
+APP.post("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 
     const usrName = isUser(req);
     if(!usrName){
@@ -275,19 +275,18 @@ APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
         return;
     }
 
-    SimController.newFile({
-        name: req.body.name,
-        category: req.body.category,
-        content: req.body.content,
-        owner: req.body.owner
-    }, (err, data) => {
-        if(err){
-            console.trace(err.message);
-            res.status(500).json({err});
-        } else {
-            res.sendStatus(200);
-        }
-    });
+	await HomeManager.newFile({
+		name: req.body.name,
+	    category: req.body.category,
+	    content: req.body.content,
+	    owner: req.body.owner,
+		type: FT.java
+	}).then(async (_res) => {
+		res.status(200).send('Save complete');
+		await HomeManager.scan(usrName);
+	}).catch(err => {
+		res.status(500).send(err.msg);
+	});
 });
 
 // ======================
