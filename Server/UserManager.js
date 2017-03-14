@@ -92,16 +92,26 @@ class UserManager {
 		const op = Object.keys(operate)[0];
 		const v = operate[op];
 
-
-		if(op === '$addPublicFile')
-			tarUser.addPublic(v.type, v.category, v.name);
-		else if(op === '$removePublicFile')
-			tarUser.removePublic(v.type, v.category, v.name);
+		if(op === '$addPublish')
+			tarUser.addPublish(v.type, v.category, v.name);
+		else if(op === '$removePublish')
+			tarUser.removePublish(v.type, v.category, v.name);
 		else if(op === '$updatePassword')
 			tarUser.updatePassword(v);
+		else
+			console.log(`modUser: Unknown command ${op}`);
 
 		await this.updateDB(tarUser).catch(eErrHandler);
 		return 0;
+	}
+
+	getClassPublishes(){
+		let publishes = [];
+		for(const name in this.Users){
+			const usrPublishes = this.Users[name].getPublishesByType(FT.class);
+			publishes = publishes.concat(usrPublishes);
+		}
+		return publishes;
 	}
 }
 

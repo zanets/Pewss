@@ -6,7 +6,7 @@ import {FT, FC} from './Utils.js';
 
 const testUsers = ['darg', 'oeg'];
 
-MongoController.connect().then(async () => {
+UserManager.init().then(async () => {
 
 	// ====== test UserManager ======
 	await UserManager.loadUsers();
@@ -20,20 +20,31 @@ MongoController.connect().then(async () => {
 	}
 
 	await UserManager.modUser(testUsers[0], {$updatePassword: 'sdf'});
-	await UserManager.modUser(testUsers[0], {$addPublicFile: {type: FT.class, category: 'a', name:'a-name'}});
-	await UserManager.modUser(testUsers[0], {$addPublicFile: {type: FT.class, category: 'c', name:'c-name'}});
-	await UserManager.modUser(testUsers[0], {$removePublicFile: {type: FT.class, category: 'c', name:'c-name'}});
-	await UserManager.modUser(testUsers[1], {$addPublicFile: {type: FT.class, category: 'scheduler', name:'aasd-name'}});
+	await UserManager.modUser(testUsers[0], {$addPublish: {type: FT.class, category: 'a', name:'a-name'}});
+	await UserManager.modUser(testUsers[0], {$addPublish: {type: FT.class, category: 'c', name:'c-name'}});
+	await UserManager.modUser(testUsers[0], {$removePublish: {type: FT.class, category: 'c', name:'c-name'}});
+	await UserManager.modUser(testUsers[1], {$addPublish: {type: FT.class, category: 'scheduler', name:'aasd-name'}});
+	await UserManager.modUser(testUsers[0], {$addPublish: {type: FT.class, category: 'scheduler', name:'PEFT_MaxMin_MaxMin'}});
 
-	for(const user of testUsers)
+
+	for(const user of testUsers){
+		console.log(`====== user ${user} ======`);
 		console.log(UserManager.getUser(user));
-
+	}
 
 	// ====== test HomeManager ======
+	console.log("====== test HomeManager ======");
 	await HomeManager.scan(testUsers[0]);
-	console.log(HomeManager.getClassFiles(testUsers[0]));
+	await HomeManager.scan(testUsers[1]);
+	console.log(`====== Java file from ${testUsers[0]} ======`);
 	console.log(HomeManager.getJavaFiles(testUsers[0]));
-	console.log(await HomeManager.getFileContent(testUsers[0], 'scheduler', 'PEFT_MaxMin_MaxMin') + "");
+	console.log(`====== Class file from ${testUsers[1]} ======`);
+	console.log(HomeManager.getClassFiles(testUsers[1]));
+	console.log("====== class publics ======");
+	console.log(UserManager.getClassPublishes());
+	console.log(`====== Class file from ${testUsers[1]} with publish ======`);
+	console.log(HomeManager.getClassFiles(testUsers[1], UserManager.getClassPublishes()));
+
 
 
 	// ====== clear database ======

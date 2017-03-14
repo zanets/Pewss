@@ -5,12 +5,12 @@ module.exports = class User {
 		this.name = property.name;
 		this.passwd = property.passwd;
 		/* Public { type, category, name } */
-		this.publics = property.publics || [];
+		this.publishes = property.publishes || [];
 	}
 
-	addPublic(fileType, fileCategory, fileName){
+	addPublish(fileType, fileCategory, fileName){
 		// update this
-		this.publics.push({
+		this.publishes.push({
 			type: fileType,
 			category: fileCategory,
 			name: fileName,
@@ -18,19 +18,19 @@ module.exports = class User {
 		});
 	}
 
-	removePublic(fileType, fileCategory, fileName){
+	removePublish(fileType, fileCategory, fileName){
 		// update this
-		this.publics = this.publics.filter(f =>
+		this.publishes = this.publishes.filter(f =>
 			f.type     !== fileType     ||
 			f.category !== fileCategory ||
 			f.name     !== fileName
 		);
 	}
 
-	getPublicsByType(fileType){
+	getPublishesByType(fileType){
 		return fileType === undefined
-			? this.publics
-			: this.publics.filter(f =>
+			? this.publishes
+			: this.publishes.filter(f =>
 				f.type === fileType
 			);
 	}
@@ -44,7 +44,7 @@ module.exports = class User {
 		return {
 			name: this.name,
 			passwd: this.passwd,
-			publics: this.publics
+			publishes: this.publishes
 		};
 	}
 };

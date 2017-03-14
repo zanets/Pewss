@@ -40,12 +40,34 @@ class HomeManager{
         // update this
     }
 
-    getClassFiles(userName){
-        return this.getFilesByType(userName, FT.class);
+    getClassFiles(usrName, publishes){
+        publishes = publishes || [];
+        let res = [];
+        // private
+        res = res.concat(this.getFilesByType(usrName, FT.class));
+
+        // publish
+        for(const publish of publishes){
+            if(publish.owner === usrName)
+                continue;
+
+            const otherFiles = this.getFilesByType(publish.owner, FT.class);
+            for(const file of otherFiles){
+                if(file.category === publish.category && file.name === publish.name)
+                    res.push(file);
+            }
+        }
+        return res;
 	}
 
-	getJavaFiles(userName){
-		return this.getFilesByType(userName, FT.java);
+    // Currently, publish source file is not allow
+	getJavaFiles(userName, publics){
+        publics = publics || [];
+        let res = [];
+        // private
+        res = res.concat(this.getFilesByType(userName, FT.java));
+
+        return res;
 	}
 
     getJPath(usrName, type, category, fileName){

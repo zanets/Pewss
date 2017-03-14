@@ -17,9 +17,10 @@ import JSON_strategy from './Passport/Json.js';
 // initialize modules and variables
 const APP = Express();
 const PORT = 8083;
-
+let Users = null;
 UserManager.init().then(async () => {
-	JSON_strategy(Passport, UserManager.getUsers());
+	Users = UserManager.getUsers();
+	JSON_strategy(Passport, Users);
 });
 
 // current express not support https.
@@ -119,7 +120,7 @@ APP.get('/api/uses/envs', isLogin, (req, res) => {
 APP.get('/api/uses/class', isLogin, (req, res) => {
 
 	const usrName = isUser(req);
-
+	const _files =
     if(usrName)
         res.status(200).json(UserManager.getClassFiles(usrName));
     else
