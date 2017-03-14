@@ -60,10 +60,12 @@ module.exports = class SimController {
 			});
 
 			javaProc.on('close', (code) => {
+				console.log(_res);
 				res(_res);
 			});
 
 			javaProc.on('error', (code) => {
+				console.log(_res);
 				rej(_res);
 			});
 		});
@@ -101,6 +103,25 @@ module.exports = class SimController {
 	}
 
 	static getBuiltin(env){
-		return envSettings[env].builtin;
+		let resFiles = [];
+		envSettings[env].builtin.forEach(f => {
+			resFiles.push({
+				name: f.name,
+				owner: f.owner,
+				type: f.type,
+				category: f.category
+			});
+		});
+		return resFiles;
+	}
+
+	static getBultinJPath(env, meta){
+		const target = envSettings[env].builtin.find(f =>
+			meta.name === f.name && meta.category === f.category && meta.type === f.type
+		);
+		if(target === undefined)
+			return null;
+		else
+			return target.jpath;
 	}
 };

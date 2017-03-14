@@ -1,4 +1,5 @@
-import HomeScanner from './HomeScanner.js';
+import HomeController from './HomeController.js';
+
 import assert from 'assert';
 import { BaseDir, pErrHandler, eErrHandler, FT, FC } from './Utils.js';
 class HomeManager{
@@ -8,7 +9,7 @@ class HomeManager{
 	}
 
     async scan(usrName){
-        await HomeScanner.scan(usrName).then(Files => {
+        await HomeController.scan(usrName).then(Files => {
             this.UsersFiles[usrName] = Files;
         }).catch(pErrHandler);
     }
@@ -28,9 +29,14 @@ class HomeManager{
         return usrFiles.filter(f => f.type === type);
     }
 
-    async getFileContent(usrName, category, fileName){
-        const path = this.getPath(usrName, FT.java, category, fileName);
-        return await HomeScanner.readFile(path).catch(pErrHandler);
+    async getFileContent(meta){
+        const path = this.getPath(meta);
+        return await HomeController.readFile(path).catch(pErrHandler);
+    }
+
+    async setFileContent(meta){
+        const path = this.getPath(meta);
+        return await HomeController.writeFile(path, meta.content).catch(pErrHandler);
     }
 
     /* remove both class and source file */
@@ -44,7 +50,9 @@ class HomeManager{
         publishes = publishes || [];
         let res = [];
         // private
-        res = res.concat(this.getFilesByType(usrName, FT.class));
+        this.getFilesByType(usrName, FT.class).forEach(f => {
+            res.push({name: f.name, category: f.category, owner: f.owner,type: f.type});
+        });
 
         // publish
         for(const publish of publishes){
@@ -52,39 +60,45 @@ class HomeManager{
                 continue;
 
             const otherFiles = this.getFilesByType(publish.owner, FT.class);
-            for(const file of otherFiles){
-                if(file.category === publish.category && file.name === publish.name)
-                    res.push(file);
+            for(const f of otherFiles){
+                if(f.category === publish.category && f.name === publish.name)
+                    res.push({name: f.name, category: f.category, owner: f.owner, type: f.type});
             }
         }
         return res;
 	}
 
     // Currently, publish source file is not allow
-	getJavaFiles(userName, publics){
+	getJavaFiles(usrName, publics){
         publics = publics || [];
         let res = [];
         // private
-        res = res.concat(this.getFilesByType(userName, FT.java));
+        this.getFilesByType(usrName, FT.java).forEach(f => {
+            res.push({name: f.name, category: f.category, owner: f.owner, type: f.type, isPub: true});
+        });
 
         return res;
 	}
 
-    getJPath(usrName, type, category, fileName){
-        const fltFiles = this.getFilesByType(usrName, type);
+    // meta: {type, owner, category, name}
+    getJPath(meta){
+
+        const fltFiles = this.getFilesByType(meta.owner, meta.type);
         const tarFile = fltFiles.find(f =>
-            f.category === category && f.name === fileName
+            f.category === meta.category && f.name === meta.name
         );
         return tarFile === undefined ? null : tarFile.jpath;
     }
 
-    getPath(usrName, type, category, fileName){
-        const fltFiles = this.getFilesByType(usrName, type);
+    // meta: {type, owner, category, filename}
+    getPath(meta){
+        const fltFiles = this.getFilesByType(meta.owner, meta.type);
         const tarFile = fltFiles.find(f =>
-            f.category === category && f.name === fileName
+            f.category === meta.category && f.name === meta.name
         );
         return tarFile === undefined ? null : tarFile.path;
     }
+
 }
 
 module.exports = new HomeManager();

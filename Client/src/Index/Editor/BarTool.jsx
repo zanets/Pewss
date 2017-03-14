@@ -33,8 +33,7 @@ export default class BarTool extends React.Component{
 				isSelect: false,
 				name: this.props.fileEdit.name,
 				owner: '',
-				category: '',
-				isPub: false
+				category: ''
 			}
 		};
 	}
@@ -75,8 +74,7 @@ export default class BarTool extends React.Component{
 			isSelect: {$set: isSelect},
 			name: {$set: meta.name},
 			owner: {$set: meta.owner},
-			category: {$set: meta.category},
-			isPub: {$set: meta.isPublic}
+			category: {$set: meta.category}
 		});
 		this.setState({fileSelect: n});
 	}
@@ -106,11 +104,12 @@ export default class BarTool extends React.Component{
 			owner: this.state.fileSelect.owner,
 			name: this.state.fileSelect.name
 		}, (res)=>{
+			console.log(res);
 			this.props.setFileEdit({
 				name: {$set: this.state.fileSelect.name},
 				category: {$set: this.state.fileSelect.category},
 				owner: {$set: this.state.fileSelect.owner},
-				isPub: {$set: this.state.fileSelect.isPub},
+				isPub: {$set: res.isPub},
 				isMod: {$set: false},
 				isOpen: {$set: true},
 				code: {$set: res.data},
@@ -152,14 +151,18 @@ export default class BarTool extends React.Component{
 		}
 		this.props.toggleMainLoader(true);
 		API.compile({
+			env: 'workflow',
 			owner: this.props.fileEdit.owner,
 			name: this.props.fileEdit.name,
 			category:this.props.fileEdit.category
 		},(res)=>{
-			this.props.toggleModalInfo(true, 'Compile complete.', 'success', false, '');
-		},(res)=>{
 			console.log(res);
-			this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.responseJSON.stderr);
+			if(res.status === 'stderr')
+				this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.msg);
+			else if(res.status === 'stdout')
+				this.props.toggleModalInfo(true, 'Compile success.', 'info', false, res.msg);
+		},(res)=>{
+			this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.msg);
 		},(res)=>{
 			this.props.toggleMainLoader(false);
 		});

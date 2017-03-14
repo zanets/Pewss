@@ -113,6 +113,15 @@ class UserManager {
 		}
 		return publishes;
 	}
+
+	isPublish(owner, category, type, filename){
+		const usrPublishes = this.Users[owner].getPublishesByType(type);
+		for(const publish of usrPublishes){
+			if(publish.name === filename && publish.category === category)
+				return true;
+		}
+		return false;
+    }
 }
 
 module.exports = new UserManager();

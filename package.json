@@ -4,11 +4,12 @@
   "description": "Scheduling algorithm research cloud platform.",
   "main": "Entry.js",
   "scripts": {
-    "start": "nodemon --ignore Server/Database/Mongo Server/Entry.js --exec babel-node --presets es2015",
+    "start": "nodemon --ignore Server/Database/Mongo --ignore Server/Home Server/Entry.js --exec babel-node --presets es2015",
     "dev": "webpack -d --progress --colors --watch",
     "testm": "babel-node --presets es2015 Server/TestModule.js",
     "startdb": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
-    "testsim": "babel-node --presets es2015 Server/TestSimController.js"
+    "testsim": "babel-node --presets es2015 Server/TestSimController.js",
+	"ctuser": "babel-node --presets es2015 Server/CreateUser.js"
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",

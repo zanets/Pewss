@@ -94,11 +94,11 @@ export default class Simulator extends React.Component {
 	render() {
 		const nullTaskHint =
 			this.state.tasks.length === 0
-				?	<Jumbotron>
-						<h2>There is no simulation task.</h2>
-						<h5>Press <span className="fa fa-plus fa-1x"/> to create.</h5>
-					</Jumbotron>
-				:'';
+				? <Jumbotron>
+					<h2>There is no simulation task.</h2>
+					<h5>Press <span className="fa fa-plus fa-1x"/> to create.</h5>
+				  </Jumbotron>
+				: '';
 		return (
 			<div className='card card-default'>
 				<div className="card-block">

@@ -1,14 +1,14 @@
-import FileScanner from './FileScanner.js';
+import FileController from './FileController.js';
 import {FT, FC, HomeDir} from './Utils.js';
 
-module.exports = class HomeScanner{
+module.exports = class HomeController{
 
 	static async scan(userName){
 		let resFiles = [];
 
 		for(const category in FC){
 			const path = `${HomeDir}/${userName}/${category}`;
-			await FileScanner.scanDirRecursive(path).then(fs => {
+			await FileController.scanDirRecursive(path).then(fs => {
 				fs.forEach(f => {
 					const name = this.trimExtension(f.name);
 					resFiles.push({
@@ -48,7 +48,11 @@ module.exports = class HomeScanner{
 	}
 
 	static async readFile(path){
-		return await FileScanner.readFile(path);
+		return await FileController.readFile(path);
+	}
+
+	static async writeFile(path, content){
+		return await FileController.writeFile(path, content);
 	}
 
 	static ignoreFiles(files){

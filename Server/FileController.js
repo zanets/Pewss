@@ -1,7 +1,7 @@
 import fs from 'fs';
 import {pErrHandler} from './Utils.js';
 
-module.exports = class FileScanner{
+module.exports = class FileController{
 
 	static async scanDirRecursive(dirPath, files){
 		files = files || [];
@@ -75,13 +75,14 @@ module.exports = class FileScanner{
 					rej(err);
 				else
 					res();
+
 			});
 		});
 	}
 
 	static readFile(path){
 		return new Promise((res, rej) => {
-			fs.readFile(path, (err, content) => {
+			fs.readFile(path, "utf-8", (err, content) => {
 				if(err)
 					rej(err);
 				else

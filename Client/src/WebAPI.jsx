@@ -1,8 +1,10 @@
 import jq from 'jquery';
 class WebAPI{
 
-	getClassList(success, fail, always){
-		jq.get('/api/uses/class', success).fail(fail).always(always);
+	getClassList(meta, success, fail, always){
+		jq.get('/api/uses/class', {
+			env: meta.env
+		}, success).fail(fail).always(always);
 	}
 
 	getSourceList(success, fail, always){
@@ -52,6 +54,7 @@ class WebAPI{
 
 	compile(meta, success, fail, always){
 		jq.post('/api/uses/compile', {
+			env: meta.env,
 			name: meta.name,
 			category: meta.category,
 			owner: meta.owner

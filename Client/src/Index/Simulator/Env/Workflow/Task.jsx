@@ -62,10 +62,10 @@ export default class Task extends React.Component{
 		// TODO: filer stderr and stdout
 		API.simulate({
 			env: "workflow",
-			generator: this.props.generator.jpath,
-			scheduler: this.props.scheduler.jpath,
-			simulator: this.props.simulator.jpath,
-			platform: this.props.platform.jpath,
+			generator: this.props.generator,
+			scheduler: this.props.scheduler,
+			simulator: this.props.simulator,
+			platform: this.props.platform,
 			argums: this.state.settings
 		},(res)=>{
 			this.setState({

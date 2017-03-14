@@ -17,9 +17,12 @@ import JSON_strategy from './Passport/Json.js';
 // initialize modules and variables
 const APP = Express();
 const PORT = 8083;
-let Users = null;
+
 UserManager.init().then(async () => {
-	Users = UserManager.getUsers();
+	const Users  = UserManager.getUsers();
+
+	for(const user in Users)
+		await HomeManager.scan(user);
 	JSON_strategy(Passport, Users);
 });
 
@@ -66,6 +69,16 @@ const isLogin = (req, res, next) => {
         res.redirect('/login');
 };
 
+const getJPath = (env, meta) => {
+	if(meta.owner === 'admin'){
+		return SimController.getBultinJPath(env, meta);
+	} else {
+		return HomeManager.getJPath(meta);
+	}
+}
+
+
+
 APP.get('/index', isLogin, (req, res) => {
     res.status(200).sendFile(`${BaseDir}/Client/Index.html`);
 });
@@ -99,7 +112,6 @@ APP.get('/logout', isLogin, (req, res) => {
 // always check user first
 
 const isUser = (req) => {
-
     return UserManager.isUserExist(req.user.name)
 	? req.user.name
 	: false;
@@ -120,20 +132,28 @@ APP.get('/api/uses/envs', isLogin, (req, res) => {
 APP.get('/api/uses/class', isLogin, (req, res) => {
 
 	const usrName = isUser(req);
-	const _files =
-    if(usrName)
-        res.status(200).json(UserManager.getClassFiles(usrName));
-    else
-        res.sendStatus(401);
+	if(!usrName){
+		res.sendStatus(401);
+		return;
+	}
+
+    let resFiles = HomeManager.getClassFiles(
+		usrName,
+		UserManager.getClassPublishes()
+	);
+
+	resFiles = resFiles.concat(SimController.getBuiltin(req.query.env));
+	res.status(200).json(resFiles);
+
 });
 
 /* no request data */
 APP.get('/api/uses/source', isLogin, (req, res) => {
 
 	const usrName = isUser(req);
-    console.log(UserManager.getJavaFiles(usrName));
+
     if(usrName)
-        res.status(200).json(UserManager.getJavaFiles(usrName));
+        res.status(200).json(HomeManager.getJavaFiles(usrName));
     else
         res.sendStatus(401);
 });
@@ -149,10 +169,10 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
     await SimController.simulate({
         env: req.body.env,
-        generator: req.body.generator,
-        scheduler: req.body.scheduler,
-        simulator: req.body.simulator,
-        platform: req.body.platform,
+        generator: getJPath(req.body.env, req.body.generator),
+        scheduler: getJPath(req.body.env, req.body.scheduler),
+        simulator: getJPath(req.body.env, req.body.simulator),
+        platform: getJPath(req.body.env, req.body.platform),
         argums: req.body.argums
     }).then(_res => {
         res.status(200).json(_res);
@@ -163,7 +183,7 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
 // compile source file
 /* request data: {filename, category, owner} */
-APP.post("/api/uses/compile", isLogin, (req, res) => {
+APP.post("/api/uses/compile", isLogin, async (req, res) => {
 
     const usrName = isUser(req);
     if(!usrName){
@@ -171,20 +191,21 @@ APP.post("/api/uses/compile", isLogin, (req, res) => {
         return;
     }
 
-    SimController.compile({
+    await SimController.compile({
         env: req.body.env,
         name: req.body.name,
         category: req.body.category,
         owner: req.body.owner
-    }).then(res => {
-        res.status(200).json(res);
+    }).then(async (_res) => {
+        res.status(200).json(_res);
+		await HomeManager.scan(usrName);
     }).catch(err => {
         res.status(500).json(err);
     });
 });
 
 /* request data: { filename, category, owner } */
-APP.get('/api/uses/source_content', isLogin, (req, res) => {
+APP.get('/api/uses/source_content', isLogin, async (req, res) => {
 
     const usrName = isUser(req);
     if(!usrName){
@@ -192,18 +213,23 @@ APP.get('/api/uses/source_content', isLogin, (req, res) => {
         return;
     }
 
-    SimController.getSrcContent({
-        name: req.query.name,
-        category: req.query.category,
-        owner: req.query.owner
-    }, (err, data) => {
-        if(err){
-            console.trace(err.message);
-            res.status(500).json({err});
-        } else {
-            res.status(200).json({data});
-        }
-    });
+    const content = await HomeManager.getFileContent({
+		name: req.query.name,
+		category: req.query.category,
+		owner: req.query.owner,
+		type: FT.java
+	});
+	const isPublish = UserManager.isPublish(
+		req.query.owner,
+		req.query.category,
+		FT.class,
+		req.query.name
+	);
+	if(content){
+		res.status(200).json({data: content, isPub: isPublish});
+	} else {
+		res.sendStatus(404);
+	}
 });
 
 APP.param('file_name', (req, res, next, id) => {
@@ -212,7 +238,7 @@ APP.param('file_name', (req, res, next, id) => {
 
 // update source file
 /* request data: {filename, category, content, owner} */
-APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
+APP.patch("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 
     const usrName = isUser(req);
     if(!usrName){
@@ -220,19 +246,17 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
         return;
     }
 
-    SimController.setSrcContent({
-        name: req.body.name,
+	await HomeManager.setFileContent({
+		name: req.body.name,
         category: req.body.category,
         content: req.body.content,
-        owner: req.body.owner
-    }, (err, data) => {
-        if(err){
-            console.trace(err.message);
-            res.status(500).json({err});
-        } else {
-            res.sendStatus(200);
-        }
-    });
+        owner: req.body.owner,
+		type: FT.java
+	}).then(_res => {
+		res.status(200).send('Compile complete')
+	}).catch(err => {
+		res.status(500).send(err.msg);
+	});
 });
 
 // create new source file

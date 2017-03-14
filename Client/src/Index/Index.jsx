@@ -5,11 +5,11 @@ import {default as API} from '../WebAPI.jsx';
 import Editors from './Editor/Editors.jsx';
 import Simulator from './Simulator/Simulator.jsx';
 import {
-	Navbar, 
-	Nav, 
+	Navbar,
+	Nav,
 	NavbarBrand,
 	NavLink,
-	NavItem, 
+	NavItem,
 	Collapse
 } from 'reactstrap';
 
@@ -41,7 +41,9 @@ class Index extends React.Component {
 
 	toSimulator(){
 		this.setState(INIT_STATE);
-		API.getClassList((res)=>{
+		API.getClassList({
+			env: "workflow"
+		}, (res)=>{
 			setTimeout(() => {
 				this.setState({
 					ready: true,
@@ -70,10 +72,10 @@ class Index extends React.Component {
 	}
 
 	render () {
-		const page = (this.state.page === PAGES.EDI) ? 
+		const page = (this.state.page === PAGES.EDI) ?
 			<Editors source_list={this.state.sourceList}/> :
 			<Simulator class_list={this.state.classList}/>;
-		
+
 		return (
 			<div className={'fixedDiv'}>
 				<Navbar color="primary" inverse toggleable>
@@ -100,5 +102,5 @@ class Index extends React.Component {
 		);
 	}
 }
- 
+
 ReactDOM.render(<Index/>, mounted);

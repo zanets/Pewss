@@ -17,6 +17,7 @@ const JSON_Strategy = (passport, users) => {
         session: true,
     }, (name, passwd, done) => {
         let user = users[name];
+        
         if(user === undefined || user.passwd !== passwd)
             done(null, false);
         else
