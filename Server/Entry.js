@@ -19,7 +19,6 @@ const APP = Express();
 const PORT = 8083;
 
 UserManager.init().then(async () => {
-	await UserManager.loadUsers();
 	JSON_strategy(Passport, UserManager.getUsers());
 });
 

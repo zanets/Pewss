@@ -8,11 +8,12 @@ class UserManager {
 
 	constructor(){
 	}
-	
+
 	async init(){
 		this.Users = {};
 		this.CollectionName = 'User';
 		await MongoController.connect();
+		await this.loadUsers();
 	}
 
 	/* use it in internal */
