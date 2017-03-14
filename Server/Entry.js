@@ -7,9 +7,9 @@ import Session from 'express-session';
 import Https from 'https';
 
 import SSLManager from './SSLManager.js';
-import MongoController from './MongoController.js';
 import SimController from './SimController.js';
 import UserManager from './UserManager.js';
+import HomeManager from './HomeManager.js';
 import {FT, FC, BaseDir} from './Utils.js';
 
 import JSON_strategy from './Passport/Json.js';
@@ -18,12 +18,10 @@ import JSON_strategy from './Passport/Json.js';
 const APP = Express();
 const PORT = 8083;
 
-MongoController.connect().then(async () => {
+UserManager.init().then(async () => {
 	await UserManager.loadUsers();
-    JSON_strategy(Passport, UserManager.getUsers());
+	JSON_strategy(Passport, UserManager.getUsers());
 });
-
-
 
 // current express not support https.
 Https.createServer(SSLManager, APP).listen(PORT, () => {
@@ -102,17 +100,17 @@ APP.get('/logout', isLogin, (req, res) => {
 
 const isUser = (req) => {
 
-    return UserManager.isUserExist(req.user.name) ?
-        req.user.name :
-        false;
+    return UserManager.isUserExist(req.user.name)
+	? req.user.name
+	: false;
 };
 
 /* no request data */
 APP.get('/api/uses/envs', isLogin, (req, res) => {
 
-	const _u = isUser(req);
+	const usrName = isUser(req);
 
-    if(_u)
+    if(usrName)
         res.status(200).json(SimController.getEnvs());
     else
         res.sendStatus(401);
@@ -121,10 +119,10 @@ APP.get('/api/uses/envs', isLogin, (req, res) => {
 /* no request data */
 APP.get('/api/uses/class', isLogin, (req, res) => {
 
-	const _u = isUser(req);
+	const usrName = isUser(req);
 
-    if(_u)
-        res.status(200).json(UserManager.getClassFiles(_u));
+    if(usrName)
+        res.status(200).json(UserManager.getClassFiles(usrName));
     else
         res.sendStatus(401);
 });
@@ -132,10 +130,10 @@ APP.get('/api/uses/class', isLogin, (req, res) => {
 /* no request data */
 APP.get('/api/uses/source', isLogin, (req, res) => {
 
-	const _u = isUser(req);
-    console.log(UserManager.getJavaFiles(_u));
-    if(_u)
-        res.status(200).json(UserManager.getJavaFiles(_u));
+	const usrName = isUser(req);
+    console.log(UserManager.getJavaFiles(usrName));
+    if(usrName)
+        res.status(200).json(UserManager.getJavaFiles(usrName));
     else
         res.sendStatus(401);
 });
@@ -143,8 +141,8 @@ APP.get('/api/uses/source', isLogin, (req, res) => {
 /* request data: { env, generator, scheduler, simulator, platform, argums } */
 APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
-	const _u = isUser(req);
-    if(!_u){
+	const usrName = isUser(req);
+    if(!usrName){
         res.sendStatus(401);
         return;
     }
@@ -167,8 +165,8 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 /* request data: {filename, category, owner} */
 APP.post("/api/uses/compile", isLogin, (req, res) => {
 
-    const _u = isUser(req);
-    if(!_u){
+    const usrName = isUser(req);
+    if(!usrName){
         res.sendStatus(401);
         return;
     }
@@ -188,8 +186,8 @@ APP.post("/api/uses/compile", isLogin, (req, res) => {
 /* request data: { filename, category, owner } */
 APP.get('/api/uses/source_content', isLogin, (req, res) => {
 
-    const _u = isUser(req);
-    if(!_u){
+    const usrName = isUser(req);
+    if(!usrName){
         res.sendStatus(401);
         return;
     }
@@ -216,8 +214,8 @@ APP.param('file_name', (req, res, next, id) => {
 /* request data: {filename, category, content, owner} */
 APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
 
-    const _u = isUser(req);
-    if(!_u){
+    const usrName = isUser(req);
+    if(!usrName){
         res.sendStatus(401);
         return;
     }
@@ -241,8 +239,8 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, (req, res) => {
 /* request data: {filename, category, content, owner} */
 APP.post("/api/uses/source_content/:file_name", isLogin, (req, res) => {
 
-    const _u = isUser(req);
-    if(!_u){
+    const usrName = isUser(req);
+    if(!usrName){
         res.sendStatus(401);
         return;
     }
@@ -273,9 +271,9 @@ APP.param('public_target', (req, res, next, id) => {
 
 APP.patch("/api/users/public/:public_target", (req, res) => {
 
-    const _u = isUser(req);
+    const usrName = isUser(req);
 
-    if(_u){
+    if(usrName){
         UserManager.modUser(testUsers[0],
             {$addPublicFile:
                 {type: FT.class, category: 'a', name:'a-name'}
@@ -290,9 +288,9 @@ APP.patch("/api/users/public/:public_target", (req, res) => {
 
 APP.delete("/api/users/public/:public_target", (req, res) => {
 
-    const _u = isUser(req);
+    const usrName = isUser(req);
 
-    if(_u){
+    if(usrName){
         UserManager.modUser(testUsers[0],
             {$removePublicFile:
                 {type: FT.class, category: 'a', name:'a-name'}

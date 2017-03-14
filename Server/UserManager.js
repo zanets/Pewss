@@ -7,8 +7,12 @@ import envConfig from './Sim/envConfig.json';
 class UserManager {
 
 	constructor(){
+	}
+	
+	async init(){
 		this.Users = {};
 		this.CollectionName = 'User';
+		await MongoController.connect();
 	}
 
 	/* use it in internal */

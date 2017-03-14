@@ -25,21 +25,16 @@ class HomeManager{
     getFilesByType(usrName, type){
         const usrFiles = this.UsersFiles[usrName];
         assert.ok(usrFiles !== undefined, `User ${usrName} NOT exist`);
-
         return usrFiles.filter(f => f.type === type);
     }
 
     async getFileContent(usrName, category, fileName){
-        const fltFiles = this.getFilesByType(usrName, FT.java);
-        const tarFile =	fltFiles.find(f => {
-            return (f.name === fileName && f.category === category);
-        });
-        // open file and return source code
-        return await HomeScanner.readFile(tarFile.path).catch(pErrHandler);
+        const path = this.getPath(usrName, FT.java, category, fileName);
+        return await HomeScanner.readFile(path).catch(pErrHandler);
     }
 
     /* remove both class and source file */
-    removeFile(usrName, category, name){
+    removeFile(usrName, category, fileName){
         // remove file
 
         // update this
@@ -52,6 +47,22 @@ class HomeManager{
 	getJavaFiles(userName){
 		return this.getFilesByType(userName, FT.java);
 	}
+
+    getJPath(usrName, type, category, fileName){
+        const fltFiles = this.getFilesByType(usrName, type);
+        const tarFile = fltFiles.find(f =>
+            f.category === category && f.name === fileName
+        );
+        return tarFile === undefined ? null : tarFile.jpath;
+    }
+
+    getPath(usrName, type, category, fileName){
+        const fltFiles = this.getFilesByType(usrName, type);
+        const tarFile = fltFiles.find(f =>
+            f.category === category && f.name === fileName
+        );
+        return tarFile === undefined ? null : tarFile.path;
+    }
 }
 
 module.exports = new HomeManager();
