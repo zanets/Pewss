@@ -15,8 +15,6 @@ import {
 	Jumbotron,
 	Col
 } from 'reactstrap';
-
-import "bootstrap/dist/css/bootstrap.css";
 import "./Simulator.css";
 
 export default class Simulator extends React.Component {

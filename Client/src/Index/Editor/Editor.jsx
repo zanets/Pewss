@@ -14,7 +14,7 @@ import {
 	Col,
 } from 'reactstrap';
 
-require("./Editor.css");
+import "./Editor.css";
 
 export default class Editor extends React.Component{
 

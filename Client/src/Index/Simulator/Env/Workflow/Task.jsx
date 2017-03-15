@@ -10,8 +10,8 @@ import {
 	Button
 } from 'reactstrap';
 
-require("font-awesome/css/font-awesome.css");
-require("vis/dist/vis.css");
+import "font-awesome/css/font-awesome.min.css";
+import "vis/dist/vis.min.css";
 
 const propTypes = {
 	id: PropTypes.string.isRequired,

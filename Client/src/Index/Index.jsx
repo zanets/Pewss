@@ -18,8 +18,8 @@ import {
 	DropdownItem
 } from 'reactstrap';
 
-require("bootstrap/dist/css/bootstrap.css");
-require("./Index.css");
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Index.css";
 const mounted = document.getElementById('mp');
 
 const PAGES = {

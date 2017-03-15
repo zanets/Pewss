@@ -9,32 +9,32 @@ module.exports = {
 		Login: path.resolve(__dirname, 'Client/src/Login/Login.jsx'),
 	},
 	output:{
-		filename: '[name].js',  
+		filename: '[name].js',
 		path: path.resolve(__dirname, 'Client/build')
 	},
 	module: {
 		rules: [
 			{
-				test: /\.css$/, 
+				test: /\.css$/,
 				use: ExtractTextPlugin.extract({
 					fallback: "style-loader",
 					use: "css-loader"
 				})
-			}, 
+			},
 			{
-				test: /\.(jsx)$/, 
-				loader: 'babel-loader', 
+				test: /\.(jsx)$/,
+				loader: 'babel-loader',
 				query: {
 					presets: [
-						'es2015', 
-						'react', 
+						'es2015',
+						'react',
 						'babel-preset-stage-0'
 					]
 				}
 			},
-			{ 
+			{
 				test: /\.(jpg|eot|png|woff|woff2|ttf|svg)$/,
-				loader: "url-loader" 
+				loader: "url-loader"
 			},
 		]
 	},

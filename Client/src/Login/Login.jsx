@@ -11,9 +11,9 @@ import {
 	Label,
 	Col
 } from 'reactstrap';
-require("font-awesome/css/font-awesome.css");
-require("bootstrap/dist/css/bootstrap.css");
-require("./Login.css");
+import "font-awesome/css/font-awesome.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Login.css";
 const mounted = document.createElement('div');
 mounted.className = "mounted";
 const body = document.body;
