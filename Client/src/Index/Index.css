@@ -19,18 +19,12 @@ html, body, #mp{
 	height:95%;
 }
 
-.btn.light{
-	width:50px;
-	height:50px;
-	border-radius: 50%;
-	border: none;
-	background-color: #FF5252;
-	color:white;
+.ibtn:hover{
+	opacity: 0.8;
 }
 
-.btn.light:hover{
-	color:white;
-	background-color: #e44949;
+.ibtn{
+	color:#e44949;
 }
 
 /* navbar */

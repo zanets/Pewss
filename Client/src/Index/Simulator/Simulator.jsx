@@ -101,9 +101,8 @@ export default class Simulator extends React.Component {
 			<div className='card card-default'>
 				<div className="card-block">
 					{/*---------------- modal -------------*/}
-					<Button onClick={this.toggleNewTaskModal.bind(this, true)} className="light">
-						<span className="fa fa-plus fa-1x"/>
-					</Button>
+					<i className="ibtn fa fa-plus-circle fa-3x" onClick={this.toggleNewTaskModal.bind(this, true)}></i>
+
 					<Modal isOpen={this.state.isOpenNewTask} toggle={this.toggleNewTaskModal.bind(this)}>
 						<ModalHeader>
 							{'New Simulation Task'}
@@ -154,7 +153,7 @@ export default class Simulator extends React.Component {
 					</Modal>
 					{/*---------------- task list -------------*/}
 
-					<Table hover responsive style={{marginTop: '30px'}}>
+					<Table hover responsive style={{marginTop: '.7rem'}}>
 		  			<thead>
 		  				<tr>
 		  					<th>{'Generator'}</th>

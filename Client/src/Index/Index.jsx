@@ -14,6 +14,7 @@ import {
 	NavItem,
 	Collapse,
 	Button,
+	NavDropdown,
 	Dropdown,
 	DropdownToggle,
 	DropdownMenu,
@@ -111,22 +112,22 @@ class Index extends React.Component {
 						</NavItem>
 						<NavItem>
 							<NavLink href='#'>
-								<Dropdown isOpen={this.state.isMemberOpen} toggle={this.toggleMember.bind(this)}>
-        					<DropdownToggle>
-          					<i className="fa fa-user-circle-o fa-2x" ></i>
-        					</DropdownToggle>
-        					<DropdownMenu right>
+								<NavDropdown isOpen={this.state.isMemberOpen} toggle={this.toggleMember.bind(this)}>
+        							<DropdownToggle>
+          								<i className="fa fa-user-circle-o fa-2x" ></i>
+        							</DropdownToggle>
+        							<DropdownMenu right>
 										<DropdownItem disabled>
 											{this.username}
 										</DropdownItem>
-          					<DropdownItem>
+          								<DropdownItem>
 											{'Profile '}
 										</DropdownItem>
-          					<DropdownItem onClick={this.logout.bind(this)}>
+          								<DropdownItem onClick={this.logout.bind(this)}>
 											{'Logout '}
 										</DropdownItem>
-        					</DropdownMenu>
-      					</Dropdown>
+        							</DropdownMenu>
+      							</NavDropdown>
 							</NavLink>
 						</NavItem>
 
