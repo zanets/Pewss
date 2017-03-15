@@ -9,7 +9,7 @@
     "testm": "babel-node --presets es2015 Server/TestModule.js",
     "startdb": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
     "testsim": "babel-node --presets es2015 Server/TestSimController.js",
-	"ctuser": "babel-node --presets es2015 Server/CreateUser.js"
+    "ctuser": "babel-node --presets es2015 Server/CreateUser.js"
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",
@@ -52,6 +52,7 @@
     "babel-eslint": "^7.1.1",
     "eslint": "^3.16.1",
     "express-session": "^1.14.1",
+    "extract-text-webpack-plugin": "^2.1.0",
     "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.2.24",
     "passport-local": "^1.0.0",
