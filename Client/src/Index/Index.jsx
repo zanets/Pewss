@@ -1,3 +1,5 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Index.css";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Loader from 'react-loader';
@@ -17,9 +19,6 @@ import {
 	DropdownMenu,
 	DropdownItem
 } from 'reactstrap';
-
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./Index.css";
 const mounted = document.getElementById('mp');
 
 const PAGES = {

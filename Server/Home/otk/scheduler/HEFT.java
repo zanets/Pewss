@@ -4,7 +4,7 @@ import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;
 
 public class HEFT extends com.use.scheduler.AListBaseWorkflowScheduler {
-	
+	jj
 	@Override
 	protected boolean isAdd(DAGDependTask addTask,DAGDependTask taskInQ) {
 		

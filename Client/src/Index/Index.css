@@ -16,7 +16,7 @@ html, body, #mp{
  }
 
 .fixedDiv, .loadedContent{
-	height:93%;
+	height:95%;
 }
 
 .btn.light{
@@ -35,11 +35,12 @@ html, body, #mp{
 
 /* navbar */
 .bg-primary{
-	background-color: #303F9F!important;
+	background-color: #3b3e42!important;
 }
 
 .navbar{
-	color: lightgray;
+	color: rgba(255,255,255,.5);
+	height: 3.5rem;
 }
 
 /* primary */
