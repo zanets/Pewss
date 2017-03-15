@@ -14,7 +14,7 @@
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",
-  "Dependencies": {
+  "dependencies": {
     "babel-cli": "^6.16.0",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
@@ -54,9 +54,7 @@
     "extract-text-webpack-plugin": "^2.1.0",
     "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.2.24",
-    "passport-local": "^1.0.0",
     "react-addons-shallow-compare": "^15.4.1",
-    "react-modal": "^1.5.2",
-    "write-good": "^0.10.0"
+    "react-modal": "^1.5.2"
   }
 }
