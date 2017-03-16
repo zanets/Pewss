@@ -60,6 +60,7 @@ module.exports = {
 			}
 		}),
 		new CopyWebpackPlugin([
+			{from: `${__dirname}/Client/src/Login/Login.css`},
 			{from: `${__dirname}/Client/src/Index/Index.css`},
 			{from: `${__dirname}/Client/src/Index/Editor/Editor.css`},
 			{from: `${__dirname}/Client/src/Index/Simulator/Simulator.css`}
