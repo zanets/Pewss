@@ -13,7 +13,6 @@ import {
 } from 'reactstrap';
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Login.css";
 const mounted = document.createElement('div');
 mounted.className = "mounted";
 const body = document.body;
@@ -53,7 +52,6 @@ class Login extends React.Component {
 							  </Col>
 							</FormGroup>
 						</Form>
-						<hr/>
 						<a className="btn btn-secondary fa fa-sign-in" onClick={this.login.bind(this)}/>
 					</CardBlock>
 				</Card>

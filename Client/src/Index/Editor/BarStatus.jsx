@@ -24,7 +24,7 @@ export default class BarStatus extends React.Component{
 
 	render(){
 		return (
-			<h5>
+			<h5 style={{marginTop: '.7rem'}}>
 				<Badge pill color="primary">
 					{this.state.fileEdit.name}
 				</Badge>

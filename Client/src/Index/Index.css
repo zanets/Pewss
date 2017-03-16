@@ -3,12 +3,11 @@ html, body, #mp{
 }
 
 .btn{
-	appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
-    border: 0;
-    background: transparent;
+	margin: 0px;
+}
+
+.fa-user-circle-o{
+	color: white;
 }
 
  .modal-lg{
@@ -16,15 +15,7 @@ html, body, #mp{
  }
 
 .fixedDiv, .loadedContent{
-	height:95%;
-}
-
-.ibtn:hover{
-	opacity: 0.8;
-}
-
-.ibtn{
-	color:#e44949;
+	height:96%;
 }
 
 /* navbar */
@@ -35,78 +26,4 @@ html, body, #mp{
 .navbar{
 	color: rgba(255,255,255,.5);
 	height: 3.5rem;
-}
-
-/* primary */
-.badge-primary{
-	background-color: #2196F3;
-}
-
-.btn-primary{
-	color: #2196F3;
-}
-
-.btn-primary:hover{
-	color: white;
-	background-color: #2196F3;
-}
-
-.btn-primary:disabled{
-	color: #2196F3;
-	opacity:0.5;
-	outline: none;
-    border: 0;
-    background: transparent;
-}
-
-/* success */
-.btn-success{
-	color: green;
-}
-
-.btn-success:hover{
-	color: white;
-	background-color: green;
-}
-
-/* secentary */
-.btn-secondary:hover{
-	color:#757575;
-}
-
-/* warning */
-.btn-warning{
-	color:orange;
-}
-.btn-warning:hover{
-	color: white;
-	background-color: orange;
-}
-.btn-warning:disabled{
-	color: orange;
-	opacity:0.5;
-	outline: none;
-    border: 0;
-    background: transparent;
-}
-/* danger */
-.btn-danger{
-	color:#FF5252;
-}
-
-.btn-danger:hover{
-	color: white;
-	background-color: #FF5252;
-}
-
-.btn-danger:disabled{
-	color: #FF5252;
-	opacity:0.5;
-	outline: none;
-    border: 0;
-    background: transparent;
-}
-
-.fa-user-circle-o{
-	color: #ffffff;
 }

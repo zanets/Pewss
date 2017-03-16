@@ -1,5 +1,4 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Index.css";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Loader from 'react-loader';
@@ -96,17 +95,17 @@ class Index extends React.Component {
 		return (
 			<div className={'fixedDiv'}>
 				<Navbar color="primary" inverse toggleable>
-					<NavbarBrand>
+					<NavbarBrand style={{paddingTop:'1rem'}}>
 						{'Parallel Extendable Workflow Scheduling Simulator'}
 					</NavbarBrand>
 					<Nav className="ml-auto" navbar>
 						<NavItem>
-							<NavLink href='#' onClick={this.toSimulator.bind(this)} style={{paddingTop:'1.3rem'}}>
+							<NavLink href='#' onClick={this.toSimulator.bind(this)} style={{paddingTop:'2rem'}}>
 						 		{'Simulator'}
 							</NavLink>
 						</NavItem>
 						<NavItem>
-							<NavLink href='#' onClick={this.toEditor.bind(this)} style={{paddingTop:'1.3rem'}}>
+							<NavLink href='#' onClick={this.toEditor.bind(this)} style={{paddingTop:'2rem'}}>
 								{'Editor'}
 							</NavLink>
 						</NavItem>

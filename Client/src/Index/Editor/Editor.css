@@ -1,12 +1,11 @@
 .toolbar{
-	padding-top: 2vh;
-	padding-bottom: 2vh;
 	padding-left: 2vh;
+	background-color: #dbdbdb;
 }
 
 .btn-toolbar{
 	position: absolute;
-	right: 5vh;
+	right: 1rem;
 }
 
 pre{
@@ -15,9 +14,5 @@ pre{
 	word-break: normal;
 	word-wrap:  break-word;
 	white-space: pre-wrap;
-}
 
-.alert{
-	margin-left: 1rem;
-	margin-right: 1rem;
 }

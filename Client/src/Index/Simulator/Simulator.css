@@ -23,9 +23,12 @@ pre{
 .mdlabel{
 	color: darkgrey;
 }
+.modal-content .modal-footer button + button{
+	margin-bottom: 0px;
+}
 
-td > .btn-sm{
-	font-size: 1.1rem;
+td > button > span.fa{
+	font-size: 1rem;
 }
 
 .modal-footer{

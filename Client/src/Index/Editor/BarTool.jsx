@@ -114,6 +114,7 @@ export default class BarTool extends React.Component{
 				code: {$set: res.data},
 				originCode: {$set: res.data}
 			});
+			this.props.toggleModalInfo(true, `Open file ${this.state.fileSelect.name}`, 'success');
 		}, (res)=>{
 			this.props.toggleModalInfo(true, res.error, 'danger');
 		}, (res)=>{
@@ -220,7 +221,6 @@ export default class BarTool extends React.Component{
 		const pubColor = this.props.fileEdit.isPub ? 'primary' : 'secondary';
 		return (
 			<ButtonToolbar>
-
 					<ButtonDropdown isOpen={this.state.isDropdownOpen} toggle={this.toggleDropdown.bind(this)}>
 						<DropdownToggle caret>
 							{this.state.fileSelect.name === '' ? 'Select File ' : this.state.fileSelect.name}

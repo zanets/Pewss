@@ -15,7 +15,7 @@ import {
 	Jumbotron,
 	Col
 } from 'reactstrap';
-import "./Simulator.css";
+
 
 export default class Simulator extends React.Component {
 
@@ -93,7 +93,7 @@ export default class Simulator extends React.Component {
 		const nullTaskHint =
 			this.state.tasks.length === 0
 				? <Jumbotron>
-					<h2>There is no simulation task.</h2>
+					<h2>No simulation task.</h2>
 					<h5>Press <span className="fa fa-plus fa-1x"/> to create.</h5>
 				  </Jumbotron>
 				: '';
@@ -101,7 +101,9 @@ export default class Simulator extends React.Component {
 			<div className='card card-default'>
 				<div className="card-block">
 					{/*---------------- modal -------------*/}
-					<i className="ibtn fa fa-plus-circle fa-3x" onClick={this.toggleNewTaskModal.bind(this, true)}></i>
+					<Button color='warning' onClick={this.toggleNewTaskModal.bind(this, true)}>
+						<span className="fa fa-plus-circle fa-3x"/>
+					</Button>
 
 					<Modal isOpen={this.state.isOpenNewTask} toggle={this.toggleNewTaskModal.bind(this)}>
 						<ModalHeader>
@@ -145,7 +147,6 @@ export default class Simulator extends React.Component {
 						  	<Button color='danger' onClick={this.toggleNewTaskModal.bind(this, false)}>
 						  		<span className="fa fa-close"/>
 						  	</Button>
-						  	{' '}
 						  	<Button color='primary' onClick={this.newTask.bind(this)}>
 						  		<span className="fa fa-check"/>
 						  	</Button>

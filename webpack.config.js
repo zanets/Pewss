@@ -1,16 +1,17 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	target: 'node',
 	entry:{
-		Index: path.resolve(__dirname, 'Client/src/Index/Index.jsx'),
-		Login: path.resolve(__dirname, 'Client/src/Login/Login.jsx'),
+		Index: `${__dirname}/Client/src/Index/Index.jsx`,
+		Login: `${__dirname}/Client/src/Login/Login.jsx`
 	},
 	output:{
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'Client/build')
+		path: `${__dirname}/Client/build`
 	},
 	module: {
 		rules: [
@@ -44,7 +45,7 @@ module.exports = {
 				'NODE_ENV': JSON.stringify('production')
 			}
 		}),
-		new ExtractTextPlugin("[name].css"),
+		new ExtractTextPlugin("[name]-lib.css"),
 		new webpack.optimize.UglifyJsPlugin({
 			comments: false,
 			compress: {
@@ -57,6 +58,11 @@ module.exports = {
 				sequences: true,
 				booleans: true,
 			}
-		})
+		}),
+		new CopyWebpackPlugin([
+			{from: `${__dirname}/Client/src/Index/Index.css`},
+			{from: `${__dirname}/Client/src/Index/Editor/Editor.css`},
+			{from: `${__dirname}/Client/src/Index/Simulator/Simulator.css`}
+		])
 	]
 };

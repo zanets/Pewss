@@ -14,8 +14,6 @@ import {
 	Col,
 } from 'reactstrap';
 
-import "./Editor.css";
-
 export default class Editor extends React.Component{
 
 	constructor(props){
@@ -151,6 +149,7 @@ export default class Editor extends React.Component{
 							renderLineHighlight:'line'
 						}}
 					/>
+
 				</Loader>
 			</div>
 		);
