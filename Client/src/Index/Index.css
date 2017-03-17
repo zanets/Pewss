@@ -10,8 +10,8 @@ html, body, #mp{
 	color: white;
 }
 
- .modal-lg{
- 	max-width: 80%;
+ .modal-dialog{
+ 	max-width: 50%;
  }
 
 .fixedDiv, .loadedContent{
@@ -26,4 +26,8 @@ html, body, #mp{
 .navbar{
 	color: rgba(255,255,255,.5);
 	height: 3.5rem;
+}
+
+.card-block > .jumbotron{
+	background-color:white;
 }

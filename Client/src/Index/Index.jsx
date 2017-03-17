@@ -73,7 +73,7 @@ class Index extends React.Component {
 					sourceList: res,
 					page: PAGES.EDI
 				});
-			}, 1000);
+			}, 5000);
 		}, (res)=>{
 			console.log(res);
 		});
