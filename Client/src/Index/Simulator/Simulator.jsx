@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import { default as WorkflowTask } from './Env/Workflow/Task.jsx'
 import ReactDOM from 'react-dom';
 import uuid from 'node-uuid';
@@ -16,6 +16,9 @@ import {
 	Col
 } from 'reactstrap';
 
+const propTypes = {
+	username: PropTypes.string.isRequired
+};
 
 export default class Simulator extends React.Component {
 
@@ -176,3 +179,5 @@ export default class Simulator extends React.Component {
 		);
 	}
 }
+
+Simulator.propTypes = propTypes;

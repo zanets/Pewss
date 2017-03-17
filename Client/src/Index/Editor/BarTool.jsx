@@ -21,6 +21,7 @@ const propTypes = {
 	toggleModalInfo: PropTypes.func.isRequired,
 	toggleModalNewFile: PropTypes.func.isRequired,
 	getEditorContent: PropTypes.func.isRequired,
+	username: PropTypes.string.isRequired
 };
 
 export default class BarTool extends React.Component{

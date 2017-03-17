@@ -30,7 +30,8 @@ const INIT_STATE = {
 	classList: null,
 	sourceList: null,
 	page: null,
-	isMemberOpen: false
+	isMemberOpen: false,
+	username: ''
 };
 
 class Index extends React.Component {
@@ -40,15 +41,25 @@ class Index extends React.Component {
 		this.state = INIT_STATE;
 	}
 
-	componentDidMount(){
+	componentWillMount(){
 		API.getUserName((data) => {
-			this.username = data.name;
+			this.setState({username: data.name});
 		});
+    }
+
+	componentDidMount(){
 		this.toSimulator();
 	}
 
+	setInitState(){
+		this.setState({
+			ready: false,
+			isMemberOpen: false
+		});
+	}
+
 	toSimulator(){
-		this.setState(INIT_STATE);
+		this.setInitState();
 		API.getClassList({
 			env: "workflow"
 		}, (res)=>{
@@ -65,7 +76,7 @@ class Index extends React.Component {
 	}
 
 	toEditor(){
-		this.setState(INIT_STATE);
+		this.setInitState();
 		API.getSourceList((res)=>{
 			setTimeout(() => {
 				this.setState({
@@ -88,9 +99,13 @@ class Index extends React.Component {
 	}
 
 	render () {
-		const page = (this.state.page === PAGES.EDI) ?
-			<Editors source_list={this.state.sourceList}/> :
-			<Simulator class_list={this.state.classList}/>;
+		const page = (this.state.page === PAGES.EDI)
+			? <Editors
+				source_list={this.state.sourceList}
+				username={this.state.username}/>
+			: <Simulator
+				class_list={this.state.classList}
+				username={this.state.username}/>;
 
 		return (
 			<div className={'fixedDiv'}>
@@ -117,7 +132,7 @@ class Index extends React.Component {
         							</DropdownToggle>
         							<DropdownMenu right>
 										<DropdownItem disabled>
-											{this.username}
+											{this.state.username}
 										</DropdownItem>
           								<DropdownItem>
 											{'Profile '}

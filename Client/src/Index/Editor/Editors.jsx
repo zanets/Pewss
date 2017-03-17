@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Editor from './Editor.jsx';
 
+const propTypes = {
+	username: PropTypes.string.isRequired
+};
+
 /* TODO: add mutiple file edit */
-class Editors extends React.Component {
+export default class Editors extends React.Component {
 
 	constructor (props) {
 		super(props);
@@ -11,9 +15,11 @@ class Editors extends React.Component {
 
 	render () {
 		return (
-			<Editor source_list={this.state.source_list}/>
+			<Editor
+				username={this.state.username}
+				source_list={this.state.source_list}/>
 		);
 	}
 }
 
-export default Editors;
+Editors.propTypes = propTypes;

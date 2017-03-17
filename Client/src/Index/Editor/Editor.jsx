@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import uuid from 'node-uuid';
 import Loader from 'react-loader';
 import update from 'immutability-helper';
+import NewFileGenerator from './NewFileGnerator.jsx';
 import {
 	ModalInfo,
 	ModalNewFile,
@@ -13,6 +14,10 @@ import {
 	Row,
 	Col,
 } from 'reactstrap';
+
+const propTypes = {
+	username: PropTypes.string.isRequired
+};
 
 export default class Editor extends React.Component{
 
@@ -32,8 +37,8 @@ export default class Editor extends React.Component{
 				owner: '',
 				isPub: false,
 				isMod: false,
-				code: '',
-				originCode: ''
+				code: NewFileGenerator.get(this.props.username),
+				originCode: NewFileGenerator.get(this.props.username)
 			},
 			MainLoader: {
 				isOpen: false
@@ -123,6 +128,7 @@ export default class Editor extends React.Component{
 								toggleMainLoader={this.toggleMainLoader.bind(this)}
 								toggleModalInfo={this.toggleModalInfo.bind(this)}
 								toggleModalNewFile={this.toggleModalNewFile.bind(this)}
+								username={this.props.username}
 							/>
 						</Col>
 					</Row>
@@ -154,4 +160,6 @@ export default class Editor extends React.Component{
 			</div>
 		);
 	}
-}
+};
+
+Editor.propTypes = propTypes;
