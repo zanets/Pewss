@@ -27,6 +27,7 @@ export default class Editor extends React.Component{
 	}
 
 	fileNew(isForce){
+		const defailtCode = NewFileGenerator.get(this.props.username)
 		this.state = {
 			sourceList: this.props.source_list,
 			editorId: this.props.id,
@@ -37,8 +38,8 @@ export default class Editor extends React.Component{
 				owner: '',
 				isPub: false,
 				isMod: false,
-				code: NewFileGenerator.get(this.props.username),
-				originCode: NewFileGenerator.get(this.props.username)
+				code: defailtCode,
+				originCode: defailtCode
 			},
 			MainLoader: {
 				isOpen: false

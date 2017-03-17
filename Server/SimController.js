@@ -43,7 +43,7 @@ module.exports = class SimController {
 
 	static compile(data){
 		const envLibrary = this.getEnvLibrary(data.env);
-		const JavaArguments = `-cp ${envLibrary} ${HomeDir}/${data.owner}/${data.category}/${data.name}.java`;
+		const JavaArguments = `-Xlint:unchecked -cp ${envLibrary} ${HomeDir}/${data.owner}/${data.category}/${data.name}.java`;
 		console.log(JavaArguments);
 		const javaProc = spawn('javac', JavaArguments.split(' '));
 		return new Promise((res, rej) => {
