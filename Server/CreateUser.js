@@ -1,7 +1,4 @@
 import UserManager from './UserManager.js';
-import MongoController from './MongoController.js';
-import HomeManager from './HomeManager.js';
-import {FT, FC} from './Utils.js';
 
 const testUsers = ['darg', 'otk'];
 

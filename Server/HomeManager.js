@@ -17,7 +17,7 @@ class HomeManager{
     getFile(usrName, type, category, fileName){
         const fltFiles = this.getFilesByType(usrName, type);
         const file = fltFiles.find(f => {
-            return (f.category === category && f.name === name);
+            return (f.category === category && f.name === fileName);
         });
 
         return file ? file : null;

@@ -36,6 +36,7 @@ module.exports = {
 	FC,
 	BaseDir,
 	HomeDir,
+	ClientDir,
 	SimDir,
 	pErrHandler,
 	eErrHandler,

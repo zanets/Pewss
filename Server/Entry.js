@@ -1,5 +1,4 @@
 import Express from 'express';
-import Colors from 'colors';
 import BodyParser from 'body-parser';
 import Compression from 'compression';
 import Passport from 'passport';
@@ -10,7 +9,7 @@ import SSLManager from './SSLManager.js';
 import SimController from './SimController.js';
 import UserManager from './UserManager.js';
 import HomeManager from './HomeManager.js';
-import {FT, FC, BaseDir} from './Utils.js';
+import {FT, BaseDir} from './Utils.js';
 
 import JSON_strategy from './Passport/Json.js';
 
@@ -64,9 +63,9 @@ APP.use('/', Express.static(`${BaseDir}/Client/build`));
 
 const isLogin = (req, res, next) => {
     if(req.isAuthenticated())
-    	return next();
+		return next();
     else
-    	res.redirect('/login');
+		res.redirect('/login');
 };
 
 const getJPath = (env, meta) => {
@@ -75,7 +74,7 @@ const getJPath = (env, meta) => {
 	} else {
 		return HomeManager.getJPath(meta);
 	}
-}
+};
 
 
 
@@ -277,9 +276,9 @@ APP.post("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 
 	await HomeManager.newFile({
 		name: req.body.name,
-	    category: req.body.category,
-	    content: req.body.content,
-	    owner: req.body.owner,
+		category: req.body.category,
+		content: req.body.content,
+		owner: req.body.owner,
 		type: FT.java
 	}).then(async (_res) => {
 		res.status(200).send('Save complete');

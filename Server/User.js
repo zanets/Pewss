@@ -1,4 +1,3 @@
-import {FT, FC, pErrHandler} from './Utils.js';
 module.exports = class User {
 
 	constructor(property){

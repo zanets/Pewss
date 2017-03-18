@@ -33,7 +33,7 @@ module.exports = class FileController{
 					res(files);
 			});
 		});
-	};
+	}
 
 	static stat(path){
 		return new Promise((res, rej) => {
@@ -55,7 +55,7 @@ module.exports = class FileController{
 		});
 
 		return stat.isDirectory();
-	};
+	}
 
 	static deleteFile(path){
 		return new Promise((res, rej) => {
@@ -65,7 +65,7 @@ module.exports = class FileController{
 				else
 					res();
 			});
-  		});
+		});
 	}
 
 	static writeFile(path, content){

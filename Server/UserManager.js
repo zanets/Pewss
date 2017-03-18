@@ -1,8 +1,7 @@
 import assert from 'assert';
 import MongoController from './MongoController.js';
 import User from './User.js';
-import { BaseDir, eErrHandler, FT, FC } from './Utils.js';
-import envConfig from './Sim/envConfig.json';
+import {eErrHandler, FT} from './Utils.js';
 
 class UserManager {
 
