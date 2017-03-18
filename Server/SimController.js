@@ -1,5 +1,4 @@
 import {spawn} from 'child_process';
-import UserManager from './UserManager.js';
 import {SimDir, HomeDir} from './Utils.js';
 import envSettings from './Sim/envConfig.json';
 
@@ -29,12 +28,10 @@ module.exports = class SimController {
 			});
 
 			javaProc.on('close', (code) => {
-				console.log('close');
 				res(_res);
 			});
 
 			javaProc.on('error', (code) => {
-				console.log('error');
 				rej(_res);
 			});
 
@@ -44,7 +41,6 @@ module.exports = class SimController {
 	static compile(data){
 		const envLibrary = this.getEnvLibrary(data.env);
 		const JavaArguments = `-Xlint:unchecked -cp ${envLibrary} ${HomeDir}/${data.owner}/${data.category}/${data.name}.java`;
-		console.log(JavaArguments);
 		const javaProc = spawn('javac', JavaArguments.split(' '));
 		return new Promise((res, rej) => {
 			let _res = {status: null, msg: ''};
@@ -60,12 +56,10 @@ module.exports = class SimController {
 			});
 
 			javaProc.on('close', (code) => {
-				console.log(_res);
 				res(_res);
 			});
 
 			javaProc.on('error', (code) => {
-				console.log(_res);
 				rej(_res);
 			});
 		});

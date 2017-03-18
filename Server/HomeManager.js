@@ -1,11 +1,11 @@
 import HomeController from './HomeController.js';
 
 import assert from 'assert';
-import { BaseDir, pErrHandler, eErrHandler, FT, FC, HomeDir } from './Utils.js';
+import {  pErrHandler,  FT,  HomeDir } from './Utils.js';
 class HomeManager{
 
     constructor(){
-	       this.UsersFiles = {};
+		this.UsersFiles = {};
 	}
 
     async scan(usrName){
@@ -42,13 +42,6 @@ class HomeManager{
     async newFile(meta){
         const path = `${HomeDir}/${meta.owner}/${meta.category}/${meta.name}.java`;
         return await HomeController.writeFile(path, meta.content).catch(pErrHandler);
-    }
-
-    /* remove both class and source file */
-    removeFile(usrName, category, fileName){
-        // remove file
-
-        // update this
     }
 
     getClassFiles(usrName, publishes){
