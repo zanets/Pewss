@@ -70,8 +70,6 @@ class Index extends React.Component {
 					page: PAGES.SIM
 				});
 			}, 1000);
-		}, (res)=>{
-			console.log(res);
 		});
 	}
 
@@ -84,9 +82,7 @@ class Index extends React.Component {
 					sourceList: res,
 					page: PAGES.EDI
 				});
-			}, 5000);
-		}, (res)=>{
-			console.log(res);
+			}, 1000);
 		});
 	}
 

@@ -20,14 +20,15 @@ import com.use.queue.event.EventType;
 import com.use.resource.GapInfo;
 import com.use.resource.IResNode;
 import com.use.resource.SimpleNode;
-import com.use.resource.platform.WorkflowPlatformHeterogeneous;
+import darg.platform.WorkflowPlatformHeterogeneous;
 import com.use.workflow.Workflow;
 import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;
 import com.use.workflow.task.IDepend;
 import com.use.workflow.task.TaskLink;
+import com.use.scheduler.AWorkflowScheduler;
 
-public class PEFT_MaxMin_MaxMin extends com.use.scheduler.AWorkflowScheduler {
+public class PEFT_MaxMin_MaxMin extends AWorkflowScheduler {
 	protected WorkflowPlatformHeterogeneous platform = new WorkflowPlatformHeterogeneous();
 	protected List<IAttribute> workflowSet = instance.getWaitingQ();
 	protected List<IResNode> srcAttrList;
@@ -40,7 +41,7 @@ public class PEFT_MaxMin_MaxMin extends com.use.scheduler.AWorkflowScheduler {
 	@Override
 	public void schedule() throws Exception {
 
-		platform.clonePlatform((WorkflowPlatformHeterogeneous) instance.getCluster());
+		platform.clonePlatform(instance.getCluster());
 		this.srcAttrList = this.platform.getResourcelist();
 
 		// this is for multiple workflow schedule

@@ -2,7 +2,7 @@ import assert from 'assert';
 import MongoController from './MongoController.js';
 import User from './User.js';
 import {eErrHandler, FT} from './Utils.js';
-
+import Logger from './Logger.js';
 class UserManager {
 
 	constructor(){
@@ -98,7 +98,7 @@ class UserManager {
 		else if(op === '$updatePassword')
 			tarUser.updatePassword(v);
 		else
-			console.log(`modUser: Unknown command ${op}`);
+			Logger.error(`Unknown modUser command : ${op}`);
 
 		await this.updateDB(tarUser).catch(eErrHandler);
 		return 0;

@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import { default as WorkflowTask } from './Env/Workflow/Task.jsx'
+import { default as WorkflowTask } from './Env/Workflow/Task.jsx';
 import ReactDOM from 'react-dom';
 import uuid from 'node-uuid';
 import {

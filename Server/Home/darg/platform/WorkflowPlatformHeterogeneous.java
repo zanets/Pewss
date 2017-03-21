@@ -1,44 +1,54 @@
 package darg.platform;
+
 import com.use.config.DAGVariable;
 import com.use.resource.IResNode;
 import com.use.resource.SimpleNode;
 import com.use.resource.info.ResInfo;
 import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IDepend;
+import com.use.resource.platform.APlatform;
+import com.use.resource.platform.IPlatform;
 import com.use.set.Table;
 import java.util.List;
 import java.util.ArrayList;
-public class WorkflowPlatformHeterogeneous extends com.use.resource.platform.APlatform implements com.use.resource.platform.IPlatform {
-		public Table cpTimeTable;
-		protected int numberOfResource;
-		public double[] speedList = new double[]{
-				1.4,
-				1.2,
-				1.3,
-				1.2,
-				1.1,
-				1.3,
-				1.3,
-				1.2,
-				1.1,
-				1.2,
-				1.2,
-				1.1,
-				1.3,
-				1.1,
-				1.2
-			};
+
+public class WorkflowPlatformHeterogeneous extends APlatform implements IPlatform {
+
+	public Table cpTimeTable;
+	public double[] speedList = null;
+	protected int numberOfResource;
+	
+	public WorkflowPlatformHeterogeneous(){
+		this.speedList = new double[]{
+			1.4,
+			1.2,
+			1.3,
+			1.2,
+			1.1,
+			1.3,
+			1.3,
+			1.2,
+			1.1,
+			1.2,
+			1.2,
+			1.1,
+			1.3,
+			1.1,
+			1.2
+		};
+	}
+	
 	
 	@Override
 	public void alloc() throws Exception {
-	this.getResourcelist().clear();
-	numberOfResource = DAGVariable.getInstance().getNumberOfResource();
-	for(int i = 0;i<numberOfResource;i++) {
-		ResInfo info = new ResInfo(i);
-		info.setSpeed((float) this.getSpeed(i));
-		SimpleNode resource = new SimpleNode(info);
-		add(resource);
-	}
+		this.getResourcelist().clear();
+		numberOfResource = DAGVariable.getInstance().getNumberOfResource();
+		for(int i = 0;i<numberOfResource;i++) {
+			ResInfo info = new ResInfo(i);
+			info.setSpeed((float) this.getSpeed(i));
+			SimpleNode resource = new SimpleNode(info);
+			add(resource);
+		}
 	}
 	
 
@@ -65,14 +75,6 @@ public class WorkflowPlatformHeterogeneous extends com.use.resource.platform.APl
 			System.out.println();
 		}
 	}
-
-public double getSpeed(int i) {
-	return this.speedList[i];
-}
-
-      public double[] getSpeedList() {
-  return this.speedList;
-}
 
 	public void genCPTimeTable(List<Integer> taskIdList, List<IDepend> taskAttrList){
 		this.cpTimeTable = new Table(taskIdList, this.getSrcIdList());
@@ -111,6 +113,14 @@ public double getSpeed(int i) {
 			clone.getAllocationQueue().addAll(baseResource.getAllocationQueue());
 			clone.getOrderQueue().addAll(baseResource.getOrderQueue());
 		}
+	}
+
+	protected double getSpeed(int i){
+		return this.speedList[i];
+	}
+
+	protected double[] getSpeedList(){
+		return this.speedList;
 	}
 	
 	

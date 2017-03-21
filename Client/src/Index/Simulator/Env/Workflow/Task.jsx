@@ -1,5 +1,4 @@
 import React, {PropTypes} from 'react';
-import jq from 'jquery';
 import uuid from 'node-uuid';
 import Status from '../../Status.jsx';
 import ModalRes from './ModalRes.jsx';

@@ -12,6 +12,7 @@ const FC = {
 	simulator: 'simulator'
 };
 import process from "process";
+import Logger from './Logger.js';
 const BaseDir = process.cwd();
 const ServerDir = `${BaseDir}/Server`;
 const ClientDir = `${BaseDir}/Client`;
@@ -19,11 +20,11 @@ const HomeDir = `${ServerDir}/Home`;
 const SimDir = `${ServerDir}/Sim`;
 
 const pErrHandler = (err) => {
-	console.error(err);
+	Logger.error(err);
 };
 
 const eErrHandler = (err) => {
-	console.error(err);
+	Logger.error(err);
 	process.exit(-1);
 };
 
