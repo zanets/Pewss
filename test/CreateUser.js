@@ -1,4 +1,4 @@
-import UserManager from './UserManager.js';
+import UserManager from './Server/UserManager.js';
 
 const testUsers = ['darg', 'otk'];
 

@@ -1,4 +1,4 @@
-import SimController from './SimController.js';
+import SimController from './Server/SimController.js';
 
 
 SimController.compile({
