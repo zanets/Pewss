@@ -1,5 +1,3 @@
-import vis from 'vis';
-
 const defaultOpts = {
 	layout:{
 		hierarchical:{
@@ -30,7 +28,7 @@ export default class network {
 		this.destroy();
 		this.instance = new vis.Network(
 			this.dom, {
-				nodes: this.nodes, 
+				nodes: this.nodes,
 				edges: this.edges
 			}, this.opts);
 	}
@@ -41,7 +39,7 @@ export default class network {
 	}
 
 	parse(raw) {
-		if(raw === null) 
+		if(raw === null)
 			return;
 
 		for(let task of raw.task_list){
@@ -50,14 +48,14 @@ export default class network {
 				title: task.computation_time,
 				level: task.level,
 				label: task.order_number
-			}); 
+			});
 
 			for(let childTask of task.children){
 				this.edges.push({
 					from: task.order_number,
 					to: childTask.task_id,
 					label: childTask.weight
-				}); 
+				});
 			}
 		}
 	}

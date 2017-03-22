@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	target: 'node',
+	devtool: '#source-map',
 	entry:{
 		Index: `${__dirname}/Client/src/Index/Index.jsx`,
 		Login: `${__dirname}/Client/src/Login/Login.jsx`

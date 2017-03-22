@@ -9,8 +9,6 @@ import {
 	Button
 } from 'reactstrap';
 
-import "font-awesome/css/font-awesome.min.css";
-import "vis/dist/vis.min.css";
 
 const propTypes = {
 	id: PropTypes.string.isRequired,
