@@ -107,7 +107,7 @@ class Index extends React.Component {
 			<div className={'fixedDiv'}>
 				<Navbar color="primary" inverse toggleable>
 					<NavbarBrand style={{paddingTop:'1rem'}}>
-						{'Parallel Extendable Workflow Scheduling Simulator'}
+						{'Parallel Extensible Workflow Scheduling Simulator'}
 					</NavbarBrand>
 					<Nav className="ml-auto" navbar>
 						<NavItem>
