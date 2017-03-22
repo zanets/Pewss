@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --ignore Server/Database/Mongo --ignore Server/Home Server/Entry.js --exec babel-node --presets es2015",
     "dev": "webpack -d --progress --colors --watch",
-    "pro": "webpack -p --progress --colors --watch",
+    "pro": "webpack --progress --colors --watch",
     "testm": "babel-node --presets es2015 Server/TestModule.js",
     "startdb": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
     "testsim": "babel-node --presets es2015 Server/TestSimController.js",
@@ -57,6 +57,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "vis": "^4.16.1",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-bundle-size-analyzer": "^2.5.0"
   }
 }
