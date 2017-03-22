@@ -1,5 +1,3 @@
-import vis from 'vis';
-
 const defaultOpts = {
 	stack:false,
 	clickToUse:false,
@@ -46,7 +44,7 @@ export default class timeline {
 
 		for(const task of tasks){
 			const data = {
-				content: `${task.order_number}`, 
+				content: `${task.order_number}`,
 				title: `start : ${task.start_time}\ncp : ${task.finish_time-task.start_time}\nend : ${task.finish_time}`,
 				group: task.resource_id,
 				start: new Date(this.currentTime.getTime() + task.start_time * 1000),
@@ -87,11 +85,11 @@ export default class timeline {
 	bindEvt() {
 		this.instance.on('select', evt => {
 			const id = evt.items[0];
-			if(id === undefined) 
+			if(id === undefined)
 				return;
-			
+
 			let willSelected = [id];
-	
+
 			const _groupChild = selid => {
 				const selectedData = this.datum.find( d => d.id === selid );
 				if(!('child' in selectedData))
@@ -138,31 +136,31 @@ export default class timeline {
 		this.instance.setItems(datum);
 		this.instance.redraw();
 	}
-	
+
 
 	renderTimeBar(datum){
 		let times = [];
 
 		for(const data of datum){
 			if(!times.includes(data.start_time_sec)){
-				times.push(data.start_time_sec); 
+				times.push(data.start_time_sec);
 			}
 			if(!times.includes(data.end_time_sec)){
 				times.push(data.end_time_sec);
 			}
 		}
-		
+
 		for (var i=0; i<2000; i=i+100){
 			let time = i;
 
 			const data = {
-				content: `${time}`, 
+				content: `${time}`,
 				group: 'Time',
 				start: new Date(this.currentTime.getTime() + time * 1000),
 				type: 'point',
 				id: `time-${time}`
 			};
-	
+
 			datum.push(data);
 		}
 
