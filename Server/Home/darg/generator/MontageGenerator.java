@@ -1,5 +1,6 @@
 package darg.generator;
 
+import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,32 +24,51 @@ public final class MontageGenerator extends AGenerator {
 
 	public MontageGenerator() {
 		super();
+
 		this.va = DAGVariable.getInstance();
 	}
 	
 	public List<IAttribute> generate() throws Exception{
 
-		try
-			this.loader.open('abc.xml');
-		catch (Exception ex)
+		try {
+			this.loader.open("SyntheticWorkflows/MONTAGE/MONTAGE.n.100.0.dax");
+		} catch (Exception ex){
 			ex.printStackTrace();
+			return null;
+		}
 
 		List<IAttribute> wfs = new ArrayList<IAttribute>();
 		
+		// TODO: the for-loop use same xml input
+		// consider loading different xml file by 
+		// differnt task amount from DAGVariable. 
 		for(int wfid=0; wfid<this.va.getNumberOfWorkflow(); wfid++){
+
+			// create workflow
 			Workflow wf = new Workflow(wfid);
-			
+
 			wf.setInterArrivalTime(
 				this.rd.nextInt(this.va.getMaxInterArrivalTime())
 			);
 			
-			// create workflow task
-			// TODO: random computation and communication cost
-			IDepend task = new DAGDependTask(
-				new DependTaskInfo(i+1, wf)
-			);
-			
-			wfs.add(wf);
+			// create tasks
+			int cur = 0;
+			while((cur= this.loader.Cursor(cur)) > 0){
+				DAGDependTask task = new DAGDependTask(
+					new DependTaskInfo(
+						this.loader.getId(),
+						this.loader.getCpTime()
+					)
+				);
+				task.setBelongWorkflow(wf);
+				wf.getTaskList().add(task);
+			}
+
+			// create edge
+			for(DAGDependTask task : wf.getTaskList()){
+								
+			}
+
 		}
 		
 		Collections.sort(wfs, new Comparator<IAttribute>(){
@@ -60,9 +80,7 @@ public final class MontageGenerator extends AGenerator {
 		return wfs;
 	}
 
-	public IDepend genTask(int id, ){
+	protected void genEdge(IDepend parent, IDepend child){
 
 	}
-
-	
 }
