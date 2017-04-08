@@ -19,12 +19,11 @@ import com.use.generator.AGenerator;
 public final class MontageGenerator extends AGenerator {
 	
 	private Random rd = new Random();
-	private XMLoader loader = new WFXMLoader();
+	private ISynthLoader loader = new SynthLoader();
 	private DAGVariable va = null;
 
 	public MontageGenerator() {
 		super();
-
 		this.va = DAGVariable.getInstance();
 	}
 	
@@ -39,7 +38,7 @@ public final class MontageGenerator extends AGenerator {
 
 		List<IAttribute> wfs = new ArrayList<IAttribute>();
 		
-		// TODO: the for-loop use same xml input
+		// TODO: the for-loop use same xml file
 		// consider loading different xml file by 
 		// differnt task amount from DAGVariable. 
 		for(int wfid=0; wfid<this.va.getNumberOfWorkflow(); wfid++){
@@ -53,11 +52,11 @@ public final class MontageGenerator extends AGenerator {
 			
 			// create tasks
 			int cur = 0;
-			while((cur= this.loader.Cursor(cur)) > 0){
+			while((cur = this.loader.cursor(cur)) > 0){
 				DAGDependTask task = new DAGDependTask(
 					new DependTaskInfo(
 						this.loader.getId(),
-						this.loader.getCpTime()
+						(int) this.loader.getCpTime()
 					)
 				);
 				task.setBelongWorkflow(wf);
@@ -65,22 +64,50 @@ public final class MontageGenerator extends AGenerator {
 			}
 
 			// create edge
-			for(DAGDependTask task : wf.getTaskList()){
-								
+			for(IDepend task : wf.getTaskList()){
+				List<Integer> parents = null;
+				
+				try{
+					parents = this.loader.getParent(task.getId());
+				} catch (Exception ex){
+					ex.printStackTrace();
+				}	
+
+				if(parents == null)
+					continue;
+
+				for(Integer id : parents)
+					this.genEdge(wf.getTaskList().get(id), task);
 			}
 
+			wfs.add(wf);
 		}
 		
 		Collections.sort(wfs, new Comparator<IAttribute>(){
 			public int compare(IAttribute a1, IAttribute a2) {
-				return a1.getInterArrivalTime() - a2.getInterArrivalTime();
+				return ((Workflow)a1).getInterArrivalTime() 
+					- ((Workflow)a2).getInterArrivalTime();
 			}
 		});
-
+		
 		return wfs;
 	}
 
 	protected void genEdge(IDepend parent, IDepend child){
 
+		float max = (1 + this.va.getMaxComputationTime() - this.va.getMinComputationTime()) 
+			* this.va.getCommunicationToComputationRatio();
+		
+		int cmTime = this.va.getMinComputationTime() + this.rd.nextInt((int) max);
+		
+		parent.getChildTaskLink().add(new TaskLink(
+			cmTime,
+			child
+		));
+
+		child.getParentTaskLink().add(new TaskLink(
+			cmTime,
+			parent
+		));
 	}
 }
