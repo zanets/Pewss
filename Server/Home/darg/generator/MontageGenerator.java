@@ -18,13 +18,15 @@ import com.use.generator.AGenerator;
 
 public final class MontageGenerator extends AGenerator {
 	
-	private Random rd = new Random();
-	private ISynthLoader loader = new SynthLoader();
+	private Random rd = null;
+	private ISynthLoader loader = null;
 	private DAGVariable va = null;
 
 	public MontageGenerator() {
 		super();
 		this.va = DAGVariable.getInstance();
+		this.loader = new SynthLoader();
+		this.rd = new Random(this.va.getRandomSeed());
 	}
 	
 	public List<IAttribute> generate() throws Exception{
