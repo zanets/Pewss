@@ -46,9 +46,10 @@ public final class MontageGenerator extends AGenerator {
 
 			// create workflow
 			Workflow wf = new Workflow(wfid);
-
+			
 			wf.setInterArrivalTime(
-				this.rd.nextInt(this.va.getMaxInterArrivalTime())
+				// this.rd.nextInt(this.va.getMaxInterArrivalTime())
+				0
 			);
 			
 			// create tasks
@@ -86,8 +87,8 @@ public final class MontageGenerator extends AGenerator {
 		
 		Collections.sort(wfs, new Comparator<IAttribute>(){
 			public int compare(IAttribute a1, IAttribute a2) {
-				return ((Workflow)a1).getInterArrivalTime() 
-					- ((Workflow)a2).getInterArrivalTime();
+				return ((Workflow) a1).getInterArrivalTime() 
+					- ((Workflow) a2).getInterArrivalTime();
 			}
 		});
 		

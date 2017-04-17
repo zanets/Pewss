@@ -26,8 +26,8 @@ import com.use.workflow.task.IAttribute;
 import com.use.workflow.task.IDepend;
 import com.use.workflow.task.TaskLink;
 
-public class PEFT_MinMax_MaxMin extends PEFT_MaxMin_MaxMin {
-
+public class PEFT_Top_MinMax_MaxMin extends PEFT_Top_MaxMin_MaxMin {
+  
   protected float compFirstOCT(int taskId, int srcId, List<IDepend> taskAttrList){
     IDepend targetTask = taskAttrList.stream().filter(attr -> attr.getId() == taskId).findFirst().get();
     List<TaskLink> childLink = targetTask.getChildTaskLink();
@@ -73,5 +73,4 @@ public class PEFT_MinMax_MaxMin extends PEFT_MaxMin_MaxMin {
     }
     return (tmpList1.size() == 0) ? 0 : Collections.max(tmpList1);
   }
-
 }

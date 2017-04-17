@@ -26,9 +26,9 @@ import com.use.workflow.task.IAttribute;
 import com.use.workflow.task.IDepend;
 import com.use.workflow.task.TaskLink;
 
-public class PEFT_MinMax_MaxMin extends PEFT_MaxMin_MaxMin {
-
-  protected float compFirstOCT(int taskId, int srcId, List<IDepend> taskAttrList){
+public class PEFT_avg_avg extends PEFT_MaxMin_MaxMin {
+	
+	protected float compFirstOCT(int taskId, int srcId, List<IDepend> taskAttrList){
     IDepend targetTask = taskAttrList.stream().filter(attr -> attr.getId() == taskId).findFirst().get();
     List<TaskLink> childLink = targetTask.getChildTaskLink();
     List<Float> tmpList1 = new ArrayList<Float>();
@@ -46,18 +46,18 @@ public class PEFT_MinMax_MaxMin extends PEFT_MaxMin_MaxMin {
         });
         tmpList2.add((float)octV+cpTime+commTime);
       }
-      tmpList1.add(Collections.max(tmpList2));
+      tmpList1.add(this.getAvg(tmpList2));
     }
-    return (tmpList1.size() == 0) ? 0 : Collections.min(tmpList1);
+    return (tmpList1.size() == 0) ? 0 : this.getAvg(tmpList1);
   }
 
   protected float compSecondOCT(int taskId, int srcId, List<IDepend> taskAttrList){
     IDepend targetTask = taskAttrList.stream().filter(attr -> attr.getId() == taskId).findFirst().get();
     List<TaskLink> childLink = targetTask.getChildTaskLink();
     List<Float> tmpList1 = new ArrayList<Float>();
-    for(TaskLink clink : childLink){
+    for (TaskLink clink : childLink) {
       List<Float> tmpList2 = new ArrayList<Float>();
-      for(IResNode srcAttr : srcAttrList){
+      for (IResNode srcAttr : srcAttrList) {
         int thisSrcId = srcAttr.getId();
         int thistaskId = clink.getNextTask().getId();
         int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
@@ -69,9 +69,15 @@ public class PEFT_MinMax_MaxMin extends PEFT_MaxMin_MaxMin {
         });
         tmpList2.add((float)octV+cpTime+commTime);
       }
-      tmpList1.add(Collections.min(tmpList2));
+      tmpList1.add(this.getAvg(tmpList2));
     }
-    return (tmpList1.size() == 0) ? 0 : Collections.max(tmpList1);
+    return (tmpList1.size() == 0) ? 0 : this.getAvg(tmpList1);
   }
 
+  protected float getAvg(List<Float> li){
+  	float total = 0;
+  	for (float v : li)
+  		total += v;
+  	return total / li.size();
+  }
 }
