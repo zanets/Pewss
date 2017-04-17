@@ -13,3 +13,4 @@ yarn.lock
 *~
 *.class
 *.jar
+SyntheticWorkflows/
