@@ -1,11 +1,11 @@
 {
 	"workflow": {
-		"lib": ["workflow-test.jar", "USES.jar", "gson-2.6.2.jar"],
+		"lib": ["workflow.jar", "USES.jar", "gson-2.6.2.jar"],
 		"builtin": [
 			{
 				"category": "simulator",
-				"name": "StaticWorkflowSimulator",
-				"jpath": "com.use.simulator.StaticWorkflowSimulator",
+				"name": "dbgStaticWFSimulator",
+				"jpath": "com.use.simulator.dbgStaticWFSimulator",
 				"owner": "admin",
 				"type": "class"
 			},
@@ -19,8 +19,8 @@
 			{
 				"category": "platform",
 				"name": "WorkflowPlatformHeterogeneous",
-				"jpath": "com.use.resource.platform.WorkflowPlatformHeterogeneous",
-				"owner": "admin",
+				"jpath": "darg.platform.WorkflowPlatformHeterogeneous",
+				"owner": "darg",
 				"type": "class"
 			}
 		]

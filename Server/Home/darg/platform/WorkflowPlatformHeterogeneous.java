@@ -13,8 +13,9 @@ public class WorkflowPlatformHeterogeneous extends WorkflowPlatform
 		super();
 	}
 	
-	public void genCPTimes(List<Integer> taskIdList, List<IDepend> taskAttrList)
+	public void genCPTimes(List<IDepend> taskAttrList)
 	{
+		List<Integer> taskIdList = this.getTaskIdList(taskAttrList);
 		this.cpTimes = new Table(taskIdList, this.getResIds());
 		this.cpRates = new Table(taskIdList, this.getResIds());
 
@@ -24,9 +25,8 @@ public class WorkflowPlatformHeterogeneous extends WorkflowPlatform
 
 			this.getResourcelist().forEach( srcAttr -> {
 					SimpleNode res = (SimpleNode) srcAttr;
-					float cpRate = ( this.rander.nextInt(10) + 10 ) / 10;
-					float cpTime = task.getComputationTime() * cpRate;
-					
+					double cpRate = this.rander.nextDouble() + 1;
+					double cpTime = task.getComputationTime() * cpRate;
 					this.cpRates.setElement(task.getId(), res.getId(), (float) cpRate);
 					this.cpTimes.setElement(task.getId(), res.getId(), (int) cpTime);
 				}

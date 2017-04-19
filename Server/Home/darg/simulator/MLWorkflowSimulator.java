@@ -58,9 +58,9 @@ public class MLWorkflowSimulator extends com.use.simulator.StaticWorkflowSimulat
 			this.MetaFetcher.fetch(DAGVariable.getInstance().getCommunicationToComputationRatio());
 			this.MetaFetcher.fetch(DAGVariable.getInstance().getNumberOfResource());
 			this.MetaFetcher.fetch(workflow.getTaskList().size());
-			this.MetaFetcher.fetch(workflow.getCriticalPathTasksList().size());
 			this.MetaFetcher.fetch(workflow.getAvgChildAmount());
 			this.MetaFetcher.fetch(workflow.getAvgParentAmount());
+			this.MetaFetcher.fetch(workflow.getCriticalPathTasksList().size());
 
 			// ======= constant
 			this.MetaFetcher.fetch(workflow.getFinishTime() - workflow.getInterArrivalTime()); // makespan

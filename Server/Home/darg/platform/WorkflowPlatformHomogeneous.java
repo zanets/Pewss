@@ -13,8 +13,9 @@ public class WorkflowPlatformHomogeneous extends WorkflowPlatform
 		super();
 	}
 	
-	public void genCPTimes(List<Integer> taskIdList, List<IDepend> taskAttrList)
+	public void genCPTimes(List<IDepend> taskAttrList)
 	{
+		List<Integer> taskIdList = this.getTaskIdList(taskAttrList);
 		this.cpTimes = new Table(taskIdList, this.getResIds());
 		this.cpRates = new Table(taskIdList, this.getResIds());
 

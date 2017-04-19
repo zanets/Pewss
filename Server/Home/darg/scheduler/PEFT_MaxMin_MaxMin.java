@@ -26,36 +26,35 @@ import com.use.workflow.task.IAttribute;
 import com.use.workflow.task.IDepend;
 import com.use.workflow.task.TaskLink;
 import darg.platform.WorkflowPlatform;
-import darg.platform.WorkflowPlatformHeterogeneous;
-import com.use.scheduler.AWorkflowScheduler;
-public class PEFT_MaxMin_MaxMin extends AWorkflowScheduler {
-
-	protected WorkflowPlatform platform = null;
-	protected List<IAttribute> workflowSet = instance.getWaitingQ();
+import com.use.scheduler.AListBaseWorkflowScheduler;
+public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 	protected List<IResNode> srcAttrList;
-	
 	protected Table firstOCTTable;
 	protected Table secondOCTTable;
 	protected Map<Integer, Float> rankOCT;
-	
+
+	public PEFT_MaxMin_MaxMin()
+	{
+		super();
+	}
+
 	@Override
 	public void schedule() throws Exception {
-		
-		this.platform = instance.getCluster();
+		this.initialize();
 		this.srcAttrList = this.platform.getResourcelist();
 		
 		// this is for multiple workflow schedule
-		for (IAttribute attr : workflowSet) {
-			resetActionQ();
+		for (IAttribute attr : this.workflowSet) {
+			this.resetActionQ();
 			Workflow workflow = (Workflow) attr;
 			List<IDepend> taskAttrList = workflow.getTaskList();
 			 
-			isPreScheduled = new boolean[taskAttrList.size()];
+			this.isPreScheduled = new boolean[taskAttrList.size()];
 			
 			// ==================
 			// PEFT algorithm
 			//
-			platform.genCPTimes(this.getTaskIdList(taskAttrList), taskAttrList);
+			this.platform.genCPTimes(taskAttrList);
 			
 			this.genOCTTable(taskAttrList);
 			this.genRankOCT(taskAttrList);
@@ -85,7 +84,7 @@ public class PEFT_MaxMin_MaxMin extends AWorkflowScheduler {
 				// assign computation time and allocate to resource
 				task.setComputationTime(this.platform.getCPTime(task.getId(), minOne.getKey().getId()));
 				this.taskAllocation(minOne.getKey(), this.getBestGap(task, minOne.getKey()), task);			  
-				isPreScheduled[task.getId()] = true;
+				this.isPreScheduled[task.getId()] = true;
 
 				// update readylist
 				readyList = getReadyList(taskAttrList);
@@ -228,114 +227,17 @@ public class PEFT_MaxMin_MaxMin extends AWorkflowScheduler {
 		return (DAGDependTask) maxRankOCTTask;
 	}
 	
-
-	protected List<Integer> getTaskIdList(List<IDepend> taskAttrList){
-		List<Integer> taskIdList = new ArrayList<Integer>();
-		taskAttrList.forEach((attr)->taskIdList.add(attr.getId()));
-		return taskIdList;
-	}
-	
 	protected float getEFT(IDepend taskAttr, IResNode srcAttr){
 		GapInfo bestGap = this.getBestGap(taskAttr, srcAttr);
 		return bestGap.getEST() + this.platform.getCPTime(taskAttr.getId(), srcAttr.getId());
-		
 	}
-	
-	protected GapInfo compareGap(GapInfo bestGapInfo,GapInfo gapInfo, IAttribute task) {
-		
-		gapInfo.setBestValue(gapInfo.getEST() + this.platform.getCPTime(task.getId(), gapInfo.getResId()));
-		if (bestGapInfo != null)
-			bestGapInfo.setBestValue(bestGapInfo.getEST() + this.platform.getCPTime(task.getId(), bestGapInfo.getResId()));
-		if (bestGapInfo == null || gapInfo.getBestValue() < bestGapInfo.getBestValue()) {
-			return gapInfo;
-		}
-		return bestGapInfo;
-	}
-	
-	protected GapInfo getBestGap(IAttribute tmp, IResNode tmp2) {
-		DAGDependTask task = (DAGDependTask) tmp;
-		SimpleNode resource = (SimpleNode) tmp2;
-		long taskReadyTime = 0;
-		GapInfo bestGapInfo = null;
-		taskReadyTime = getTaskReadyTime(task, resource.getId());
-		
-		// compute index and EFT of gap on this resource
-		boolean nonGapToAllocate = true;
-		for (int i = 0; i < resource.getAllocationQueue().size(); i++) {
-			
-			long startTimeOfThisGap = 0;
-			long finishTimeOfThisGap = resource.getAllocationQueue().get(i).getEST();
-			long predictTaskStartTime;
-			
-			if (i > 0)
-				startTimeOfThisGap = resource.getAllocationQueue().get(i - 1).getEFT();
-			
-			if (taskReadyTime < startTimeOfThisGap)
-				predictTaskStartTime = startTimeOfThisGap;
-			else
-				predictTaskStartTime = taskReadyTime;
-			
-			if (finishTimeOfThisGap < predictTaskStartTime + this.platform.getCPTime(task.getId(), resource.getId()))
-				continue;
-			
-			else {
-				nonGapToAllocate = false;
-				GapInfo gapInfo = new GapInfo(i, predictTaskStartTime,
-																			 startTimeOfThisGap, finishTimeOfThisGap);
-				gapInfo.setResId(resource.getId());
-				bestGapInfo = compareGap(bestGapInfo, gapInfo, task);
-			}
-			
-		}
-		
-		if (nonGapToAllocate) {
-			long predictTaskStartTime = 0;
-			if (resource.getAllocationQueue().size() == 0
-					|| taskReadyTime > resource.getAllocationQueue()
-							.get(resource.getAllocationQueue().size() - 1)
-							.getEFT())
-				predictTaskStartTime = taskReadyTime;
-			else
-				predictTaskStartTime = resource.getAllocationQueue()
-						.get(resource.getAllocationQueue().size() - 1).getEFT();
-			bestGapInfo = new GapInfo(resource.getAllocationQueue().size(),
-					predictTaskStartTime);
-			bestGapInfo.setResId(resource.getId());
-		}
-		
-		return bestGapInfo;
-	}
-	
-	protected void taskAllocation(IResNode tmp, GapInfo gapInfo, DAGDependTask task) {
-		SimpleNode resource = (SimpleNode) tmp;
-		long eft = gapInfo.getEST() + task.getComputationTime();
-		long est = gapInfo.getEST();
 
-		instance.getQueue().addToQueue(QueueType.Action, new Event(EventType.end, task.getId(), eft, 1, task));
-		instance.getQueue().addToQueue(QueueType.Action, new Event(EventType.start, task.getId(), est, 1,task));
-		task.setEFT(eft);
-		task.setEST(est);
-		task.setBelongRes(resource);
-		task.setResourceId(resource.getId());
-		task.setScheduled(true);
-		resource.getAllocationQueue().add(gapInfo.getGapIndex(), task);
-		resource.getOrderQueue().add(task);
-		if (ALauncher.isLogEnable()) {
-			// System.err.println("Task "+task.getId()+" Allocated!");
-		}
+	protected List<Integer> getTaskIdList(List<IDepend> taskAttrList){
+		List<Integer> taskIdList = new ArrayList<Integer>();
+		taskAttrList.forEach(attr -> 
+			taskIdList.add(attr.getId())
+		);
+		return taskIdList;
 	}
 	
-	@Override
-	protected void resetActionQ() {
-		MixQueue q = (MixQueue)instance.getQueue();
-		q.cleanAction();
-		for(IAttribute tmp:instance.getWaitingQ()) {
-			Workflow workflow = (Workflow)tmp;
-			for(IAttribute tmp2:workflow.getTaskList()) {
-				DAGDependTask task = (DAGDependTask)tmp2;
-				if(!task.isScheduled()&&task.isStarted())
-					q.addToQueue(QueueType.Action, new Event(EventType.end,task.getId(),task.getEFT(),1,task));
-			}
-		}
-	}
 }

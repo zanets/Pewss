@@ -40,7 +40,7 @@ public class PEFT_Top_MaxMin_MaxMin extends PEFT_MaxMin_MaxMin {
   @Override
   public void schedule() throws Exception {
     
-    this.platform = instance.getCluster();
+    super.schedule();
     this.srcAttrList = this.platform.getResourcelist();
     
     // this is for multiple workflow schedule
@@ -54,7 +54,7 @@ public class PEFT_Top_MaxMin_MaxMin extends PEFT_MaxMin_MaxMin {
       // ==================
       // PEFT algorithm
       //
-      platform.genCPTimes(this.getTaskIdList(taskAttrList), taskAttrList);
+      platform.genCPTimes(taskAttrList);
       this.topRank = new HashMap<Integer, Float>();
       this.topRank.put(0, 0.0f);
       this.genOCTTable(taskAttrList);
@@ -88,7 +88,6 @@ public class PEFT_Top_MaxMin_MaxMin extends PEFT_MaxMin_MaxMin {
         this.taskAllocation(minOne.getKey(), this.getBestGap(task, minOne.getKey()), task);       
         isPreScheduled[task.getId()] = true;
         float newTopRank = this.getTopRank(task);
-	  	workflow.topRanking();
         this.topRank.put(task.getId(), newTopRank);
 
         // update readylist
@@ -106,8 +105,6 @@ public class PEFT_Top_MaxMin_MaxMin extends PEFT_MaxMin_MaxMin {
       float rankoct = this.rankOCT.get(task.getId());
       float TopRank = this.getTopRank(task);
       float TopRank2 = task.getTopRank();
-	  if(TopRank != TopRank2)
-		  System.out.printf("%d %f %f\n",task.getId(), TopRank, TopRank2);
       float total = rankoct + TopRank;
       if(maxTopRankplusRankOCT < total){
         maxTopRankplusRankOCT = total;

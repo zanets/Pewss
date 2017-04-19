@@ -30,8 +30,9 @@ public final class MontageGenerator extends AGenerator {
 	
 	public List<IAttribute> generate() throws Exception{
 
+		// the file might be changed by user input
 		try {
-			this.loader.open("SyntheticWorkflows/MONTAGE/MONTAGE.n.100.0.dax");
+			this.loader.open("SyntheticWorkflows/MONTAGE/MONTAGE.n.50.2.dax");
 		} catch (Exception ex){
 			ex.printStackTrace();
 			return null;

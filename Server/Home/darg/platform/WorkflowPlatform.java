@@ -41,7 +41,7 @@ public abstract class WorkflowPlatform extends APlatform implements IPlatform
 		}
 	}
 
-	public abstract void genCPTimes(List<Integer> taskIdList, List<IDepend> taskAttrList);
+	public abstract void genCPTimes(List<IDepend> taskAttrList);
 
 	public int getCPTime(int taskId, int resId)
 	{
@@ -61,6 +61,14 @@ public abstract class WorkflowPlatform extends APlatform implements IPlatform
 	protected float getResCPRate(int taskId, int resId)
 	{
 		return (float) this.cpRates.getElement(taskId, resId).get();
+	}
+
+	protected List<Integer> getTaskIdList(List<IDepend> taskAttrList){
+		List<Integer> taskIdList = new ArrayList<Integer>();
+		taskAttrList.forEach(attr -> 
+			taskIdList.add(attr.getId())
+		);
+		return taskIdList;
 	}
 
 	public void clonePlatform(WorkflowPlatform cloneBase)
