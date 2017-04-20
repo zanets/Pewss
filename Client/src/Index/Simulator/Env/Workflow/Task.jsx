@@ -6,6 +6,7 @@ import ModalSettings from './ModalSettings.jsx';
 import update from 'immutability-helper';
 import {default as API} from '../../../../WebAPI.jsx';
 import {
+	Input,
 	Button
 } from 'reactstrap';
 
@@ -127,10 +128,18 @@ export default class Task extends React.Component{
 		this.toggleRes(true);
 	}
 
+	/* get data when its selected */
+	getSlectedData(){
+		return this.refs.modal_res.getDbgBody();
+	}
+
 	render(){
 		const status = this.state.resStatus;
 		return (
 			<tr>
+				<td>
+					<Input addon type="checkbox" aria-label="Checkbox for following text input" />
+				</td>
 				<td>
 					{`${this.props.generator.name} @ ${this.props.generator.owner}`}
 				</td>
@@ -185,6 +194,7 @@ export default class Task extends React.Component{
 						{...this.state.res}
 						isOpen={this.state.showRes}
 						toggle={this.toggleRes.bind(this)}
+						ref="modal_res"
 					/>
 					<ModalSettings
 						{...this.state.settings}

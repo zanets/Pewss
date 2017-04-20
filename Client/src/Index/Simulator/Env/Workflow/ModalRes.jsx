@@ -99,10 +99,10 @@ export default class ModalRes extends React.Component{
 		return cmps;
 	}
 
-	render(){
+	/* dirty: for compare */
+	getDbgBody(){
 		return (
-		 <Modal size='lg' isOpen={this.state.isOpen} toggle={this.props.toggle}>
-			<ModalBody>
+			<div>
 				<Nav tabs>
 					<NavItem>
 						<NavLink
@@ -121,6 +121,15 @@ export default class ModalRes extends React.Component{
 					</TabPane>
 					{this.getTabcontents()}
 				</TabContent>
+			</div>
+		);
+	}
+
+	render(){
+		return (
+		 <Modal size='lg' isOpen={this.state.isOpen} toggle={this.props.toggle}>
+			<ModalBody>
+				{this.getDbgBody()}
 			</ModalBody>
 		</Modal>
 		);

@@ -27,6 +27,7 @@ export default class Simulator extends React.Component {
 		this.state = {
 			class_list: this.fixClassName(props.class_list),
 			isOpenNewTask:false,
+			isOpenCompare:false,
 			tasks: []
 		};
 	}
@@ -92,13 +93,33 @@ export default class Simulator extends React.Component {
 		);
 	}
 
+	toggleCompare(isOpen){
+		isOpen = isOpen || !this.state.isOpenCompare;
+		this.setState({
+			isOpenCompare: isOpen
+		});
+		this.ddddd = (
+			<div>
+			{this.refs[this.state.tasks[0].id].getSlectedData()}
+			{this.refs[this.state.tasks[1].id].getSlectedData()}
+			</div>
+		);
+	}
+
+	compare(){
+		if(this.state.isOpenCompare)
+		return this.state.tasks.length === 0
+			? ''
+			: this.refs[this.state.tasks[0].id].getSlectedData();
+	}
+
 	render() {
 		const nullTaskHint =
 			this.state.tasks.length === 0
 				? <Jumbotron>
 					<h2>No simulation task.</h2>
 					<h5>Press <span className="fa fa-plus fa-1x"/> to create.</h5>
-				  </Jumbotron>
+				</Jumbotron>
 				: '';
 		return (
 			<div className='card card-default'>
@@ -107,7 +128,15 @@ export default class Simulator extends React.Component {
 					<Button color='warning' onClick={this.toggleNewTaskModal.bind(this, true)}>
 						<span className="fa fa-plus-circle fa-3x"/>
 					</Button>
+					<Button color='info' onClick={this.toggleCompare.bind(this, true)}>
+						<span className="fa fa-balance-scale fa-3x"/>
+					</Button>
 
+					<Modal isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
+						<ModalBody>
+							{this.ddddd}
+						</ModalBody>
+					</Modal>
 					<Modal isOpen={this.state.isOpenNewTask} toggle={this.toggleNewTaskModal.bind(this)}>
 						<ModalHeader>
 							{'New Simulation Task'}
@@ -145,37 +174,38 @@ export default class Simulator extends React.Component {
 									</Input>
 								</Col>
 							</FormGroup>
-						 </ModalBody>
-						 <ModalFooter>
-						  	<Button color='danger' onClick={this.toggleNewTaskModal.bind(this, false)}>
-						  		<span className="fa fa-close"/>
-						  	</Button>
-						  	<Button color='primary' onClick={this.newTask.bind(this)}>
-						  		<span className="fa fa-check"/>
-						  	</Button>
+						</ModalBody>
+						<ModalFooter>
+							<Button color='danger' onClick={this.toggleNewTaskModal.bind(this, false)}>
+								<span className="fa fa-close"/>
+							</Button>
+							<Button color='primary' onClick={this.newTask.bind(this)}>
+								<span className="fa fa-check"/>
+							</Button>
 						</ModalFooter>
 					</Modal>
 					{/*---------------- task list -------------*/}
 
 					<Table hover responsive style={{marginTop: '.7rem'}}>
-		  			<thead>
-		  				<tr>
-		  					<th>{'Generator'}</th>
-		  					<th>{'Platform'}</th>
-		  					<th>{'Simulator'}</th>
-		  					<th>{'Scheduler'}</th>
-		  					<th>{'Operate'}</th>
-		  					<th>{'Status'}</th>
-		  					<th style={{display:'none'}}></th>
-		  				</tr>
-		  			</thead>
-		  			<tbody>
-		  				{this.getTaskComponent()}
-		  			</tbody>
-		  		</Table>
-		  		{nullTaskHint}
-		  	</div>
-    	</div>
+						<thead>
+							<tr>
+								<th></th>
+								<th>{'Generator'}</th>
+								<th>{'Platform'}</th>
+								<th>{'Simulator'}</th>
+								<th>{'Scheduler'}</th>
+								<th>{'Operate'}</th>
+								<th>{'Status'}</th>
+								<th style={{display:'none'}}></th>
+							</tr>
+						</thead>
+						<tbody>
+							{this.getTaskComponent()}
+						</tbody>
+					</Table>
+					{nullTaskHint}
+				</div>
+			</div>
 		);
 	}
 }
