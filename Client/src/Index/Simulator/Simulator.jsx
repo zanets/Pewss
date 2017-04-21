@@ -100,8 +100,12 @@ export default class Simulator extends React.Component {
 		});
 		this.ddddd = (
 			<div className={"row"}>
-			{this.refs[this.state.tasks[0].id].getSlectedData()}
-			{this.refs[this.state.tasks[1].id].getSlectedData()}
+				<div className={"col-sm-6"}>
+					{this.refs[this.state.tasks[0].id].getSlectedData()}
+				</div>
+				<div className={"col-sm-6"}>
+					{this.refs[this.state.tasks[1].id].getSlectedData()}
+				</div>
 			</div>
 		);
 	}
@@ -132,7 +136,7 @@ export default class Simulator extends React.Component {
 						<span className="fa fa-balance-scale fa-3x"/>
 					</Button>
 
-					<Modal isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
+					<Modal style={{maxWidth:"90%"}} isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
 						<ModalBody>
 							{this.ddddd}
 						</ModalBody>
