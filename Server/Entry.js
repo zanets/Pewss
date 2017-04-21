@@ -49,6 +49,7 @@ APP.use('/build', Express.static(`${BaseDir}/Client/build`));
 APP.use('/vs', Express.static(`${BaseDir}/node_modules/monaco-editor/min/vs`));
 APP.use('/node_modules', Express.static(`${BaseDir}/node_modules`));
 APP.use('/', Express.static(`${BaseDir}/Client/build`));
+APP.use('/documents', Express.static(`${BaseDir}/Server/Sim/env/workflow/doc/html/`));
 
 // ======================
 // html request
