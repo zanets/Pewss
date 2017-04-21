@@ -15,7 +15,7 @@ import Logger from  './Logger.js';
 // initialize modules and variables
 
 const APP = Express();
-const PORT = 8083;
+const PORT = 8081;
 
 
 UserManager.init().then(async () => {

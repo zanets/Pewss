@@ -4,23 +4,30 @@
 		"builtin": [
 			{
 				"category": "simulator",
-				"name": "dbgStaticWFSimulator",
-				"jpath": "com.use.simulator.dbgStaticWFSimulator",
+				"name": "WF Static",
+				"jpath": "com.darg.simulator.dbgStaticWFSimulator",
 				"owner": "admin",
 				"type": "class"
 			},
 			{
 				"category": "generator",
-				"name": "ForkJoinDAGGenerator",
+				"name": "WF Fork-Join",
 				"jpath": "com.use.generator.ForkJoinDAGGenerator",
 				"owner": "admin",
 				"type": "class"
 			},
 			{
 				"category": "platform",
-				"name": "WorkflowPlatformHeterogeneous",
-				"jpath": "darg.platform.WorkflowPlatformHeterogeneous",
-				"owner": "darg",
+				"name": "WF Heterogeneous",
+				"jpath": "com.darg.platform.WorkflowPlatformHeterogeneous",
+				"owner": "admin",
+				"type": "class"
+			},
+			{
+				"category": "platform",
+				"name": "WF Homogeneous",
+				"jpath": "com.darg.platform.WorkflowPlatformHomogeneous",
+				"owner": "admin",
 				"type": "class"
 			}
 		]
