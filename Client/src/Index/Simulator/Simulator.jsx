@@ -99,7 +99,7 @@ export default class Simulator extends React.Component {
 			isOpenCompare: isOpen
 		});
 		this.ddddd = (
-			<div>
+			<div className={"row"}>
 			{this.refs[this.state.tasks[0].id].getSlectedData()}
 			{this.refs[this.state.tasks[1].id].getSlectedData()}
 			</div>
