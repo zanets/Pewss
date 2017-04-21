@@ -1,7 +1,7 @@
 const defaultOpts = {
 	layout:{
 		hierarchical:{
-			direction: 'LR',
+			direction: 'UD',
 			blockShifting: true,
 			edgeMinimization: true
 		}
