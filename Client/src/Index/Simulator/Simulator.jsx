@@ -116,7 +116,7 @@ export default class Simulator extends React.Component {
 		for(const task of targets){
 			this.compare.header += `##${task.scheduler.name} @ ${task.scheduler.owner} `;
 			targetsComp.push(
-				<div style={{maxWidth: `${size}%`}}>
+				<div style={{marginLeft: '1%'}}>
 					{this.refs[task.id].getSlectedData()}
 				</div>
 			);
