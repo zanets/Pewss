@@ -324,12 +324,12 @@ APP.post("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 // api for database
 //
 
-APP.param('public_target', (req, res, next, id) => {
+APP.param('target', (req, res, next, id) => {
   next();
 });
 
 
-APP.patch("/api/users/public/:public_target", async (req, res) => {
+APP.patch("/api/users/public/:target", async (req, res) => {
 
     const usrName = isUser(req);
 
@@ -346,7 +346,7 @@ APP.patch("/api/users/public/:public_target", async (req, res) => {
 
 });
 
-APP.delete("/api/users/public/:public_target", async (req, res) => {
+APP.delete("/api/users/public/:target", async (req, res) => {
 
     const usrName = isUser(req);
 
@@ -361,4 +361,16 @@ APP.delete("/api/users/public/:public_target", async (req, res) => {
         res.sendStatus(401);
     }
 
+});
+
+APP.patch("/api/users/password/:target", async (req, res) => {
+	const usrName = isUser(req);
+    if(usrName){
+        await UserManager.modUser(usrName,
+            {$updatePassword: req.body.password}
+        );
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(401);
+    }
 });

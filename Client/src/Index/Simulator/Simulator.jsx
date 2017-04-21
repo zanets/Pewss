@@ -16,13 +16,16 @@ import {
 	Col
 } from 'reactstrap';
 
-const propTypes = {
+const propTypes = 
+{
 	username: PropTypes.string.isRequired
 };
 
-export default class Simulator extends React.Component {
+export default class Simulator extends React.Component 
+{
 
-	constructor (props) {
+	constructor(props)
+	{
 		super(props);
 		this.state = {
 			class_list: this.fixClassName(props.class_list),
@@ -37,27 +40,31 @@ export default class Simulator extends React.Component {
 		};
 	}
 
-	fixClassName(raw){
+	fixClassName(raw)
+	{
 		let fixed = {
 			generator: [],
 			scheduler: [],
 			platform: [],
 			simulator: []
 		};
-		for(const files of raw){
+		for(const files of raw)
+		{
 			fixed[files.category].push(files);
 		}
 		return fixed;
 	}
 
-	toggleNewTaskModal(isOpen){
+	toggleNewTaskModal(isOpen)
+	{
 		isOpen = isOpen || !this.state.isOpenNewTask;
 		this.setState({
 			isOpenNewTask: isOpen
 		});
 	}
 
-	newTask(){
+	newTask()
+	{
 		let tasks = this.state.tasks;
 
 		tasks.push({
@@ -72,25 +79,29 @@ export default class Simulator extends React.Component {
 		this.toggleNewTaskModal(false);
 	}
 
-	startAll(){
+	startAll()
+	{
 		for(const task of this.state.tasks)
 			this.refs[task.id].start();
 	}
 
-	delTask(id){
+	delTask(id)
+	{
 		const newTasks = this.state.tasks.filter( task =>
 			id !== task.id
 		);
 		this.setState({tasks: newTasks});
 	}
 
-	getTaskComponent(){
+	getTaskComponent()
+	{
 		return this.state.tasks.map(ele =>
 			<WorkflowTask key={ele.id} ref={ele.id} {...ele} del={this.delTask.bind(this)}/>
 		);
 	}
 
-	getOptionComponent(arr){
+	getOptionComponent(arr)
+	{
 		return arr.map(ele =>
 			<option key={uuid.v4()} value={JSON.stringify(ele)}>
 				{`${ele.name} @ ${ele.owner}`}
@@ -98,7 +109,8 @@ export default class Simulator extends React.Component {
 		);
 	}
 
-	toggleCompare(isOpen){
+	toggleCompare(isOpen)
+	{
 		isOpen = isOpen || !this.state.isOpenCompare;
 		this.setState({
 			isOpenCompare: isOpen
@@ -106,14 +118,16 @@ export default class Simulator extends React.Component {
 		
 		this.compare.header = "Compare ";
 		let targets = [];
-		for(const task of this.state.tasks){
+		for(const task of this.state.tasks)
+		{
 			if(this.refs[task.id].isSelected() === true)
 				targets.push(task);
 		}
 
 		let targetsComp = [];
 		const size = 100 / targets.length - 5;
-		for(const task of targets){
+		for(const task of targets)
+		{
 			this.compare.header += `##${task.scheduler.name} @ ${task.scheduler.owner} `;
 			targetsComp.push(
 				<div style={{width: `${size}%`,marginLeft: '1%'}}>
@@ -126,7 +140,8 @@ export default class Simulator extends React.Component {
 
 	}
 
-	render() {
+	render() 
+	{
 		const nullTaskHint =
 			this.state.tasks.length === 0
 				? <Jumbotron>

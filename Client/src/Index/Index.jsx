@@ -4,6 +4,7 @@ import Loader from 'react-loader';
 import {default as API} from '../WebAPI.jsx';
 import Editors from './Editor/Editors.jsx';
 import Simulator from './Simulator/Simulator.jsx';
+import Profile from './Profile/Profile.jsx';
 import {
 	Navbar,
 	Nav,
@@ -22,7 +23,8 @@ const mounted = document.getElementById('mp');
 
 const PAGES = {
 	SIM: 'simulator',
-	EDI: 'editor'
+	EDI: 'editor',
+	PRO: 'profile'
 };
 const INIT_STATE = {
 	ready: false,
@@ -33,31 +35,37 @@ const INIT_STATE = {
 	username: ''
 };
 
-class Index extends React.Component {
+class Index extends React.Component 
+{
 
-	constructor(props){
+	constructor(props)
+	{
 		super(props);
 		this.state = INIT_STATE;
 	}
 
-	componentWillMount(){
+	componentWillMount()
+	{
 		API.getUserName((data) => {
 			this.setState({username: data.name});
 		});
     }
 
-	componentDidMount(){
+	componentDidMount()
+	{
 		this.toSimulator();
 	}
 
-	setInitState(){
+	setInitState()
+	{
 		this.setState({
 			ready: false,
 			isMemberOpen: false
 		});
 	}
 
-	toSimulator(){
+	toSimulator()
+	{
 		this.setInitState();
 		API.getClassList({
 			env: "workflow"
@@ -72,7 +80,8 @@ class Index extends React.Component {
 		});
 	}
 
-	toEditor(){
+	toEditor()
+	{
 		this.setInitState();
 		API.getSourceList((res)=>{
 			setTimeout(() => {
@@ -85,22 +94,45 @@ class Index extends React.Component {
 		});
 	}
 
-	logout(){
+	toProfile()
+	{
+		this.setInitState();
+		setTimeout(() => {
+			this.setState({
+				ready: true,
+				page: PAGES.PRO
+			});
+		}, 1000);
+	}
+
+	logout()
+	{
 		API.logout();
 	}
 
-	toggleMember(){
+	toggleMember()
+	{
 		this.setState({isMemberOpen: !this.state.isMemberOpen});
 	}
 
-	render () {
-		const page = (this.state.page === PAGES.EDI)
-			? <Editors
-				source_list={this.state.sourceList}
-				username={this.state.username}/>
-			: <Simulator
-				class_list={this.state.classList}
-				username={this.state.username}/>;
+	render()
+	{
+		let page = (
+			<Simulator class_list={this.state.classList}
+						username={this.state.username}/>
+		);
+
+		if(this.state.page === PAGES.EDI)
+		{
+			page = (
+				<Editors source_list={this.state.sourceList}
+						username={this.state.username}/>
+			);
+		} else if(this.state.page === PAGES.PRO){
+			page = (
+				<Profile username={this.state.username}/>
+			);
+		}
 
 		return (
 			<div className={'fixedDiv'}>
@@ -135,7 +167,7 @@ class Index extends React.Component {
 										<DropdownItem disabled>
 											{this.state.username}
 										</DropdownItem>
-          								<DropdownItem>
+          								<DropdownItem onClick={this.toProfile.bind(this)}>
 											{'Profile '}
 										</DropdownItem>
           								<DropdownItem onClick={this.logout.bind(this)}>
