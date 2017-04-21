@@ -14,3 +14,4 @@ yarn.lock
 *.class
 *.jar
 SyntheticWorkflows/
+mongod-logs
