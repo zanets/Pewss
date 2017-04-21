@@ -1,17 +1,20 @@
 import jq from 'jquery';
 class WebAPI{
 
-	getClassList(meta, success, fail, always){
+	getClassList(meta, success, fail, always)
+	{
 		jq.get('/api/uses/class', {
 			env: meta.env
 		}, success).fail(fail).always(always);
 	}
 
-	getSourceList(success, fail, always){
+	getSourceList(success, fail, always)
+	{
 		jq.get('/api/uses/source', success).fail(fail).always(always);
 	}
 
-	simulate(meta, success, fail, always){
+	simulate(meta, success, fail, always)
+	{
 		jq.post('/api/uses/simulate', {
 			env: meta.env,
 			generator: meta.generator,
@@ -22,7 +25,8 @@ class WebAPI{
 		}, success).fail(fail).always(always);
 	}
 
-	getSourceCode(meta, success, fail, always){
+	getSourceCode(meta, success, fail, always)
+	{
 		jq.get('/api/uses/source_content', {
 			category: meta.category,
 			name: meta.name,
@@ -30,7 +34,8 @@ class WebAPI{
 		}, success).fail(fail).always(always);
 	}
 
-	setSourceCode(meta, success, fail, always){
+	setSourceCode(meta, success, fail, always)
+	{
 		jq.ajax({
 			url: `/api/uses/source_content/${meta.name}`,
 			data: {
@@ -43,7 +48,8 @@ class WebAPI{
 		}).done(success).fail(fail).always(always);
 	}
 
-	newFile(meta, success, fail, always){
+	newFile(meta, success, fail, always)
+	{
 		jq.post(`/api/uses/source_content/${meta.name}`, {
 			name: meta.name,
 			category: meta.category,
@@ -52,7 +58,8 @@ class WebAPI{
 		}, success).fail(fail).always(always);
 	}
 
-	compile(meta, success, fail, always){
+	compile(meta, success, fail, always)
+	{
 		jq.post('/api/uses/compile', {
 			env: meta.env,
 			name: meta.name,
@@ -61,7 +68,8 @@ class WebAPI{
 		}, success).fail(fail).always(always);
 	}
 
-	addPublish(meta, success, fail, always){
+	addPublish(meta, success, fail, always)
+	{
 		jq.ajax({
 			url: `/api/users/public/${meta.name}`,
 			data: {
@@ -73,7 +81,8 @@ class WebAPI{
 		}).done(success).fail(fail).always(always);
 	}
 
-	deletePublish(meta, success, fail, always){
+	deletePublish(meta, success, fail, always)
+	{
 		jq.ajax({
 			url: `/api/users/public/${meta.name}`,
 			data: {
@@ -85,14 +94,27 @@ class WebAPI{
 		}).done(success).fail(fail).always(always);
 	}
 
-	logout(){
+	logout()
+	{
 		jq.get('/logout', (data) => {
 			window.location.href = data.redirect;
 		});
 	}
 
-	getUserName(success, fail, always){
+	getUserName(success, fail, always)
+	{
 		jq.get('/api/uses/username', success).fail(fail).always(always);
+	}
+
+	updatePassword(meta, success, fail, always)
+	{
+		jq.ajax({
+			url: `/api/users/password/${meta.name}`,
+			data: {
+				password: meta.password
+			},
+			type: 'patch'
+		}).done(success).fail(fail).always(always);
 	}
 
 }

@@ -121,9 +121,16 @@ export default class Profile extends React.Component
 			return;
 		}
 
+		API.updatePassword({
+			name: this.props.username,
+			password: this.state.newPassword.value
+		}, res => {
+			API.logout();					
+		}, res => {
+			console.log("error on server");
+		}, res => {
 
-
-		API.logout();					
+		});
 	}
 
 	render()
