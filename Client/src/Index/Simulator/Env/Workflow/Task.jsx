@@ -24,6 +24,7 @@ export default class Task extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
+			isSelected: false,
 			res: null,
 			resStatus: Status.WAIT,
 			showRes: false,
@@ -50,6 +51,14 @@ export default class Task extends React.Component{
 				visualization: [0,0,0]
 			}
 		};
+	}
+
+	toggleIsSelected(){
+		this.setState({isSelected: !this.state.isSelected});
+	}
+
+	isSelected(){
+		return this.state.isSelected;
 	}
 
 	start(){
@@ -138,7 +147,9 @@ export default class Task extends React.Component{
 		return (
 			<tr>
 				<td>
-					<Input addon type="checkbox" aria-label="Checkbox for following text input" />
+					<Button onClick={this.toggleIsSelected.bind(this)}>
+						<input type="checkbox" checked={this.state.isSelected}/>
+					</Button>
 				</td>
 				<td>
 					{`${this.props.generator.name} @ ${this.props.generator.owner}`}
@@ -153,55 +164,43 @@ export default class Task extends React.Component{
 					{`${this.props.scheduler.name} @ ${this.props.scheduler.owner}`}
 				</td>
 				<td>
-					<Button
-						size="sm" color="warning"
-						disabled={status === Status.RUNNING}
-						onClick={this.clkSettings.bind(this)}
-					>
+					<Button size="sm" color="warning"
+							disabled={status === Status.RUNNING}
+							onClick={this.clkSettings.bind(this)}>
 						<span className="fa fa-cog fa-1x"/>
 					</Button>
 					{' '}
-					<Button
-						color="primary" size="sm"
-						disabled={status === Status.RUNNING}
-						onClick={this.clkStart.bind(this)}
-					>
+					<Button color="primary" size="sm"
+							disabled={status === Status.RUNNING}
+							onClick={this.clkStart.bind(this)}>
 						<span className="fa fa-play fa-1x"/>
 					</Button>
 					{' '}
-					<Button
-						size="sm" color="danger"
-						disabled={status === Status.RUNNING}
-						onClick={this.clkDel.bind(this)}
-					>
+					<Button size="sm" color="danger"
+							disabled={status === Status.RUNNING}
+							onClick={this.clkDel.bind(this)}>
 						<span className="fa fa-trash fa-1x"/>
 					</Button>
 				</td>
 				<td>
-					<Button
-						size="sm" color={status.color}
+					<Button size="sm" color={status.color}
 						disabled={
 							status !== Status.FIN_OK &&
 							status !== Status.FIN_ERR
 						}
-						onClick={this.clkRes.bind(this)}
-					>
+						onClick={this.clkRes.bind(this)}>
 						<span className={status.icon}/>
 					</Button>
 				</td>
 				<td>
-					<ModalRes
-						{...this.state.res}
-						isOpen={this.state.showRes}
-						toggle={this.toggleRes.bind(this)}
-						ref="modal_res"
-					/>
-					<ModalSettings
-						{...this.state.settings}
-						isOpen={this.state.showSettings}
-						toggle={this.toggleSettings.bind(this)}
-						setSettings={this.setSettings.bind(this)}
-					/>
+					<ModalRes {...this.state.res}
+							isOpen={this.state.showRes}
+							toggle={this.toggleRes.bind(this)}
+							ref="modal_res"/>
+					<ModalSettings {...this.state.settings}
+							isOpen={this.state.showSettings}
+							toggle={this.toggleSettings.bind(this)}
+							setSettings={this.setSettings.bind(this)}/>
 				</td>
 			</tr>
 		);

@@ -30,6 +30,11 @@ export default class Simulator extends React.Component {
 			isOpenCompare:false,
 			tasks: []
 		};
+
+		this.compare = {
+			body: '',
+			header: ''
+		};
 	}
 
 	fixClassName(raw){
@@ -98,23 +103,27 @@ export default class Simulator extends React.Component {
 		this.setState({
 			isOpenCompare: isOpen
 		});
-		this.ddddd = (
-			<div className={"row"}>
-				<div className={"col-sm-6"}>
-					{this.refs[this.state.tasks[0].id].getSlectedData()}
-				</div>
-				<div className={"col-sm-6"}>
-					{this.refs[this.state.tasks[1].id].getSlectedData()}
-				</div>
-			</div>
-		);
-	}
+		
+		this.compare.header = "Compare ";
+		let targets = [];
+		for(const task of this.state.tasks){
+			if(this.refs[task.id].isSelected() === true)
+				targets.push(task);
+		}
 
-	compare(){
-		if(this.state.isOpenCompare)
-		return this.state.tasks.length === 0
-			? ''
-			: this.refs[this.state.tasks[0].id].getSlectedData();
+		let targetsComp = [];
+		const size = 100 / targets.length;
+		for(const task of targets){
+			this.compare.header += `##${task.scheduler.name} @ ${task.scheduler.owner} `;
+			targetsComp.push(
+				<div style={{maxWidth: `${size}%`}}>
+					{this.refs[task.id].getSlectedData()}
+				</div>
+			);
+		}
+
+		this.compare.body = targetsComp;
+
 	}
 
 	render() {
@@ -137,8 +146,13 @@ export default class Simulator extends React.Component {
 					</Button>
 
 					<Modal style={{maxWidth:"90%"}} isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
+						<ModalHeader>
+							{this.compare.header}
+						</ModalHeader>
 						<ModalBody>
-							{this.ddddd}
+							<div className={"row"}>
+								{this.compare.body}
+							</div>
 						</ModalBody>
 					</Modal>
 					<Modal isOpen={this.state.isOpenNewTask} toggle={this.toggleNewTaskModal.bind(this)}>
