@@ -78,6 +78,28 @@ export default class ModalSettings extends React.Component{
 						  </InputGroup></Col>
 						</FormGroup>
 						<FormGroup row>
+							<Label sm={6}>Workflow per experiment</Label>
+							<Col sm={6}><InputGroup>
+								<Input type="number" step="1" value={this.props.numberOfWorkflow} onChange={ proxy => {
+									const ivalue = Number(proxy.target.value);
+									if(ivalue <= 0 || ivalue > 100) return;
+									this.props.setSettings({numberOfWorkflow: {$set: ivalue}});
+								}}/>
+								<InputGroupAddon>{'1 ~ 100'}</InputGroupAddon>
+						  </InputGroup></Col>
+						</FormGroup>
+						<FormGroup row>
+							<Label sm={6}>Workflow max inter-arrival time</Label>
+							<Col sm={6}><InputGroup>
+								<Input type="number" step="1" value={this.props.maxInterArrivalTime} onChange={ proxy => {
+									const ivalue = Number(proxy.target.value);
+									if(ivalue <= 0 || ivalue > 1000) return;
+									this.props.setSettings({maxInterArrivalTime: {$set: ivalue}});
+								}}/>
+								<InputGroupAddon>{'1 ~ 1000'}</InputGroupAddon>
+						  </InputGroup></Col>
+						</FormGroup>
+						<FormGroup row>
 							<Label sm={6}>Resource</Label>
 							<Col sm={6}><InputGroup>
 								<Input type="number" step="1" value={this.props.numberOfResource} onChange={ proxy => {
