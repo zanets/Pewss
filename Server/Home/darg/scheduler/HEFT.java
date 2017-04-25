@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import com.use.resource.IResNode;
 import com.use.resource.SimpleNode;
-import darg.platform.WorkflowPlatform;
+import com.darg.platform.WorkflowPlatform;
 import com.use.workflow.Workflow;
 import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;

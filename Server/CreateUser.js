@@ -1,15 +1,22 @@
 import UserManager from './UserManager.js';
 
-const testUsers = ['darg', 'otk'];
+const Users = [
+'ACS102119', 
+'ACS102121', 
+'BCS105101', 
+'BCS105104',
+'BCS105105',
+'BCS105106',
+'BCS105108',
+'BCS105111',
+'BCS105112',
+'BCS105113',
+'BCS106101'
+];
 
 UserManager.init().then(async () => {
-    await UserManager.loadUsers();
-	if(UserManager.getUsersCount() === 0){
-		console.log("======= No user. =======");
-		for(const name of testUsers){
-			await UserManager.createUser(name, name);
-			console.log(`Create test user ${name}`);
-		}
-		await UserManager.loadUsers();
+	for(const name of Users){
+		await UserManager.createUser(name, name);
+		console.log(`Create user ${name}`);
 	}
 });

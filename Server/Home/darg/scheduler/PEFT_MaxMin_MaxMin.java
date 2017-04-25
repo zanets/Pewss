@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import darg.set.Table;
+import com.darg.set.Table;
 
 import com.use.ALauncher;
 import com.use.queue.MixQueue;
@@ -25,7 +25,7 @@ import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;
 import com.use.workflow.task.IDepend;
 import com.use.workflow.task.TaskLink;
-import darg.platform.WorkflowPlatform;
+import com.darg.platform.WorkflowPlatform;
 import com.use.scheduler.AListBaseWorkflowScheduler;
 public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 	protected List<IResNode> srcAttrList;

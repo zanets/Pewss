@@ -49,7 +49,7 @@ APP.use('/build', Express.static(`${BaseDir}/Client/build`));
 APP.use('/vs', Express.static(`${BaseDir}/node_modules/monaco-editor/min/vs`));
 APP.use('/node_modules', Express.static(`${BaseDir}/node_modules`));
 APP.use('/', Express.static(`${BaseDir}/Client/build`));
-APP.use('/documents', Express.static(`${BaseDir}/Server/Sim/env/workflow/doc/html/`));
+APP.use('/documents', Express.static(`${BaseDir}/Server/Sim/env/workflow.doc`));
 
 // ======================
 // html request
@@ -87,14 +87,23 @@ const isUser = (req) => {
 const log = (req, level, msg, code) => {
 	const name = req.user ? req.user.name : 'unknown';
 	msg = `${name} - ${req.connection.remoteAddress} - ${msg} - ${code}`;
+	
 	if(level === 'info')
+	{
 		Logger.info(msg);
+	}	
 	else if(level === 'warn')
+	{
 		Logger.warn(msg);
+	}
 	else if(level === 'error')
+	{
 		Logger.error(msg);
+	}
 	else if(level === 'fatal')
+	{
 		Logger.fatal(msg);
+	}
 };
 
 APP.get('/index', isLogin, (req, res) => {
