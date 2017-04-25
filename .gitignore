@@ -3,6 +3,9 @@ build/
 plugins/
 Logs/
 Server/MongoDB/
+mongodLogs/
+Server/Sim/env/*.doc
+Server/Home/*
 npm-debug.log
 simulator.conf
 yarn.lock
@@ -14,4 +17,3 @@ yarn.lock
 *.class
 *.jar
 SyntheticWorkflows/
-mongod-logs

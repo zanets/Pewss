@@ -2,34 +2,48 @@ import React, { PropTypes } from 'react'
 
 function noop() {}
 
-class MonacoEditor extends React.Component {
-	constructor(props) {
+class MonacoEditor extends React.Component 
+{
+	constructor(props) 
+	{
 		super(props);
 		this.__current_value = props.value;
 	}
-	componentDidMount() {
+	
+	componentDidMount() 
+	{
 		this.afterViewInit();
 	}
-	componentWillUnmount() {
+	
+	componentWillUnmount() 
+	{
 		this.destroyMonaco();
 	}
-	componentDidUpdate() {
-		if (this.props.value !== this.__current_value) {
+	
+	componentDidUpdate() 
+	{
+		if (this.props.value !== this.__current_value) 
+		{
 			// Always refer to the latest value
 			this.__current_value = this.props.value;
 			// Consider the situation of rendering 1+ times before the editor mounted
-			if (this.editor) {
+			if (this.editor) 
+			{
 				this.__prevent_trigger_change_event = true;
 				this.editor.setValue(this.__current_value);
 				this.__prevent_trigger_change_event = false;
 			}
 		}
 	}
-	editorWillMount(monaco) {
+
+	editorWillMount(monaco) 
+	{
 		const { editorWillMount } = this.props;
 		editorWillMount(monaco);
 	}
-	editorDidMount(editor, monaco) {
+	
+	editorDidMount(editor, monaco) 
+	{
 		const { editorDidMount, onChange } = this.props;
 		editorDidMount(editor, monaco);
 		editor.onDidChangeModelContent(event => {
@@ -39,19 +53,23 @@ class MonacoEditor extends React.Component {
 			this.__current_value = value;
 			
 			// Only invoking when user input changed
-			if (!this.__prevent_trigger_change_event) {
+			if (!this.__prevent_trigger_change_event) 
+			{
 				onChange(value, event);
 			}
 		});
 	}
-	afterViewInit() {
+	afterViewInit() 
+	{
 		const { requireConfig } = this.props;
 		const loaderUrl = requireConfig.url || 'vs/loader.js';
 		const context = this.props.context || window;
 		const onGotAmdLoader = () => {
-			if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
+			if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) 
+			{
 				// Do not use webpack
-				if (requireConfig.paths && requireConfig.paths.vs) {
+				if (requireConfig.paths && requireConfig.paths.vs) 
+				{
 					context.require.config(requireConfig);
 				}
 			}
@@ -76,7 +94,8 @@ class MonacoEditor extends React.Component {
 		};
 		
 		// Load AMD loader if necessary
-		if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
+		if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) 
+		{
 			// We need to avoid loading multiple loader.js when there are multiple editors loading concurrently
 			//  delay to call callbacks except the first one
 			context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ = context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ || [];
@@ -85,7 +104,9 @@ class MonacoEditor extends React.Component {
 				fn: onGotAmdLoader
 			});
 		} else {
-			if (typeof context.require === 'undefined') {
+			
+			if (typeof context.require === 'undefined') 
+			{
 				var loaderScript = context.document.createElement('script');
 				loaderScript.type = 'text/javascript';
 				loaderScript.src = loaderUrl;
@@ -97,7 +118,9 @@ class MonacoEditor extends React.Component {
 			}
 		}
 	}
-	initMonaco() {
+	
+	initMonaco() 
+	{
 		const value = this.props.value !== null ? this.props.value : this.props.defaultValue;
 		const { language, theme, options } = this.props;
 		const containerElement = this.refs.container;

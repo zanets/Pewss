@@ -49,7 +49,7 @@ class Index extends React.Component
 		API.getUserName((data) => {
 			this.setState({username: data.name});
 		});
-    }
+	}
 
 	componentDidMount()
 	{
