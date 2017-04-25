@@ -6,7 +6,7 @@
   "scripts": {
     "devstart": "nodemon --ignore Server/Database/Mongo --ignore Server/Home Server/Entry.js --exec babel-node --presets es2015",
     "dev": "webpack -d --progress --colors --watch",
-    "pro": "babel-cli/bin/babel.js Server -d build ",
+    "pro": "webpack --progress --colors ",
     "startdb": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
     "ctuser": "babel-node --presets es2015 Server/CreateUser.js"
   },
