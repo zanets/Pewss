@@ -87,9 +87,16 @@ export default class Task extends React.Component{
 		});
 	}
 
-	filter(raw, status){
-		const f_start = '<uses-dbg-start>',
-			f_end = '<uses-dbg-end>';
+	filter(raw, status)
+	{
+		
+		const f_start = '<WF-DBG-START>';
+		const f_end   = '<WF-DBG-FINISH>';
+	
+		/*
+		 * dbgs contains json string for visualization.
+		 * raw contains standard output.
+		 * */
 		let p_start = 0,
 			dbgs = [];
 

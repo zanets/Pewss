@@ -33,6 +33,10 @@ public class HEFT extends AListBaseWorkflowScheduler
 		for(IAttribute _wf : this.workflowSet)
 		{
 			Workflow wf = (Workflow) _wf;
+
+			if(wf.isScheduled())
+				continue;
+
 			this.platform.genCPTimes(wf.getTaskList());
 
 			// task ranking
@@ -51,6 +55,9 @@ public class HEFT extends AListBaseWorkflowScheduler
 				task.setComputationTime(this.platform.getCPTime(task.getId(), res.getId()));
 				this.taskAllocation(res, gap, task);			
 			}
+
+			wf.setScheduled(true);
+				
 		}
 	
 	}

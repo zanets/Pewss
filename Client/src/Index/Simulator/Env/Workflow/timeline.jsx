@@ -14,16 +14,20 @@ const defaultOpts = {
 	width:'100%'
 };
 
-export default class timeline {
-	constructor(dom) {
+export default class timeline 
+{
+	constructor(dom) 
+	{
 		this.currentTime = new Date('2016-01-01T00:00:00');
 		this.instance = new vis.Timeline(dom);
 		this.opts = defaultOpts;
 		this.datum = [];
 		this.groups = [];
+		this.maxTime = 0;
 	}
 
-	render(raw) {
+	render(raw) 
+	{
 		this.clear();
 		this.parse(raw);
 		this.instance.setOptions(this.opts);
@@ -32,42 +36,47 @@ export default class timeline {
 		this.bindEvt();
 	}
 
-	destroy() {
+	destroy() 
+	{
 		this.clear();
 		this.instance.setItems(this.datum);
 		this.instance.setGroups(this.groups);
 	}
 
-	parse(raw) {
-		const tasks = raw.task_list;
-		let maxFinishTime = tasks[0].finish_time;
+	parse(raw) 
+	{
+		for(const wf of raw)
+		{
+			for(const task of wf.tasks)
+			{
+				const data = {
+					content:`${wf.id}-${task.id}`,
+					title: `${wf.id}-${task.id} Start: ${task.start} CP: ${task.cp} End: ${task.finish}`,
+					group: task.res,
+					start: new Date(this.currentTime.getTime() + task.start * 1000),
+					start_time_sec: task.start,
+					end: new Date(this.currentTime.getTime() + task.finish * 1000),
+					end_time_sec: task.finish,
+					child: task.children,
+					id:`${wf.id}-${task.id}`,
+					type: 'range'
+				};
 
-		for(const task of tasks){
-			const data = {
-				content: `${task.order_number}`,
-				title: `start : ${task.start_time}\ncp : ${task.finish_time-task.start_time}\nend : ${task.finish_time}`,
-				group: task.resource_id,
-				start: new Date(this.currentTime.getTime() + task.start_time * 1000),
-				start_time_sec: task.start_time,
-				end: new Date(this.currentTime.getTime() + task.finish_time * 1000),
-				end_time_sec: task.finish_time,
-				child: task.children,
-				parent: task.parent,
-				id:task.order_number,
-				type: 'range'
-			};
-			this.addGroup(data.group);
-			this.datum.push(data);
-			maxFinishTime = (maxFinishTime < task.finish_time) ? task.finish_time : maxFinishTime;
+ 				this.maxTime = this.maxTime > task.finish 
+							? this.maxTime
+							: task.finish;
+
+				this.addGroup(data.group);
+				this.datum.push(data);
+			}
 		}
-		this.addGroup('Time');
-		const maxTime = new Date(this.currentTime.getTime() + maxFinishTime * 1000 + 20 * 1000);
-		// const maxTime = new Date(this.currentTime.getTime() + 1000 * 1500);
+
 		this.opts.min = this.currentTime;
-		this.opts.max = maxTime;
+		this.opts.max = new Date(this.currentTime.getTime() + this.maxTime * 1000 + 20 * 1000);
 	}
 
-	addGroup(newGroup) {
+	addGroup(newGroup) 
+	{
 		for(const group of this.groups)
 			if(group.id === newGroup) return;
 
@@ -77,12 +86,14 @@ export default class timeline {
 		});
 	}
 
-	clear() {
+	clear() 
+	{
 		this.datum = [];
 		this.groups = [];
 	}
 
-	bindEvt() {
+	bindEvt() 
+	{
 		this.instance.on('select', evt => {
 			const id = evt.items[0];
 			if(id === undefined)
@@ -105,6 +116,7 @@ export default class timeline {
 					return true;
 				});
 			};
+	
 			const _groupParent = selid => {
 				const selectedData = this.datum.find( d => d.id === selid );
 				if(!('parent' in selectedData))
@@ -120,13 +132,15 @@ export default class timeline {
 					return true;
 				});
 			};
+			
 			_groupChild(id);
 			_groupParent(id);
 			this.instance.setSelection(willSelected);
 		});
 	}
 
-	stepRender(stepRange) {
+	stepRender(stepRange) 
+	{
 		let datum = [];
 		stepRange.forEach(stepId => {
 			const data = this.datum.find(d => d.id === stepId);
@@ -138,19 +152,25 @@ export default class timeline {
 	}
 
 
-	renderTimeBar(datum){
+	renderTimeBar(datum)
+	{
 		let times = [];
 
-		for(const data of datum){
-			if(!times.includes(data.start_time_sec)){
+		for(const data of datum)
+		{
+			if(!times.includes(data.start_time_sec))
+			{
 				times.push(data.start_time_sec);
 			}
-			if(!times.includes(data.end_time_sec)){
+
+			if(!times.includes(data.end_time_sec))
+			{
 				times.push(data.end_time_sec);
 			}
 		}
 
-		for (var i=0; i<2000; i=i+100){
+		for (var i=0; i<this.maxTime; i=i+100)
+		{
 			let time = i;
 
 			const data = {

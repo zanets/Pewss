@@ -41,21 +41,25 @@ export default class network {
 	parse(raw) {
 		if(raw === null)
 			return;
-
-		for(let task of raw.task_list){
-			this.nodes.push({
-				id: task.order_number,
-				title: task.computation_time,
-				level: task.level,
-				label: task.order_number
-			});
-
-			for(let childTask of task.children){
-				this.edges.push({
-					from: task.order_number,
-					to: childTask.task_id,
-					label: childTask.weight
+		for(const wf of raw)
+		{
+			for(const task of wf.tasks)
+			{
+				this.nodes.push({
+					id:`${wf.id}-${task.id}`,
+					title: task.cp,
+					label:`${wf.id}-${task.id}`,
+					level: task.level,
 				});
+
+				for(const link of task.children)
+				{
+					this.edges.push({
+						from: `${wf.id}-${task.id}`,
+						to: `${wf.id}-${link.id}`,
+						label: link.w
+					});
+				}
 			}
 		}
 	}
