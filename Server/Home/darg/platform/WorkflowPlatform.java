@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class WorkflowPlatform extends APlatform implements IPlatform 
+public class WorkflowPlatform extends APlatform implements IPlatform 
 {
 
 	protected Table cpTimes = null;
@@ -41,7 +41,10 @@ public abstract class WorkflowPlatform extends APlatform implements IPlatform
 		}
 	}
 
-	public abstract void genCPTimes(List<IDepend> taskAttrList);
+	public void genCPTimes(List<IDepend> taskAttrList)
+	{
+		
+	}
 
 	public int getCPTime(int taskId, int resId)
 	{

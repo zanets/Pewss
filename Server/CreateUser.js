@@ -1,5 +1,5 @@
 import UserManager from './UserManager.js';
-
+/*
 const Users = [
 'ACS102119', 
 'ACS102121', 
@@ -12,6 +12,10 @@ const Users = [
 'BCS105112',
 'BCS105113',
 'BCS106101'
+];
+*/
+const Users = [
+	'kchuang'
 ];
 
 UserManager.init().then(async () => {

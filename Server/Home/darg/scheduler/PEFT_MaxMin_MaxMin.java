@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import com.darg.set.Table;
+import darg.set.Table;
 
 import com.use.ALauncher;
 import com.use.queue.MixQueue;
@@ -25,14 +25,15 @@ import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;
 import com.use.workflow.task.IDepend;
 import com.use.workflow.task.TaskLink;
-import com.darg.platform.WorkflowPlatform;
+import com.use.resource.platform.WorkflowPlatform;
 import com.use.scheduler.AListBaseWorkflowScheduler;
+
 public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 	protected List<IResNode> srcAttrList;
 	protected Table firstOCTTable;
 	protected Table secondOCTTable;
 	protected Map<Integer, Float> rankOCT;
-
+	protected Map<Integer, Boolean> isScheduled;
 	public PEFT_MaxMin_MaxMin()
 	{
 		super();
@@ -40,34 +41,37 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 
 	@Override
 	public void schedule() throws Exception {
-		this.initialize();
-		this.srcAttrList = this.platform.getResourcelist();
 		
+		this.initialize();
+	
 		// this is for multiple workflow schedule
 		for (IAttribute attr : this.workflowSet) {
-			this.resetActionQ();
+			
+			this.srcAttrList = this.platform.getResourcelist();
 			Workflow workflow = (Workflow) attr;
 			List<IDepend> taskAttrList = workflow.getTaskList();
-			 
-			this.isPreScheduled = new boolean[taskAttrList.size()];
+			this.isScheduled = new HashMap<Integer, Boolean>();
+			for(IDepend itask : taskAttrList)
+			{
+				this.isScheduled.put(itask.getId(), false);
+			}
 			
 			// ==================
 			// PEFT algorithm
 			//
-			this.platform.genCPTimes(taskAttrList);
-			
+
 			this.genOCTTable(taskAttrList);
 			this.genRankOCT(taskAttrList);
-			
+
 			List<IDepend> readyList = getReadyList(taskAttrList);
 			// =================
 			while(!readyList.isEmpty()){
-				
+
 				DAGDependTask task = this.getReadyTask(readyList);
 				Map<IResNode, Float> oEftList = new HashMap<IResNode, Float>();
 
 				// System.out.println("Get Task " + task.getId() + " from readylist");
-				
+
 				// computing oeft
 				for(IResNode srcAttr : srcAttrList){
 					float eft = (float) this.getEFT(task, srcAttr);
@@ -82,17 +86,16 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 					minOne = (minOne.getValue() > entry.getValue()) ? entry : minOne;
 
 				// assign computation time and allocate to resource
-				task.setComputationTime(this.platform.getCPTime(task.getId(), minOne.getKey().getId()));
-				this.taskAllocation(minOne.getKey(), this.getBestGap(task, minOne.getKey()), task);			  
-				this.isPreScheduled[task.getId()] = true;
-
+				this.taskAllocation(minOne.getKey(), this.getBestGap(task, minOne.getKey()), task);
+				this.isScheduled.put(task.getId(), true);
+				
 				// update readylist
 				readyList = getReadyList(taskAttrList);
 			}
 			// ==================
 		}
 	}
-	
+
 	// =====================
 	// function that computing rankOCT for peft alogrithm
 	//
@@ -107,16 +110,24 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 		}
 		Stream<Map.Entry<Integer, Float>> st = unSorted.entrySet().stream();
 		st.sorted(Map.Entry.comparingByValue()).forEachOrdered(
-				e -> this.rankOCT.put(e.getKey(), e.getValue()) 
+				e -> this.rankOCT.put(e.getKey(), e.getValue())
 		);
 		// System.out.println(Arrays.toString(this.rankOCT.entrySet().toArray()));
 	}
-	
-	
-	
+
+	protected List<Integer> getResIds()
+	{
+		List<Integer> res = new ArrayList<Integer>();
+		for(IResNode srcAttr : this.platform.getResourcelist())
+		{
+			res.add(srcAttr.getId());
+		}
+		return res;
+	}
+
 	protected void genOCTTable(List<IDepend> taskAttrList){
 		List<Integer> taskIdList = this.getTaskIdList(taskAttrList);
-		List<Integer> srcIdList = this.platform.getResIds();
+		List<Integer> srcIdList = this.getResIds();
 
 		this.firstOCTTable = new Table(taskIdList, srcIdList);
 		this.secondOCTTable = new Table(taskIdList, srcIdList);
@@ -134,9 +145,9 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 					this.secondOCTTable.setElement(taskId, srcId, this.compSecondOCT(taskId, srcId, taskAttrList));
 			}
 		}
-		
+
 	}
-	
+
 	protected float compFirstOCT(int taskId, int srcId, List<IDepend> taskAttrList){
 		IDepend targetTask = taskAttrList.stream().filter(attr -> attr.getId() == taskId).findFirst().get();
 		List<TaskLink> childLink = targetTask.getChildTaskLink();
@@ -146,7 +157,7 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 			for(IResNode srcAttr : srcAttrList){
 				int thisSrcId = srcAttr.getId();
 				int thistaskId = clink.getNextTask().getId();
-				int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
+				int cpTime = ((DAGDependTask) clink.getNextTask()).getComputationTime();
 				float commTime = (srcId == thisSrcId) ? 0 : clink.getWeight();
 				float octV = (float) this.firstOCTTable.getElement(thistaskId, thisSrcId).orElseGet(()->{
 						float oct = this.compFirstOCT(thistaskId, thisSrcId, taskAttrList);
@@ -169,7 +180,7 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 			for(IResNode srcAttr : srcAttrList){
 				int thisSrcId = srcAttr.getId();
 				int thistaskId = clink.getNextTask().getId();
-				int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
+				int cpTime = ((DAGDependTask) clink.getNextTask()).getComputationTime();
 				float commTime = (srcId == thisSrcId) ? 0 : clink.getWeight();
 				float octV = (float) this.secondOCTTable.getElement(thistaskId, thisSrcId).orElseGet(()->{
 						float oct = this.compSecondOCT(thistaskId, thisSrcId, taskAttrList);
@@ -182,19 +193,27 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 		}
 		return (tmpList1.size() == 0) ? 0 : Collections.max(tmpList1);
 	}
-	
+
 	protected List<IDepend> getReadyList(List<IDepend> taskAttrList){
 		List<IDepend> readyList = new ArrayList<IDepend>();
-		
-		// scan all tasks 
+
+		// scan all tasks
 		for(IDepend taskAttr : taskAttrList){
-			if(taskAttr.isScheduled()) continue;
+			
+			if(this.isScheduled.get(taskAttr.getId()))
+			{
+				continue;
+			}
+
 			boolean isReady = true;
 			DAGDependTask task = (DAGDependTask) taskAttr;
 
 			// scan all parent tasks
-			for(TaskLink tl : task.getParentTaskLink()){
-				if(!this.isPreScheduled[tl.getNextTask().getId()]){
+			for(TaskLink tl : task.getParentTaskLink())
+			{
+				boolean isScheduled = this.isScheduled.get(tl.getNextTask().getId());
+				if(!isScheduled)
+				{
 					isReady = false;
 					break;
 				}
@@ -202,7 +221,7 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 			if(isReady)
 				readyList.add(taskAttr);
 		}
-		/* replace with getReadyTask 
+		/* replace with getReadyTask
 		// sort readylist with rankoct
 		Collections.sort(readyList, new Comparator<IDepend>() {
 			public int compare(IDepend left, IDepend right) {
@@ -226,18 +245,18 @@ public class PEFT_MaxMin_MaxMin extends AListBaseWorkflowScheduler {
 		}
 		return (DAGDependTask) maxRankOCTTask;
 	}
-	
+
 	protected float getEFT(IDepend taskAttr, IResNode srcAttr){
 		GapInfo bestGap = this.getBestGap(taskAttr, srcAttr);
-		return bestGap.getEST() + this.platform.getCPTime(taskAttr.getId(), srcAttr.getId());
+		return bestGap.getEST() + ((DAGDependTask) taskAttr).getComputationTime();
 	}
 
 	protected List<Integer> getTaskIdList(List<IDepend> taskAttrList){
 		List<Integer> taskIdList = new ArrayList<Integer>();
-		taskAttrList.forEach(attr -> 
+		taskAttrList.forEach(attr ->
 			taskIdList.add(attr.getId())
 		);
 		return taskIdList;
 	}
-	
+
 }

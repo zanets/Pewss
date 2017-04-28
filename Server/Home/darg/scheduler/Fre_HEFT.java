@@ -22,10 +22,13 @@ import com.use.workflow.task.IAttribute;
 
 public class Fre_HEFT extends com.use.scheduler.AListBaseWorkflowScheduler {
 
+	public WorkflowPlatform platform = new WorkflowPlatform();
+	public List<IAttribute> workflowSet = instance.getWaitingQ();
 	@Override
 	public void schedule() throws Exception 
 	{
-		this.initialize();
+		//this.initialize();
+		platform.clonePlatform((WorkflowPlatform) instance.getCluster());
 		List<IAttribute> preScheduledQ = new ArrayList<IAttribute>();
 		for (IAttribute tmp : workflowSet) {
 			Workflow workflow = (Workflow) tmp;

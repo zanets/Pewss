@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import com.use.resource.IResNode;
 import com.use.resource.SimpleNode;
-import com.darg.platform.WorkflowPlatform;
+import com.use.resource.platform.WorkflowPlatform;
 import com.use.workflow.Workflow;
 import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;
@@ -20,44 +20,35 @@ import com.use.scheduler.AListBaseWorkflowScheduler;
 
 public class HEFT extends AListBaseWorkflowScheduler
 {
-
 	public HEFT()
 	{
 		super();
 	}
 	
-
 	public void schedule() throws Exception
 	{
 		this.initialize();
-		for(IAttribute _wf : this.workflowSet)
+
+		for(IAttribute iwf : this.workflowSet)
 		{
-			Workflow wf = (Workflow) _wf;
-
-			if(wf.isScheduled())
-				continue;
-
-			this.platform.genCPTimes(wf.getTaskList());
+			Workflow wf = (Workflow) iwf;
 
 			// task ranking
 			List<IDepend> tasks = this.getRankTask(wf);
-
+			
 			// since its sorted, just loop it
-			for(IDepend _task : tasks)
+			for(IDepend itask : tasks)
 			{
-				DAGDependTask task = (DAGDependTask) _task;
-
+				DAGDependTask task = (DAGDependTask) itask;
+				
 				// get gap and resource with minimize EFT
 				GapInfo gap = this.getBestGap(task);
-				IResNode res = platform.getResource(gap.getResId());
+				IResNode res = this.platform.getResource(gap.getResId());
 
 				// allocate task
-				task.setComputationTime(this.platform.getCPTime(task.getId(), res.getId()));
-				this.taskAllocation(res, gap, task);			
+				this.taskAllocation(res, gap, task);	
 			}
-
-			wf.setScheduled(true);
-				
+			
 		}
 	
 	}
@@ -68,8 +59,10 @@ public class HEFT extends AListBaseWorkflowScheduler
 		List<IDepend> tasks = wf.getTaskList();
 
 		// sort with bottom rank
-		Collections.sort(tasks, new Comparator<IDepend>(){
-			public int compare(IDepend t1, IDepend t2) {
+		Collections.sort(tasks, new Comparator<IDepend>()
+		{
+			public int compare(IDepend t1, IDepend t2) 
+			{
 				return ((DAGDependTask) t2).getBottomRank() 
 					- ((DAGDependTask) t1).getBottomRank();
 			}
@@ -82,14 +75,14 @@ public class HEFT extends AListBaseWorkflowScheduler
 	public GapInfo getBestGap(IDepend task)
 	{
 		GapInfo best = null;
-		for (IResNode _res : this.platform.getResourcelist()) 
+		for (IResNode ires : this.platform.getResourcelist()) 
 		{
 			// get gap with minimum EFT of resource
-			GapInfo gap = this.getBestGap(task, (SimpleNode) _res);
-
-			// get gap with minimum EFT among resources
-			best = this.compareGap(best, gap, task);
+			GapInfo gap = this.getBestGap(task, (SimpleNode) ires);
+			
+			best = compareGap(best, gap, task);
 		}
+		
 		return best;
 	}
 }

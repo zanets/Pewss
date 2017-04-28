@@ -17,16 +17,16 @@
 				"type": "class"
 			},
 			{
-				"category": "platform",
-				"name": "WF Heterogeneous",
-				"jpath": "com.darg.platform.WorkflowPlatformHeterogeneous",
+				"category": "generator",
+				"name": "WF General",
+				"jpath": "com.use.generator.GeneralDAGGenerator",
 				"owner": "admin",
 				"type": "class"
 			},
 			{
 				"category": "platform",
 				"name": "WF Homogeneous",
-				"jpath": "com.darg.platform.WorkflowPlatformHomogeneous",
+				"jpath": "com.use.resource.platform.WorkflowPlatform",
 				"owner": "admin",
 				"type": "class"
 			}

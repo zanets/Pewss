@@ -143,8 +143,13 @@ class Index extends React.Component
 					</NavbarBrand>
 					<Nav className="ml-auto" navbar>
 						<NavItem>
-							<NavLink href='/documents' style={{paddingTop:'2rem'}}>
-						 		{'Documents'}
+							<NavLink href='/doc-kernel' style={{paddingTop:'2rem'}}>
+						 		{'Doc-Kernel'}
+							</NavLink>
+						</NavItem>
+						<NavItem>
+							<NavLink href='/doc-workflow' style={{paddingTop:'2rem'}}>
+						 		{'Doc-Workflow'}
 							</NavLink>
 						</NavItem>
 						<NavItem>
