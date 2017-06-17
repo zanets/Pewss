@@ -37,7 +37,8 @@ public class PEFT_MinMax_MinMax extends PEFT_MaxMin_MaxMin {
       for(IResNode srcAttr : srcAttrList){
         int thisSrcId = srcAttr.getId();
         int thistaskId = clink.getNextTask().getId();
-        int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
+        //int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
+        int cpTime = ((DAGDependTask) clink.getNextTask()).getComputationTime();
         float commTime = (srcId == thisSrcId) ? 0 : clink.getWeight();
         float octV = (float) this.firstOCTTable.getElement(thistaskId, thisSrcId).orElseGet(()->{
             float oct = this.compFirstOCT(thistaskId, thisSrcId, taskAttrList);
@@ -60,7 +61,8 @@ public class PEFT_MinMax_MinMax extends PEFT_MaxMin_MaxMin {
       for(IResNode srcAttr : srcAttrList){
         int thisSrcId = srcAttr.getId();
         int thistaskId = clink.getNextTask().getId();
-        int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
+        //int cpTime = this.platform.getCPTime(thistaskId, thisSrcId);
+        int cpTime = ((DAGDependTask) clink.getNextTask()).getComputationTime();
         float commTime = (srcId == thisSrcId) ? 0 : clink.getWeight();
         float octV = (float) this.secondOCTTable.getElement(thistaskId, thisSrcId).orElseGet(()->{
             float oct = this.compSecondOCT(thistaskId, thisSrcId, taskAttrList);

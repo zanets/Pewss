@@ -1,13 +1,13 @@
 module.exports = class User {
 
-	constructor(property){
+	constructor(property)	{
 		this.name = property.name;
 		this.passwd = property.passwd;
 		/* Public { type, category, name } */
 		this.publishes = property.publishes || [];
 	}
 
-	addPublish(fileType, fileCategory, fileName){
+	addPublish(fileType, fileCategory, fileName)	{
 		// update this
 		this.publishes.push({
 			type: fileType,
@@ -17,7 +17,7 @@ module.exports = class User {
 		});
 	}
 
-	removePublish(fileType, fileCategory, fileName){
+	removePublish(fileType, fileCategory, fileName)	{
 		// update this
 		this.publishes = this.publishes.filter(f =>
 			f.type     !== fileType     ||
@@ -26,7 +26,7 @@ module.exports = class User {
 		);
 	}
 
-	getPublishesByType(fileType){
+	getPublishesByType(fileType)	{
 		return fileType === undefined
 			? this.publishes
 			: this.publishes.filter(f =>
@@ -34,12 +34,12 @@ module.exports = class User {
 			);
 	}
 
-	updatePassword(passwd){
+	updatePassword(passwd)	{
 		// update this
 		this.passwd = passwd;
 	}
 
-	getProperty(){
+	getProperty()	{
 		return {
 			name: this.name,
 			passwd: this.passwd,

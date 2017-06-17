@@ -18,7 +18,7 @@ import com.use.workflow.task.DAGDependTask;
 import com.use.workflow.task.IAttribute;
 import com.use.scheduler.AListBaseWorkflowScheduler;
 
-public class HEFT extends AListBaseWorkflowScheduler
+public final class HEFT extends AListBaseWorkflowScheduler
 {
 	public HEFT()
 	{

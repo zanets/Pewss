@@ -33,7 +33,7 @@ public class Fre_HEFT extends com.use.scheduler.AListBaseWorkflowScheduler {
 		for (IAttribute tmp : workflowSet) {
 			Workflow workflow = (Workflow) tmp;
 			isPreScheduled = new boolean[workflow.getTaskList().size()];
-			this.platform.genCPTimes(workflow.getTaskList());
+			
 			findUnStartedTaskAndAdd(workflow, preScheduledQ);
 			// resource selection
 			for (int i = 0; i < preScheduledQ.size();) {

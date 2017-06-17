@@ -40,7 +40,7 @@ public class PEFT_Top_MaxMin_MaxMin extends PEFT_MaxMin_MaxMin {
   @Override
   public void schedule() throws Exception {
     
-    super.schedule();
+    //super.schedule();
     this.srcAttrList = this.platform.getResourcelist();
     
     // this is for multiple workflow schedule

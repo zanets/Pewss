@@ -33,10 +33,10 @@ Https.createServer(SSLManager, APP).listen(PORT, () => {
 
 // use middleware
 APP.use(Session({
-  secret: 'dknfbfndmdkefnj',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: true }
+	secret: 'dknfbfndmdkefnj',
+	resave: false,
+	saveUninitialized: false,
+	cookie: { secure: true }
 }));
 
 APP.use(BodyParser.json());
@@ -65,66 +65,59 @@ APP.use('/doc-workflow', Express.static(`${BaseDir}/Server/Sim/env/workflow.doc`
 */
 
 const isLogin = (req, res, next) => {
-    if(req.isAuthenticated())
+	if(req.isAuthenticated())
 		return next();
-    else
+	else
 		res.redirect('/login');
 };
 
 const getJPath = (env, meta) => {
-	if(meta.owner === 'admin'){
+	if(meta.owner === 'admin')	{
 		return SimController.getBultinJPath(env, meta);
-	} else {
+	}	else 	{
 		return HomeManager.getJPath(meta);
 	}
 };
 
 const isUser = (req) => {
-    return UserManager.isUserExist(req.user.name)
-	? req.user.name
-	: false;
+	return UserManager.isUserExist(req.user.name)
+		? req.user.name
+		: false;
 };
 
 const log = (req, level, msg, code) => {
 	const name = req.user ? req.user.name : 'unknown';
 	msg = `${name} - ${req.connection.remoteAddress} - ${msg} - ${code}`;
 	
-	if(level === 'info')
-	{
+	if(level === 'info')		{
 		Logger.info(msg);
-	}	
-	else if(level === 'warn')
-	{
+	}	else if(level === 'warn')		{
 		Logger.warn(msg);
-	}
-	else if(level === 'error')
-	{
+	}	else if(level === 'error')		{
 		Logger.error(msg);
-	}
-	else if(level === 'fatal')
-	{
+	}	else if(level === 'fatal')		{
 		Logger.fatal(msg);
 	}
 };
 
 APP.get('/index', isLogin, (req, res) => {
 	log(req, 'info', 'get /index', 200);
-    res.status(200).sendFile(`${BaseDir}/Client/Index.html`);
+	res.status(200).sendFile(`${BaseDir}/Client/Index.html`);
 });
 
 APP.get('/', isLogin, (req, res) => {
 	log(req, 'info', 'get /', 200);
-    res.redirect('/index');
+	res.redirect('/index');
 });
 
 APP.get('/login', (req, res) => {
 	log(req, 'info', 'get /login', 200);
-    res.status(200).sendFile(`${BaseDir}/Client/Login.html`);
+	res.status(200).sendFile(`${BaseDir}/Client/Login.html`);
 });
 
 APP.get('/api/uses/username', (req, res) => {
 	log(req, 'info', 'get /api/uses/username', 200);
-    res.status(200).send({name: req.user.name});
+	res.status(200).send({name: req.user.name});
 });
 
 // ======================
@@ -133,17 +126,17 @@ APP.get('/api/uses/username', (req, res) => {
 
 APP.post('/login', Passport.authenticate('json'), (req, res) => {
 	log(req, 'info', 'post /login', 200);
-    res.status(200).send({
-        redirect: '/index'
-    });
+	res.status(200).send({
+		redirect: '/index'
+	});
 });
 
 APP.get('/logout', isLogin, (req, res) => {
 	log(req, 'info', 'get /logout', 200);
-    req.logout();
-		res.status(200).send({
-        redirect: '/login'
-    });
+	req.logout();
+	res.status(200).send({
+		redirect: '/login'
+	});
 });
 
 // ======================
@@ -156,10 +149,10 @@ APP.get('/api/uses/envs', isLogin, (req, res) => {
 
 	const usrName = isUser(req);
 
-    if(usrName){
+	if(usrName){
 		log(req, 'info', 'get /api/uses/envs', 200);
-        res.status(200).json(SimController.getEnvs());
-    } else{
+		res.status(200).json(SimController.getEnvs());
+	}	else{
 		log(req, 'warning', 'get /api/uses/envs', 200);
 		res.sendStatus(401);
 	}
@@ -175,7 +168,7 @@ APP.get('/api/uses/class', isLogin, (req, res) => {
 		return;
 	}
 
-    let resFiles = HomeManager.getClassFiles(
+	let resFiles = HomeManager.getClassFiles(
 		usrName,
 		UserManager.getClassPublishes()
 	);
@@ -191,10 +184,10 @@ APP.get('/api/uses/source', isLogin, (req, res) => {
 
 	const usrName = isUser(req);
 
-    if(usrName){
+	if(usrName){
 		log(req, 'info', 'get /api/uses/source', 200);
 		res.status(200).json(HomeManager.getJavaFiles(usrName));
-	} else {
+	}	else {
 		log(req, 'warning', 'get /api/uses/source', 401);
 		res.sendStatus(401);
 	}
@@ -205,62 +198,62 @@ APP.get('/api/uses/source', isLogin, (req, res) => {
 APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 
 	const usrName = isUser(req);
-    if(!usrName){
+	if(!usrName){
 		log(req, 'info', 'post /api/uses/simulate', 401);
-        res.sendStatus(401);
-        return;
-    }
+		res.sendStatus(401);
+		return;
+	}
 
-    await SimController.simulate({
-        env: req.body.env,
-        generator: getJPath(req.body.env, req.body.generator),
-        scheduler: getJPath(req.body.env, req.body.scheduler),
-        simulator: getJPath(req.body.env, req.body.simulator),
-        platform: getJPath(req.body.env, req.body.platform),
-        argums: req.body.argums
-    }).then(_res => {
+	await SimController.simulate({
+		env: req.body.env,
+		generator: getJPath(req.body.env, req.body.generator),
+		scheduler: getJPath(req.body.env, req.body.scheduler),
+		simulator: getJPath(req.body.env, req.body.simulator),
+		platform: getJPath(req.body.env, req.body.platform),
+		argums: req.body.argums
+	}).then(_res => {
 		log(req, 'info', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 200);
-        res.status(200).json(_res);
-    }).catch(err => {
+		res.status(200).json(_res);
+	}).catch(err => {
 		log(req, 'error', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 500);
-        res.status(500).json(err);
-    });
+		res.status(500).json(err);
+	});
 });
 
 // compile source file
 /* request data: {filename, category, owner} */
 APP.post("/api/uses/compile", isLogin, async (req, res) => {
 
-    const usrName = isUser(req);
-    if(!usrName){
-        res.sendStatus(401);
-        return;
-    }
-    await SimController.compile({
-        env: req.body.env,
-        name: req.body.name,
-        category: req.body.category,
-        owner: req.body.owner
-    }).then(async (_res) => {
+	const usrName = isUser(req);
+	if(!usrName){
+		res.sendStatus(401);
+		return;
+	}
+	await SimController.compile({
+		env: req.body.env,
+		name: req.body.name,
+		category: req.body.category,
+		owner: req.body.owner
+	}).then(async (_res) => {
 		log(req, 'info', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 200);
-        res.status(200).json(_res);
+		res.status(200).json(_res);
 		await HomeManager.scan(usrName);
-    }).catch(err => {
+	}).catch(err => {
 		log(req, 'error', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 500);
-        res.status(500).json(err);
-    });
+		res.status(500).json(err);
+	});
 });
 
 /* request data: { filename, category, owner } */
 APP.get('/api/uses/source_content', isLogin, async (req, res) => {
 
-    const usrName = isUser(req);
-    if(!usrName){
-        res.sendStatus(401);
-        return;
-    }
+	const usrName = isUser(req);
+	if(!usrName){
+		res.sendStatus(401);
+		return;
+	}
 
-    const content = await HomeManager.getFileContent({
+	const content = await HomeManager.getFileContent({
 		name: req.query.name,
 		category: req.query.category,
 		owner: req.query.owner,
@@ -274,30 +267,30 @@ APP.get('/api/uses/source_content', isLogin, async (req, res) => {
 	);
 	if(content){
 		res.status(200).json({data: content, isPub: isPublish});
-	} else {
+	}	else {
 		res.sendStatus(404);
 	}
 });
 
 APP.param('file_name', (req, res, next, id) => {
-  next();
+	next();
 });
 
 // update source file
 /* request data: {filename, category, content, owner} */
 APP.patch("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 
-    const usrName = isUser(req);
-    if(!usrName){
-        res.sendStatus(401);
-        return;
-    }
+	const usrName = isUser(req);
+	if(!usrName){
+		res.sendStatus(401);
+		return;
+	}
 
 	await HomeManager.setFileContent({
 		name: req.body.name,
-        category: req.body.category,
-        content: req.body.content,
-        owner: req.body.owner,
+		category: req.body.category,
+		content: req.body.content,
+		owner: req.body.owner,
 		type: FT.java
 	}).then(_res => {
 		res.status(200).send('Save complete');
@@ -310,11 +303,11 @@ APP.patch("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 /* request data: {filename, category, content, owner} */
 APP.post("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 
-    const usrName = isUser(req);
-    if(!usrName){
-        res.sendStatus(401);
-        return;
-    }
+	const usrName = isUser(req);
+	if(!usrName){
+		res.sendStatus(401);
+		return;
+	}
 
 	await HomeManager.newFile({
 		name: req.body.name,
@@ -335,52 +328,52 @@ APP.post("/api/uses/source_content/:file_name", isLogin, async (req, res) => {
 //
 
 APP.param('target', (req, res, next, id) => {
-  next();
+	next();
 });
 
 
 APP.patch("/api/users/public/:target", async (req, res) => {
 
-    const usrName = isUser(req);
+	const usrName = isUser(req);
 
-    if(usrName){
-        await UserManager.modUser(usrName,
-            {$addPublish:
+	if(usrName){
+		await UserManager.modUser(usrName,
+			{$addPublish:
                 {type: req.body.type, category: req.body.category, name:req.body.name}
-            }
+			}
         );
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(401);
-    }
+		res.sendStatus(200);
+	}	else {
+		res.sendStatus(401);
+	}
 
 });
 
 APP.delete("/api/users/public/:target", async (req, res) => {
 
-    const usrName = isUser(req);
+	const usrName = isUser(req);
 
-    if(usrName){
-        await UserManager.modUser(usrName,
-            {$removePublish:
+	if(usrName){
+		await UserManager.modUser(usrName,
+			{$removePublish:
                 {type: req.body.type, category: req.body.category, name:req.body.name}
-            }
+			}
         );
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(401);
-    }
+		res.sendStatus(200);
+	}	else {
+		res.sendStatus(401);
+	}
 
 });
 
 APP.patch("/api/users/password/:target", async (req, res) => {
 	const usrName = isUser(req);
-    if(usrName){
-        await UserManager.modUser(usrName,
+	if(usrName){
+		await UserManager.modUser(usrName,
             {$updatePassword: req.body.password}
         );
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(401);
-    }
+		res.sendStatus(200);
+	}	else {
+		res.sendStatus(401);
+	}
 });

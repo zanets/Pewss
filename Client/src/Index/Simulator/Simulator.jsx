@@ -48,10 +48,10 @@ export default class Simulator extends React.Component
 			platform: [],
 			simulator: []
 		};
+
 		for(const files of raw)
-		{
 			fixed[files.category].push(files);
-		}
+
 		return fixed;
 	}
 
@@ -79,17 +79,10 @@ export default class Simulator extends React.Component
 		this.toggleNewTaskModal(false);
 	}
 
-	startAll()
-	{
-		for(const task of this.state.tasks)
-			this.refs[task.id].start();
-	}
-
 	delTask(id)
 	{
-		const newTasks = this.state.tasks.filter( task =>
-			id !== task.id
-		);
+		const newTasks = this.state.tasks.filter( task => id !== task.id );
+		
 		this.setState({tasks: newTasks});
 	}
 
@@ -152,7 +145,8 @@ export default class Simulator extends React.Component
 		return (
 			<div className='card card-default'>
 				<div className="card-block">
-					{/*---------------- modal -------------*/}
+					
+					{/*---------------- Btn bar -------------*/}
 					<Button color='warning' onClick={this.toggleNewTaskModal.bind(this, true)}>
 						<span className="fa fa-plus-circle fa-3x"/>
 					</Button>
@@ -160,6 +154,7 @@ export default class Simulator extends React.Component
 						<span className="fa fa-balance-scale fa-3x"/>
 					</Button>
 
+					{/*---------------- Compare Modal -------------*/}
 					<Modal style={{maxWidth:"90%"}} isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
 						<ModalHeader>
 							{this.compare.header}
@@ -170,11 +165,23 @@ export default class Simulator extends React.Component
 							</div>
 						</ModalBody>
 					</Modal>
+
+					{/*---------------- New Task Modal -------------*/}
 					<Modal isOpen={this.state.isOpenNewTask} toggle={this.toggleNewTaskModal.bind(this)}>
 						<ModalHeader>
 							{'New Simulation Task'}
 						</ModalHeader>
+							
 						<ModalBody>
+							<FormGroup row>
+								<Label sm={3}>{'Environment'}</Label>
+								<Col sm={9}>
+									<Input type='select' ref="igenerator">
+										{this.getOptionComponent(this.state.class_list.generator)}
+									</Input>
+								</Col>
+							</FormGroup>
+
 							<FormGroup row>
 								<Label sm={3}>{'Generator'}</Label>
 								<Col sm={9}>
@@ -183,7 +190,8 @@ export default class Simulator extends React.Component
 									</Input>
 								</Col>
 							</FormGroup>
-							<FormGroup row>
+							
+							<FormGroup row>	
 								<Label sm={3}>{'Platform'}</Label>
 								<Col sm={9}>
 									<Input type='select' ref="iplatform">
@@ -191,6 +199,7 @@ export default class Simulator extends React.Component
 									</Input>
 								</Col>
 							</FormGroup>
+							
 							<FormGroup row>
 								<Label sm={3}>{'Simulator'}</Label>
 								<Col sm={9}>
@@ -199,6 +208,7 @@ export default class Simulator extends React.Component
 									</Input>
 								</Col>
 							</FormGroup>
+							
 							<FormGroup row>
 								<Label sm={3}>{'Scheduler'}</Label>
 								<Col sm={9}>
@@ -208,6 +218,7 @@ export default class Simulator extends React.Component
 								</Col>
 							</FormGroup>
 						</ModalBody>
+						
 						<ModalFooter>
 							<Button color='danger' onClick={this.toggleNewTaskModal.bind(this, false)}>
 								<span className="fa fa-close"/>
@@ -216,9 +227,10 @@ export default class Simulator extends React.Component
 								<span className="fa fa-check"/>
 							</Button>
 						</ModalFooter>
+					
 					</Modal>
-					{/*---------------- task list -------------*/}
 
+					{/*---------------- Task List -------------*/}
 					<Table hover responsive style={{marginTop: '.7rem'}}>
 						<thead>
 							<tr>
