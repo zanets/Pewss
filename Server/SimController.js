@@ -1,15 +1,20 @@
 import {spawn} from 'child_process';
 import {SimDir, HomeDir} from './Utils.js';
-import envSettings from './Sim/envConfig.json';
+import envConf from './Sim/envConfig.json';
 
-module.exports = class SimController {
+module.exports = class SimController 
+{
+	static simulate(data)	
+	{
+		const JavaArguments = `-cp ${ this.getEnvLibrary(data.env) } ` +
+			'com.use.CLILauncher ' +
+			`--generator ${data.generator} ` +
+			`--scheduler ${data.scheduler} ` +
+			`--simulator ${data.simulator} ` +
+			`--platform ${data.platform}`;
 
-	static simulate(data)	{
-		const envLibrary = this.getEnvLibrary(data.env);
-		const envArgument = this.getEnvArgument(data.argums);
-		const JavaArguments = `-cp ${envLibrary} com.use.CLILauncher --generator ${data.generator} --scheduler ${data.scheduler} --simulator ${data.simulator} --platform ${data.platform}`;
 		const javaProc = spawn('java', JavaArguments.split(' '));
-		javaProc.stdin.write(envArgument);
+		javaProc.stdin.write( this.getEnvArgument(data.argums) );
 		javaProc.stdin.end();
 
 		return new Promise((res, rej) => {
@@ -37,9 +42,12 @@ module.exports = class SimController {
 		});
 	}
 
-	static compile(data)	{
-		const envLibrary = this.getEnvLibrary(data.env);
-		const JavaArguments = `-Xlint:unchecked -cp ${envLibrary} ${HomeDir}/${data.owner}/${data.category}/${data.name}.java`;
+	static compile(data)	
+	{
+		const JavaArguments = '-Xlint:unchecked ' +
+			`-cp ${ this.getEnvLibrary(data.env) } ` + 
+			`${HomeDir}/${data.owner}/${data.category}/${data.name}.java`;
+		
 		const javaProc = spawn('javac', JavaArguments.split(' '));
 		
 		return new Promise((res, rej) => {
@@ -65,7 +73,8 @@ module.exports = class SimController {
 		});
 	}
 
-	static getEnvArgument(argums)	{
+	static getEnvArgument(argums)	
+	{
 		let argvs = '';
 		Object.keys(argums).forEach(key => {
 			const argv = argums[key];
@@ -83,9 +92,10 @@ module.exports = class SimController {
 		return argvs;
 	}
 
-	static getEnvLibrary(env)	{
+	static getEnvLibrary(env)	
+	{
 
-		const _libs = envSettings[env].lib;
+		const _libs = envConf[env].lib;
 		
 		let libs = '';
 		
@@ -97,13 +107,15 @@ module.exports = class SimController {
 		return libs;
 	}
 
-	static getEnvs()	{
-		return Object.keys(envSettings);
+	static getEnvs()	
+	{
+		return Object.keys(envConf);
 	}
 
-	static getBuiltin(env)	{
+	static getBuiltin(env)	
+	{
 		let resFiles = [];
-		envSettings[env].builtin.forEach(f => {
+		envConf[env].builtin.forEach(f => {
 			resFiles.push({
 				name: f.name,
 				owner: f.owner,
@@ -114,13 +126,16 @@ module.exports = class SimController {
 		return resFiles;
 	}
 
-	static getBultinJPath(env, meta)	{
-		const target = envSettings[env].builtin.find(f =>
-			meta.name === f.name && meta.category === f.category && meta.type === f.type
+	static getBultinJPath(env, meta)	
+	{
+		const target = envConf[env].builtin.find(f =>
+			meta.name === f.name 
+			&& meta.category === f.category
+			&& meta.type === f.type
 		);
-		if(target === undefined)
-			return null;
-		else
-			return target.jpath;
+	
+		return (target === undefined) 
+			? null 
+			: target.jpath;
 	}
 };
