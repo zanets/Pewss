@@ -1,5 +1,0 @@
-build/*
-node_modules/*
-Server/Sim/*
-SyntheticWorkflows/*
-Client/build/
