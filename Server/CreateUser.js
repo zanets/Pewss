@@ -1,9 +1,9 @@
-import UserManager from './UserManager.js';
+import UserManager from './UserManager.js'
 /*
 const Users = [
-'ACS102119', 
-'ACS102121', 
-'BCS105101', 
+'ACS102119',
+'ACS102121',
+'BCS105101',
 'BCS105104',
 'BCS105105',
 'BCS105106',
@@ -15,12 +15,12 @@ const Users = [
 ];
 */
 const Users = [
-	'kchuang'
-];
+  'kchuang'
+]
 
 UserManager.init().then(async () => {
-	for(const name of Users){
-		await UserManager.createUser(name, name);
-		console.log(`Create user ${name}`);
-	}
-});
+  for (const name of Users) {
+    await UserManager.createUser(name, name)
+    console.log(`Create user ${name}`)
+  }
+})
