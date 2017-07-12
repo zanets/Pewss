@@ -1,135 +1,133 @@
-import assert from 'assert';
-import MongoController from './MongoController.js';
-import User from './User.js';
-import {eErrHandler, FT} from './Utils.js';
-import Logger from './Logger.js';
+import assert from 'assert'
+import MongoController from './MongoController.js'
+import User from './User.js'
+import { eErrHandler, FT } from './Utils.js'
+import Logger from './Logger.js'
 
 class UserManager {
+  async init () {
+    this.Users = {}
+    this.CollectionName = 'User'
+    await MongoController.connect()
+    await this.loadUsers()
+  }
 
-	constructor(){}
+  /* use it in internal */
+  getUser (userName) {
+    const u = this.Users[userName]
+    return u === undefined
+      ? null
+      : u
+  }
 
-	async init()	{
-		this.Users = {};
-		this.CollectionName = 'User';
-		await MongoController.connect();
-		await this.loadUsers();
-	}
+  getUsers () {
+    return this.Users
+  }
 
-	/* use it in internal */
-	getUser(userName)	{
-		const u = this.Users[userName];
-		return u === undefined
-			? null
-			: u;
-	}
+  getUsersCount () {
+    return Object.keys(this.Users).length
+  }
 
-	getUsers()	{
-		return this.Users;
-	}
+  isUserExist (userName) {
+    return this.getUser(userName) !== null
+  }
 
-	getUsersCount()	{
-		return Object.keys(this.Users).length;
-	}
+  async loadUsers () {
+    // init DB
+    assert.ok(MongoController.isConnect(), 'DB NOT connected')
+    MongoController.initCollection(this.CollectionName)
 
-	isUserExist(userName)	{
-		return this.getUser(userName) !== null;
-	}
+    // load user data from db
+    const UserProperties = await MongoController.getDocument(this.CollectionName)
+    this.Users = {}
 
-	async loadUsers()	{
-		// init DB
-		assert.ok(MongoController.isConnect(), 'DB NOT connected');
-		MongoController.initCollection(this.CollectionName);
+    // create user instance
+    for (const property of UserProperties) {
+      this.Users[property.name] = new User(property)
+    }
+  }
 
-		// load user data from db
-		const UserProperties = await MongoController.getDocument(this.CollectionName);
-		this.Users={};
+  // remove user from DB
+  async removeUser (userName) {
+    assert.ok(MongoController.isConnect(), 'DB NOT connected')
 
-		// create user instance
-		for(const property of UserProperties)
-			this.Users[property.name] = new User(property);
-	}
+    await MongoController
+      .removeDocument(this.CollectionName, { name: userName })
+      .then(() => delete this.Users[userName])
+      .catch(eErrHandler)
+  }
 
-	// remove user from DB
-	async removeUser(userName)	{
-		assert.ok( MongoController.isConnect(), 'DB NOT connected' );
+  // create new user to DB
+  async createUser (name, passwd) {
+    const newUser = new User({ name, passwd })
 
-		await MongoController
-			.removeDocument(this.CollectionName, {name: userName})
-			.then( () => delete this.Users[userName] )
-			.catch(eErrHandler);
-	}
+    await MongoController
+      .insertDocument(this.CollectionName, newUser.getProperty())
+      .catch(eErrHandler)
 
-	// create new user to DB
-	async createUser(name, passwd)	{
-		const newUser = new User({name, passwd});
-		
-		await MongoController
-			.insertDocument( this.CollectionName, newUser.getProperty() )
-			.catch(eErrHandler);
-		
-		this.Users[name] = newUser;
-		
-		return name;
-	}
+    this.Users[name] = newUser
 
-	// update user data in DB
-	async updateDB(tarUser)	{
-		assert.ok( tarUser !== null, `User ${tarUser.name} NOT exist` );
+    return name
+  }
 
-		await MongoController
-			.updateDocument( this.CollectionName, {name: tarUser.name}, tarUser.getProperty() )
-			.catch(eErrHandler);
-		
-		return 0;
-	}
+  // update user data in DB
+  async updateDB (tarUser) {
+    assert.ok(tarUser !== null, `User ${tarUser.name} NOT exist`)
 
-	// operate: {op: v}
-	// op: $removeFile | $addPublicFile | $removePublicFile | $updatePassword
-	async modUser(usrName, operate)	{
-		const tarUser = this.getUser(usrName);
-		
-		assert.ok(tarUser !== null, `User ${usrName} NOT exist`);
-		
-		const op = Object.keys(operate)[0];
-		
-		const v = operate[op];
+    await MongoController
+      .updateDocument(this.CollectionName, { name: tarUser.name }, tarUser.getProperty())
+      .catch(eErrHandler)
 
-		if(op === '$addPublish')
-			tarUser.addPublish(v.type, v.category, v.name);
-		else if(op === '$removePublish')
-			tarUser.removePublish(v.type, v.category, v.name);
-		else if(op === '$updatePassword')
-			tarUser.updatePassword(v);
-		else
-			Logger.error(`Unknown modUser command : ${op}`);
+    return 0
+  }
 
-		await this.updateDB(tarUser).catch(eErrHandler);
-		
-		return 0;
-	}
+  // operate: {op: v}
+  // op: $removeFile | $addPublicFile | $removePublicFile | $updatePassword
+  async modUser (usrName, operate) {
+    const tarUser = this.getUser(usrName)
 
-	getClassPublishes()	{
-		let publishes = [];
-		
-		for(const name in this.Users)		{
-			const usrPublishes = this.Users[name].getPublishesByType(FT.class);
-			
-			publishes = publishes.concat(usrPublishes);
-		}
-		
-		return publishes;
-	}
+    assert.ok(tarUser !== null, `User ${usrName} NOT exist`)
 
-	isPublish(owner, category, type, filename)	{
-		const usrPublishes = this.Users[owner].getPublishesByType(type);
-		
-		for(const publish of usrPublishes)		{
-			if(publish.name === filename && publish.category === category)
-				return true;
-		}
-		
-		return false;
-	}
+    const op = Object.keys(operate)[0]
+
+    const v = operate[op]
+
+    if (op === '$addPublish') {
+      tarUser.addPublish(v.type, v.category, v.name)
+    } else if (op === '$removePublish') {
+      tarUser.removePublish(v.type, v.category, v.name)
+    } else if (op === '$updatePassword') {
+      tarUser.updatePassword(v)
+    } else {
+      Logger.error(`Unknown modUser command : ${op}`)
+    }
+
+    await this.updateDB(tarUser).catch(eErrHandler)
+
+    return 0
+  }
+
+  getClassPublishes () {
+    let publishes = []
+
+    for (const name in this.Users) {
+      publishes = publishes.concat(
+        this.Users[name].getPublishesByType(FT.class)
+      )
+    }
+
+    return publishes
+  }
+
+  isPublish (owner, category, type, filename) {
+    const usrPublishes = this.Users[owner].getPublishesByType(type)
+
+    for (const publish of usrPublishes) {
+      if (publish.name === filename && publish.category === category) { return true }
+    }
+
+    return false
+  }
 }
 
-module.exports = new UserManager();
+module.exports = new UserManager()
