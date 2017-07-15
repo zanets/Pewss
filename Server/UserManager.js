@@ -3,7 +3,7 @@ import MongoController from './MongoController.js'
 import User from './User.js'
 import { eErrHandler, FT } from './Utils.js'
 import Logger from './Logger.js'
-
+import Encrypt from './Encrypt.js'
 class UserManager {
   async init () {
     this.Users = {}
@@ -59,7 +59,8 @@ class UserManager {
 
   // create new user to DB
   async createUser (name, passwd) {
-    const newUser = new User({ name, passwd })
+    console.log(Encrypt.enc(passwd));
+    const newUser = new User({ name, passwd: Encrypt.enc(passwd) })
 
     await MongoController
       .insertDocument(this.CollectionName, newUser.getProperty())
@@ -97,7 +98,7 @@ class UserManager {
     } else if (op === '$removePublish') {
       tarUser.removePublish(v.type, v.category, v.name)
     } else if (op === '$updatePassword') {
-      tarUser.updatePassword(v)
+      tarUser.updatePassword(Encrypt.enc(v))
     } else {
       Logger.error(`Unknown modUser command : ${op}`)
     }

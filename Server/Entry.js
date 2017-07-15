@@ -12,6 +12,7 @@ import HomeManager from './HomeManager.js'
 import { FT, BaseDir } from './Utils.js'
 import JSON_strategy from './Passport/Json.js'
 import Logger from './Logger.js'
+
 // initialize modules and variables
 
 const APP = Express()
