@@ -10,7 +10,6 @@ import UserManager from './UserManager.js'
 import HomeManager from './HomeManager.js'
 import { FT, BaseDir, log } from './Utils.js'
 import LocalPass from './Passport/LocalPass.js'
-import Logger from './Logger.js'
 import helmet from 'helmet'
 // initialize modules and variables
 
