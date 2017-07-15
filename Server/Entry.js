@@ -8,7 +8,7 @@ import Secrets from './Secrets.js'
 import SimController from './SimController.js'
 import UserManager from './UserManager.js'
 import HomeManager from './HomeManager.js'
-import { FT, BaseDir } from './Utils.js'
+import { FT, BaseDir, log } from './Utils.js'
 import LocalPass from './Passport/LocalPass.js'
 import Logger from './Logger.js'
 import helmet from 'helmet'
@@ -27,7 +27,7 @@ UserManager.init().then(async () => {
 })
 
 Https.createServer(Secrets.TLS, APP).listen(PORT, () => {
-  Logger.info(`Https server listening on port ${PORT}.`)
+  log(`Https server listening on port ${PORT}.`, 'info')
 })
 
 APP.use(helmet())
@@ -76,11 +76,9 @@ const isLogin = (req, res, next) => {
 }
 
 const getJPath = (env, meta) => {
-  if (meta.owner === 'admin') {
-    return SimController.getBultinJPath(env, meta)
-  } else {
-    return HomeManager.getJPath(meta)
-  }
+  return (meta.owner === 'admin')
+    ? SimController.getBultinJPath(env, meta)
+    : HomeManager.getJPath(meta)
 }
 
 const isUser = (req) => {
@@ -89,37 +87,23 @@ const isUser = (req) => {
     : false
 }
 
-const log = (req, level, msg, code) => {
-  const name = req.user ? req.user.name : 'unknown'
-  msg = `${name} - ${req.connection.remoteAddress} - ${msg} - ${code}`
-  if (level === 'info') {
-    Logger.info(msg)
-  } else if (level === 'warn') {
-    Logger.warn(msg)
-  } else if (level === 'error') {
-    Logger.error(msg)
-  } else if (level === 'fatal') {
-    Logger.fatal(msg)
-  }
-}
-
 APP.get('/index', isLogin, (req, res) => {
-  log(req, 'info', 'get /index', 200)
+  log(`${req.method} ${req.originalUrl}`, 'info', {c: 200, req})
   res.status(200).sendFile(`${BaseDir}/Client/Index.html`)
 })
 
 APP.get('/', isLogin, (req, res) => {
-  log(req, 'info', 'get /', 200)
+  log(`${req.method} ${req.originalUrl}`, 'info', {c: 200, req})
   res.redirect('/index')
 })
 
 APP.get('/login', (req, res) => {
-  log(req, 'info', 'get /login', 200)
+  log(`${req.method} ${req.originalUrl}`, 'info', {c: 200, req})
   res.status(200).sendFile(`${BaseDir}/Client/Login.html`)
 })
 
 APP.get('/api/uses/username', (req, res) => {
-  log(req, 'info', 'get /api/uses/username', 200)
+  log(`${req.method} ${req.originalUrl}`, 'info', {c: 200, req})
   res.status(200).send({ name: req.user.name })
 })
 
@@ -128,14 +112,14 @@ APP.get('/api/uses/username', (req, res) => {
 //
 
 APP.post('/login', Passport.authenticate('json'), (req, res) => {
-  log(req, 'info', 'post /login', 200)
+  log(`${req.method} ${req.originalUrl}`, 'info', {c: 200, req})
   res.status(200).send({
     redirect: '/index'
   })
 })
 
 APP.get('/logout', isLogin, (req, res) => {
-  log(req, 'info', 'get /logout', 200)
+  log(`${req.method} ${req.originalUrl}`, 'info', {c: 200, req})
   req.logout()
   res.status(200).send({
     redirect: '/login'
@@ -150,12 +134,12 @@ APP.get('/logout', isLogin, (req, res) => {
 /* no request data */
 APP.get('/api/uses/envs', isLogin, (req, res) => {
   const usrName = isUser(req)
-
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (usrName) {
-    log(req, 'info', 'get /api/uses/envs', 200)
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).json(SimController.getEnvs())
   } else {
-    log(req, 'warning', 'get /api/uses/envs', 200)
+    log(lmsg, 'warning', {c: 200, req})
     res.sendStatus(401)
   }
 })
@@ -163,8 +147,9 @@ APP.get('/api/uses/envs', isLogin, (req, res) => {
 /* no request data */
 APP.get('/api/uses/class', isLogin, (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (!usrName) {
-    log(req, 'warning', 'get /api/uses/class', 401)
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
     return
   }
@@ -175,19 +160,19 @@ APP.get('/api/uses/class', isLogin, (req, res) => {
   )
 
   resFiles = resFiles.concat(SimController.getBuiltin(req.query.env))
-  log(req, 'warning', 'get /api/uses/class', 200)
+  log(lmsg, 'info', {c: 200, req})
   res.status(200).json(resFiles)
 })
 
 /* no request data */
 APP.get('/api/uses/source', isLogin, (req, res) => {
   const usrName = isUser(req)
-
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (usrName) {
-    log(req, 'info', 'get /api/uses/source', 200)
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).json(HomeManager.getJavaFiles(usrName))
   } else {
-    log(req, 'warning', 'get /api/uses/source', 401)
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
   }
 })
@@ -195,8 +180,9 @@ APP.get('/api/uses/source', isLogin, (req, res) => {
 /* request data: { env, generator, scheduler, simulator, platform, argums } */
 APP.post('/api/uses/simulate', isLogin, async (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl} ${JSON.stringify(req.body)}`
   if (!usrName) {
-    log(req, 'info', 'post /api/uses/simulate', 401)
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
     return
   }
@@ -209,10 +195,10 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
     platform: getJPath(req.body.env, req.body.platform),
     argums: req.body.argums
   }).then(_res => {
-    log(req, 'info', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 200)
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).json(_res)
   }).catch(err => {
-    log(req, 'error', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 500)
+    log(lmsg, 'error', {c: 500, req})
     res.status(500).json(err)
   })
 })
@@ -221,7 +207,9 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
 /* request data: {filename, category, owner} */
 APP.post('/api/uses/compile', isLogin, async (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl} ${JSON.stringify(req.body)}`
   if (!usrName) {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
     return
   }
@@ -231,11 +219,11 @@ APP.post('/api/uses/compile', isLogin, async (req, res) => {
     category: req.body.category,
     owner: req.body.owner
   }).then(async (_res) => {
-    log(req, 'info', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 200)
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).json(_res)
     await HomeManager.scan(usrName)
   }).catch(err => {
-    log(req, 'error', `post /api/uses/simulate ${JSON.stringify(req.body)}`, 500)
+    log(lmsg, 'error', {c: 500, req})
     res.status(500).json(err)
   })
 })
@@ -243,7 +231,9 @@ APP.post('/api/uses/compile', isLogin, async (req, res) => {
 /* request data: { filename, category, owner } */
 APP.get('/api/uses/source_content', isLogin, async (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (!usrName) {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
     return
   }
@@ -261,8 +251,10 @@ APP.get('/api/uses/source_content', isLogin, async (req, res) => {
     req.query.name
   )
   if (content) {
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).json({ data: content, isPub: isPublish })
   } else {
+    log(lmsg, 'error', {c: 404, req})
     res.sendStatus(404)
   }
 })
@@ -275,7 +267,9 @@ APP.param('file_name', (req, res, next, id) => {
 /* request data: {filename, category, content, owner} */
 APP.patch('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (!usrName) {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
     return
   }
@@ -287,8 +281,10 @@ APP.patch('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
     owner: req.body.owner,
     type: FT.java
   }).then(_res => {
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).send('Save complete')
   }).catch(err => {
+    log(lmsg, 'error', {c: 200, req})
     res.status(500).send(err.msg)
   })
 })
@@ -297,7 +293,9 @@ APP.patch('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
 /* request data: {filename, category, content, owner} */
 APP.post('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (!usrName) {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
     return
   }
@@ -309,9 +307,11 @@ APP.post('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
     owner: req.body.owner,
     type: FT.java
   }).then(async (_res) => {
+    log(lmsg, 'info', {c: 200, req})
     res.status(200).send('Save complete')
     await HomeManager.scan(usrName)
   }).catch(err => {
+    log(lmsg, 'error', {c: 500, req})
     res.status(500).send(err.msg)
   })
 })
@@ -326,7 +326,7 @@ APP.param('target', (req, res, next, id) => {
 
 APP.patch('/api/users/public/:target', async (req, res) => {
   const usrName = isUser(req)
-
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (usrName) {
     await UserManager.modUser(usrName, {
       $addPublish: {
@@ -335,15 +335,17 @@ APP.patch('/api/users/public/:target', async (req, res) => {
         name: req.body.name
       }
     })
+    log(lmsg, 'info', {c: 200, req})
     res.sendStatus(200)
   } else {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
   }
 })
 
 APP.delete('/api/users/public/:target', async (req, res) => {
   const usrName = isUser(req)
-
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (usrName) {
     await UserManager.modUser(usrName, {
       $removePublish: {
@@ -352,20 +354,25 @@ APP.delete('/api/users/public/:target', async (req, res) => {
         name: req.body.name
       }
     })
+    log(lmsg, 'info', {c: 200, req})
     res.sendStatus(200)
   } else {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
   }
 })
 
 APP.patch('/api/users/password/:target', async (req, res) => {
   const usrName = isUser(req)
+  const lmsg = `${req.method} ${req.originalUrl}`
   if (usrName) {
     await UserManager.modUser(usrName, {
       $updatePassword: req.body.password
     })
+    log(lmsg, 'info', {c: 200, req})
     res.sendStatus(200)
   } else {
+    log(lmsg, 'warning', {c: 401, req})
     res.sendStatus(401)
   }
 })

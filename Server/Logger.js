@@ -10,5 +10,4 @@ log4js.configure({
   ]
 })
 log4js.loadAppender('dateFile')
-const Logger = log4js.getLogger('dateFile')
-module.exports = Logger
+module.exports = log4js.getLogger('dateFile')
