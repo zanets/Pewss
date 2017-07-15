@@ -7,7 +7,7 @@ const testUsers = ['darg', 'oeg']
 UserManager.init().then(async () => {
   // ====== test UserManager ======
   await UserManager.loadUsers()
-  if (UserManager.getUsersCount() === 0) {
+  if (Object.keys(UserManager.getUsers()).length === 0) {
     console.log('======= No user. =======')
     for (const name of testUsers) {
       await UserManager.createUser(name, name)
@@ -17,11 +17,11 @@ UserManager.init().then(async () => {
   }
 
   await UserManager.modUser(testUsers[0], {$updatePassword: 'sdf'})
-  await UserManager.modUser(testUsers[0], {$addPublish: {type: FT.class, category: 'a', name: 'a-name'}})
-  await UserManager.modUser(testUsers[0], {$addPublish: {type: FT.class, category: 'c', name: 'c-name'}})
-  await UserManager.modUser(testUsers[0], {$removePublish: {type: FT.class, category: 'c', name: 'c-name'}})
-  await UserManager.modUser(testUsers[1], {$addPublish: {type: FT.class, category: 'scheduler', name: 'aasd-name'}})
-  await UserManager.modUser(testUsers[0], {$addPublish: {type: FT.class, category: 'scheduler', name: 'PEFT_MaxMin_MaxMin'}})
+  await UserManager.modUser(testUsers[0], {$addPub: {type: FT.class, category: 'a', name: 'a-name'}})
+  await UserManager.modUser(testUsers[0], {$addPub: {type: FT.class, category: 'c', name: 'c-name'}})
+  await UserManager.modUser(testUsers[0], {$removePub: {type: FT.class, category: 'c', name: 'c-name'}})
+  await UserManager.modUser(testUsers[1], {$addPub: {type: FT.class, category: 'scheduler', name: 'aasd-name'}})
+  await UserManager.modUser(testUsers[0], {$addPub: {type: FT.class, category: 'scheduler', name: 'PEFT_MaxMin_MaxMin'}})
 
   for (const user of testUsers) {
     console.log(`====== user ${user} ======`)

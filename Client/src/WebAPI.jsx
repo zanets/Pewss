@@ -86,7 +86,7 @@ class WebAPI {
 
   logout () {
     jq.get('/logout', (data) => {
-      window.location.href = data.redirect
+      window.location = data
     })
   }
 

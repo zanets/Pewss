@@ -44,7 +44,7 @@ export default class Simulator extends React.Component {
       simulator: []
     }
 
-    for (const files of raw) { fixed[files.category].push(files) }
+    for (const files of raw) { fixed[files.Cate].push(files) }
 
     return fixed
   }
@@ -86,7 +86,7 @@ export default class Simulator extends React.Component {
   getOptionComponent (arr) {
     return arr.map(ele =>
       <option key={uuid.v4()} value={JSON.stringify(ele)}>
-        {`${ele.name} @ ${ele.owner}`}
+        {`${ele.Name} @ ${ele.Owner}`}
       </option>
     )
   }

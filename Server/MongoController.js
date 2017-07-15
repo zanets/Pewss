@@ -35,7 +35,7 @@ class MongoController {
   async getDocument (collectionName) {
     assert.ok(this.isCollectionExist(collectionName), 'Collection NOT exist.')
     const collection = this.db.collection(collectionName)
-    return await collection.find().toArray()
+    return collection.find().toArray()
   }
 
   async insertDocument (collectionName, doc) {

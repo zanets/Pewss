@@ -2,19 +2,18 @@ import fs from 'fs'
 import { pErrHandler } from './Utils.js'
 
 module.exports = class FileController {
-  static async scanDirRecursive (dirPath, files) {
+  static async scanDirAll (dirPath, files) {
     files = files || []
-    let entries = []
-
-    await this.scanDir(dirPath).then((_entries) => {
-      entries = _entries
-    }).catch(pErrHandler)
+    const entries = await this.scanDir(dirPath).catch(pErrHandler)
 
     for (let name of entries) {
       const path = `${dirPath}/${name}`
-      await this.isDir(path).then(async (isDir) => {
-        if (isDir) { await this.scanRecursive(path, files) } else { files.push({ name, path }) }
-      }).catch(pErrHandler)
+
+      if (await this.isDir(path)) {
+        await this.scanDirAll(path, files)
+      } else {
+        files.push({ name, path })
+      }
     }
 
     return files
@@ -37,13 +36,7 @@ module.exports = class FileController {
   }
 
   static async isDir (path) {
-    let stat = null
-    await this.stat(path).then((_stat) => {
-      stat = _stat
-    }).catch((err) => {
-      throw err
-    })
-
+    let stat = await this.stat(path)
     return stat.isDirectory()
   }
 

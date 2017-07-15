@@ -3,32 +3,32 @@
 		"lib": ["workflow.jar", "USES.jar", "gson-2.6.2.jar"],
 		"builtin": [
 			{
-				"category": "simulator",
-				"name": "WF Static",
-				"jpath": "com.darg.simulator.dbgStaticWFSimulator",
-				"owner": "admin",
-				"type": "class"
+				"Cate": "simulator",
+				"Name": "WF Static",
+				"JPath": "com.darg.simulator.dbgStaticWFSimulator",
+				"Owner": "admin",
+				"Type": "class"
 			},
 			{
-				"category": "generator",
-				"name": "WF Fork-Join",
-				"jpath": "com.use.generator.ForkJoinDAGGenerator",
-				"owner": "admin",
-				"type": "class"
+				"Cate": "generator",
+				"Name": "WF Fork-Join",
+				"JPath": "com.use.generator.ForkJoinDAGGenerator",
+				"Owner": "admin",
+				"Type": "class"
 			},
 			{
-				"category": "generator",
-				"name": "WF General",
-				"jpath": "com.use.generator.GeneralDAGGenerator",
-				"owner": "admin",
-				"type": "class"
+				"Cate": "generator",
+				"Name": "WF General",
+				"JPath": "com.use.generator.GeneralDAGGenerator",
+				"Owner": "admin",
+				"Type": "class"
 			},
 			{
-				"category": "platform",
-				"name": "WF Homogeneous",
-				"jpath": "com.use.resource.platform.WorkflowPlatform",
-				"owner": "admin",
-				"type": "class"
+				"Cate": "platform",
+				"Name": "WF Homogeneous",
+				"JPath": "com.use.resource.platform.WorkflowPlatform",
+				"Owner": "admin",
+				"Type": "class"
 			}
 		]
 	}

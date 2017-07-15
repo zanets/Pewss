@@ -33,7 +33,7 @@ export default class ModalNewFile extends React.Component {
 
   componentDidMount () {
     API.getUserName(res => {
-      this.username = res.name
+      this.username = res
     })
   }
 

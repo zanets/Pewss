@@ -1,9 +1,9 @@
 import assert from 'assert'
 import MongoController from './MongoController.js'
 import User from './User.js'
-import { eErrHandler, FT } from './Utils.js'
-import Logger from './Logger.js'
+import { eErrHandler, log } from './Utils.js'
 import Encrypt from './Encrypt.js'
+import {fTypes} from './File.js'
 class UserManager {
   async init () {
     this.Users = {}
@@ -12,24 +12,12 @@ class UserManager {
     await this.loadUsers()
   }
 
-  /* use it in internal */
-  getUser (userName) {
-    const u = this.Users[userName]
-    return u === undefined
-      ? null
-      : u
+  getUser (name) {
+    return this.Users[name]
   }
 
   getUsers () {
     return this.Users
-  }
-
-  getUsersCount () {
-    return Object.keys(this.Users).length
-  }
-
-  isUserExist (userName) {
-    return this.getUser(userName) !== null
   }
 
   async loadUsers () {
@@ -38,29 +26,28 @@ class UserManager {
     MongoController.initCollection(this.CollectionName)
 
     // load user data from db
-    const UserProperties = await MongoController.getDocument(this.CollectionName)
-    this.Users = {}
+    const pros = await MongoController.getDocument(this.CollectionName)
 
     // create user instance
-    for (const property of UserProperties) {
-      this.Users[property.name] = new User(property)
+    this.Users = {}
+    for (const pro of pros) {
+      this.Users[pro.Name] = new User(pro)
     }
   }
 
   // remove user from DB
-  async removeUser (userName) {
+  async removeUser (uname) {
     assert.ok(MongoController.isConnect(), 'DB NOT connected')
 
     await MongoController
-      .removeDocument(this.CollectionName, { name: userName })
-      .then(() => delete this.Users[userName])
+      .removeDocument(this.CollectionName, { Name: uname })
+      .then(() => delete this.Users[uname])
       .catch(eErrHandler)
   }
 
   // create new user to DB
   async createUser (name, passwd) {
-    console.log(Encrypt.enc(passwd));
-    const newUser = new User({ name, passwd: Encrypt.enc(passwd) })
+    const newUser = new User({Name: name, Passwd: Encrypt.enc(passwd)})
 
     await MongoController
       .insertDocument(this.CollectionName, newUser.getProperty())
@@ -72,62 +59,67 @@ class UserManager {
   }
 
   // update user data in DB
-  async updateDB (tarUser) {
-    assert.ok(tarUser !== null, `User ${tarUser.name} NOT exist`)
+  async updateDB (tUsr) {
+    assert.ok(tUsr !== null, `User ${tUsr.getName()} NOT exist`)
 
-    await MongoController
-      .updateDocument(this.CollectionName, { name: tarUser.name }, tarUser.getProperty())
-      .catch(eErrHandler)
-
-    return 0
+    return MongoController.updateDocument(
+      this.CollectionName,
+      { Name: tUsr.getName() },
+      tUsr.getProperty()
+    )
   }
 
   // operate: {op: v}
   // op: $removeFile | $addPublicFile | $removePublicFile | $updatePassword
-  async modUser (usrName, operate) {
-    const tarUser = this.getUser(usrName)
+  async modUser (uname, operate) {
+    const tarUser = this.getUser(uname)
 
-    assert.ok(tarUser !== null, `User ${usrName} NOT exist`)
+    assert.ok(tarUser !== null, `User ${uname} NOT exist`)
 
     const op = Object.keys(operate)[0]
 
     const v = operate[op]
 
-    if (op === '$addPublish') {
-      tarUser.addPublish(v.type, v.category, v.name)
-    } else if (op === '$removePublish') {
-      tarUser.removePublish(v.type, v.category, v.name)
-    } else if (op === '$updatePassword') {
-      tarUser.updatePassword(Encrypt.enc(v))
+    if (op === '$addPub') {
+      tarUser.addPub(v.type, v.cate, v.name)
+    } else if (op === '$removePub') {
+      tarUser.removePub(v.type, v.cate, v.name)
+    } else if (op === '$setPasswd') {
+      tarUser.setPasswd(Encrypt.enc(v))
     } else {
-      Logger.error(`Unknown modUser command : ${op}`)
+      log(`Unknown modUser command : ${op}`, 'error')
     }
 
-    await this.updateDB(tarUser).catch(eErrHandler)
-
-    return 0
+    return this.updateDB(tarUser)
   }
 
-  getClassPublishes () {
-    let publishes = []
+  isPub (owner, type, cate, fname) {
+    const pubs = this.Users[owner].getPubs(type)
 
-    for (const name in this.Users) {
-      publishes = publishes.concat(
-        this.Users[name].getPublishesByType(FT.class)
-      )
-    }
-
-    return publishes
-  }
-
-  isPublish (owner, category, type, filename) {
-    const usrPublishes = this.Users[owner].getPublishesByType(type)
-
-    for (const publish of usrPublishes) {
-      if (publish.name === filename && publish.category === category) { return true }
+    for (const pub of pubs) {
+      if (pub.getName() === fname && pub.getCate === cate) { return true }
     }
 
     return false
+  }
+
+  getClassFiles (uname) {
+    // private
+    let res = this.getUser(uname).getFilesByType(fTypes.Class)
+
+    // publish
+    for (const u in this.Users) {
+      res = res.concat(this.Users[u].getPubs(fTypes.Class))
+    }
+    return res
+  }
+
+  // Currently, publish source file is not allow
+  getJavaFiles (uname) {
+    // private
+    let res = this.getUser(uname).getFilesByType(fTypes.Java)
+
+    return res
   }
 }
 

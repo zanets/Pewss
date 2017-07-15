@@ -21,7 +21,7 @@ class Login extends React.Component {
     const name = ReactDOM.findDOMNode(this.refs['login-name']).value
     const passwd = ReactDOM.findDOMNode(this.refs['login-passwd']).value
     jq.post('/login', {name, passwd}, (data) => {
-      window.location.href = data.redirect
+      window.location = data
     })
   }
 

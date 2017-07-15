@@ -2,7 +2,7 @@ import { Strategy as LocalStrategy } from 'passport-local'
 import Encrypt from '../Encrypt.js'
 const LocalPass = (passport, users) => {
   passport.serializeUser((user, done) => {
-    done(null, user.name)
+    done(null, user.getName())
   })
 
   passport.deserializeUser((name, done) => {
@@ -21,7 +21,7 @@ const LocalPass = (passport, users) => {
       return
     }
 
-    Encrypt.compare(passwd, user.passwd).then(res => {
+    Encrypt.compare(passwd, user.getPasswd()).then(res => {
       if (res === false) {
         done(null, false)
       } else {

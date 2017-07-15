@@ -39,8 +39,8 @@ class Index extends React.Component {
   }
 
   componentWillMount () {
-    API.getUserName((data) => {
-      this.setState({username: data.name})
+    API.getUserName(res => {
+      this.setState({username: res})
     })
   }
 

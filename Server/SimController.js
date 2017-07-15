@@ -3,16 +3,16 @@ import { SimDir, HomeDir } from './Utils.js'
 import envConf from './Sim/envConfig.json'
 
 module.exports = class SimController {
-  static simulate (data) {
-    const JavaArguments = `-cp ${this.getEnvLibrary(data.env)} ` +
+  static simulate (env, gen, sche, sim, plat, arg) {
+    const JavaArguments = `-cp ${this.getEnvLibrary(env)} ` +
       'com.use.CLILauncher ' +
-      `--generator ${data.generator} ` +
-      `--scheduler ${data.scheduler} ` +
-      `--simulator ${data.simulator} ` +
-      `--platform ${data.platform}`
+      `--generator ${gen} ` +
+      `--scheduler ${sche} ` +
+      `--simulator ${sim} ` +
+      `--platform ${plat}`
 
     const javaProc = spawn('java', JavaArguments.split(' '))
-    javaProc.stdin.write(this.getEnvArgument(data.argums))
+    javaProc.stdin.write(this.getEnvArgument(arg))
     javaProc.stdin.end()
 
     return new Promise((resolve, reject) => {
@@ -38,10 +38,10 @@ module.exports = class SimController {
     })
   }
 
-  static compile (data) {
+  static compile (env, owner, cate, fname) {
     const JavaArguments = '-Xlint:unchecked ' +
-      `-cp ${this.getEnvLibrary(data.env)} ` +
-      `${HomeDir}/${data.owner}/${data.category}/${data.name}.java`
+      `-cp ${this.getEnvLibrary(env)} ` +
+      `${HomeDir}/${owner}/${cate}/${fname}.java`
 
     const javaProc = spawn('javac', JavaArguments.split(' '))
 
@@ -103,27 +103,10 @@ module.exports = class SimController {
   }
 
   static getBuiltin (env) {
-    let resFiles = []
+    let res = []
     envConf[env].builtin.forEach(f => {
-      resFiles.push({
-        name: f.name,
-        owner: f.owner,
-        type: f.type,
-        category: f.category
-      })
+      res.push(f)
     })
-    return resFiles
-  }
-
-  static getBultinJPath (env, meta) {
-    const target = envConf[env].builtin.find(f =>
-      meta.name === f.name &&
-      meta.category === f.category &&
-      meta.type === f.type
-    )
-
-    return (target === undefined)
-      ? null
-      : target.jpath
+    return res
   }
 }
