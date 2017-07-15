@@ -6,6 +6,7 @@ Server/MongoDB/
 mongodLogs/
 Server/Sim/env/*.doc
 Server/Home/*
+Secrets/
 npm-debug.log
 simulator.conf
 yarn.lock

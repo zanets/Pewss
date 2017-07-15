@@ -4,15 +4,14 @@ import Compression from 'compression'
 import Passport from 'passport'
 import Session from 'express-session'
 import Https from 'https'
-
-import SSLManager from './SSLManager.js'
+import Secrets from './Secrets.js'
 import SimController from './SimController.js'
 import UserManager from './UserManager.js'
 import HomeManager from './HomeManager.js'
 import { FT, BaseDir } from './Utils.js'
-import JSON_strategy from './Passport/Json.js'
+import LocalPass from './Passport/LocalPass.js'
 import Logger from './Logger.js'
-
+import helmet from 'helmet'
 // initialize modules and variables
 
 const APP = Express()
@@ -24,22 +23,25 @@ UserManager.init().then(async () => {
     await HomeManager.scan(user)
   }
 
-  JSON_strategy(Passport, Users)
+  LocalPass(Passport, Users)
 })
 
-// current express not support https.
-Https.createServer(SSLManager, APP).listen(PORT, () => {
+Https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   Logger.info(`Https server listening on port ${PORT}.`)
 })
 
-// use middleware
+APP.use(helmet())
 APP.use(Session({
-  secret: 'dknfbfndmdkefnj',
+  name: Secrets.Session.name,
+  secret: Secrets.Session.secret,
   resave: false,
-  saveUninitialized: false,
-  cookie: { secure: true }
+  saveUninitialized: true,
+  rolling: true,
+  cookie: {
+    secure: true,
+    httpOnly: true
+  }
 }))
-
 APP.use(BodyParser.json())
 APP.use(BodyParser.urlencoded({ extended: true }))
 APP.use(Compression())

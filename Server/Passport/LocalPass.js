@@ -1,6 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local'
 import Encrypt from '../Encrypt.js'
-const JSON_Strategy = (passport, users) => {
+const LocalPass = (passport, users) => {
   passport.serializeUser((user, done) => {
     done(null, user.name)
   })
@@ -31,4 +31,4 @@ const JSON_Strategy = (passport, users) => {
   }))
 }
 
-module.exports = JSON_Strategy
+module.exports = LocalPass
