@@ -1,17 +1,17 @@
 import jq from 'jquery'
 class WebAPI {
   getClassList (env, success, fail, always) {
-    jq.get('/api/uses/class', {
+    jq.get(`/api/users/uname/files/class`, {
       env: env
     }, success).fail(fail).always(always)
   }
 
   getSourceList (success, fail, always) {
-    jq.get('/api/uses/source', success).fail(fail).always(always)
+    jq.get(`/api/users/uname/files/java`, success).fail(fail).always(always)
   }
 
   simulate (env, gen, sche, sim, plat, arg, success, fail, always) {
-    jq.post('/api/uses/simulate', {
+    jq.post('/api/sim', {
       env: env,
       generator: gen,
       scheduler: sche,
@@ -22,7 +22,7 @@ class WebAPI {
   }
 
   getSourceCode (cate, name, owner, success, fail, always) {
-    jq.get('/api/uses/source_content', {
+    jq.get(`/api/users/${name}/files/source/${name}`, {
       fCate: cate,
       fName: name,
       fOwner: owner
@@ -31,7 +31,7 @@ class WebAPI {
 
   setSourceCode (name, cate, content, owner, success, fail, always) {
     jq.ajax({
-      url: `/api/uses/source_content/${name}`,
+      url: `/api/users/${name}/files/source/${name}`,
       data: {
         fName: name,
         fCate: cate,
@@ -43,7 +43,7 @@ class WebAPI {
   }
 
   newFile (name, cate, content, owner, success, fail, always) {
-    jq.post(`/api/uses/source_content/${name}`, {
+    jq.post(`/api/users/${name}/files/source`, {
       fName: name,
       fCate: cate,
       fContent: content,
@@ -52,7 +52,7 @@ class WebAPI {
   }
 
   compile (env, name, cate, owner, success, fail, always) {
-    jq.post('/api/uses/compile', {
+    jq.post(`/api/users/${name}/files/source/${name}`, {
       env: env,
       fName: name,
       fCate: cate,
@@ -62,7 +62,7 @@ class WebAPI {
 
   addPublish (name, cate, type, success, fail, always) {
     jq.ajax({
-      url: `/api/users/public/${name}`,
+      url: `/api/users/${name}/files/public/${name}`,
       data: {
         fName: name,
         fCate: cate,
@@ -74,7 +74,7 @@ class WebAPI {
 
   deletePublish (name, cate, type, success, fail, always) {
     jq.ajax({
-      url: `/api/users/public/${name}`,
+      url: `/api/users/${name}/files/public/${name}`,
       data: {
         fName: name,
         fCate: cate,
@@ -91,12 +91,12 @@ class WebAPI {
   }
 
   getUserName (success, fail, always) {
-    jq.get('/api/uses/username', success).fail(fail).always(always)
+    jq.get('/api/users/name', success).fail(fail).always(always)
   }
 
   updatePassword (name, password, success, fail, always) {
     jq.ajax({
-      url: `/api/users/password/${name}`,
+      url: `/api/users/${name}/passwd`,
       data: {
         passwd: password
       },

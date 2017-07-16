@@ -11,17 +11,15 @@ const log = (msg, lv, orig) => {
   let lmsg = ''
   if (orig !== undefined) {
     if ('req' in orig) {
-      lmsg += `${('user' in orig.req) ? orig.req.user.Name : '*'} - ` +
+      lmsg += `${('user' in orig.req && orig.req.user !== null) ? orig.req.user.Name : '*'} - ` +
               `${orig.req.ip} - `
     }
+
     lmsg += `${('name' in orig) ? orig.name : '*'} - ` +
             `${('ip' in orig) ? orig.ip : '*'} - ` +
             `${('c' in orig) ? orig.c : '*'} - ` +
-            `${msg} -`
-
-    if ('err' in orig) {
-      lmsg += orig.err
-    }
+            `${('err' in orig) ? orig.err : '*'} - ` +
+            `${msg}`
   }
 
   if (typeof Logger[lv] === 'function') { Logger[lv](lmsg) }

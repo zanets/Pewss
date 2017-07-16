@@ -78,6 +78,11 @@ module.exports = class User {
         const fname = trimExt(f.name)
         const ftype = getFileType(f.name)
         if (ftype === fTypes.unknown) { continue }
+
+        if (this.Files[ftype].find(f =>
+          f.getName() === fname &&
+          f.getCate() === fCates[cate])) { continue }
+
         let nf = (ftype === fTypes.Class)
           ? new ClassFile().setJPath(`${this.Name}.${fCates[cate]}.${fname}`)
           : new JavaFile()
