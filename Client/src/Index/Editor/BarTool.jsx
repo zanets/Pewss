@@ -30,7 +30,7 @@ export default class BarTool extends React.Component {
       isDropdownOpen: false,
       fileSelect: {
         isSelect: false,
-        Name: this.props.fileEdit.name,
+        Name: this.props.fileEdit.Name,
         Owner: '',
         Cate: ''
       }
