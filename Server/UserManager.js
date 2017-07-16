@@ -9,7 +9,6 @@ class UserManager {
     this.Users = {}
     this.CollectionName = 'User'
     await MongoController.connect()
-    await this.loadUsers()
   }
 
   getUser (name) {
@@ -61,7 +60,7 @@ class UserManager {
   // update user data in DB
   async updateDB (tUsr) {
     assert.ok(tUsr !== null, `User ${tUsr.getName()} NOT exist`)
-
+    console.log(JSON.stringify(tUsr.getProperty()))
     return MongoController.updateDocument(
       this.CollectionName,
       { Name: tUsr.getName() },
@@ -97,7 +96,7 @@ class UserManager {
     const pubs = this.Users[owner].getPubs(type)
 
     for (const pub of pubs) {
-      if (pub.getName() === fname && pub.getCate === cate) { return true }
+      if (pub.getName() === fname && pub.getCate() === cate) { return true }
     }
 
     return false

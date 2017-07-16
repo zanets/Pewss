@@ -31,12 +31,12 @@ export default class Editor extends React.Component {
       editorId: this.props.id,
       fileEdit: {
         isOpen: false,
-        name: '',
-        category: '',
-        owner: '',
+        Name: '',
+        Cate: '',
+        Owner: '',
         isPub: false,
         isMod: false,
-        code: defailtCode,
+        Code: defailtCode,
         originCode: defailtCode
       },
       MainLoader: {
@@ -65,7 +65,7 @@ export default class Editor extends React.Component {
   sourceOnChange (newSrc) {
     this.setFileEdit({
       isMod: {$set: (newSrc !== this.state.fileEdit.originCode)},
-      code: {$set: newSrc}
+      Code: {$set: newSrc}
     })
   }
 
@@ -104,7 +104,7 @@ export default class Editor extends React.Component {
             <Col xs='5'>
               <BarStatus
                 fileEdit={{
-                  name: this.state.fileEdit.name,
+                  Name: this.state.fileEdit.Name,
                   isMod: this.state.fileEdit.isMod
                 }}
               />
@@ -115,9 +115,9 @@ export default class Editor extends React.Component {
                 fileNew={this.fileNew.bind(this)}
                 fileEdit={{
                   isOpen: this.state.fileEdit.isOpen,
-                  name: this.state.fileEdit.name,
-                  category: this.state.fileEdit.category,
-                  owner: this.state.fileEdit.owner,
+                  Name: this.state.fileEdit.Name,
+                  Cate: this.state.fileEdit.Cate,
+                  Owner: this.state.fileEdit.Owner,
                   isPub: this.state.fileEdit.isPub,
                   isMod: this.state.fileEdit.isMod
                 }}
@@ -133,7 +133,7 @@ export default class Editor extends React.Component {
           <ModalInfo {...this.state.ModalInfo} toggle={this.toggleModalInfo.bind(this)} />
           <ModalNewFile {...this.state.ModalNewFile}
             fileEdit={{
-              code: this.state.fileEdit.code
+              Code: this.state.fileEdit.Code
             }}
             toggle={this.toggleModalNewFile.bind(this)}
             setFileEdit={this.setFileEdit.bind(this)}
@@ -143,7 +143,7 @@ export default class Editor extends React.Component {
           <MonacoEditor
             ref='monaco'
             language='java'
-            value={this.state.fileEdit.code}
+            value={this.state.fileEdit.Code}
             onChange={this.sourceOnChange.bind(this)}
             options={{
               autoClosingBrackets: true,

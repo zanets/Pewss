@@ -13,10 +13,20 @@ module.exports = class User {
   constructor (pros) {
     this.Name = pros.Name || null
     this.Passwd = pros.Passwd || null
-    this.Jobs = pros.Jobs || []
+    this.Jobs = []
     this.Files = {}
     this.Files[fTypes.Class] = []
     this.Files[fTypes.Java] = []
+    this.pros = pros
+  }
+
+  restore () {
+    this.Files[fTypes.Class].forEach(f => {
+      let reFile = this.pros.Files[fTypes.Class].find(_f => _f.Name === f.Name && _f.Cate === f.Cate)
+      if (reFile === undefined) { return }
+      f.setPub(reFile.Pub)
+    })
+    this.pros = null
   }
 
   getName () {
@@ -36,20 +46,16 @@ module.exports = class User {
   }
 
   addPub (type, cate, name) {
-    if (!(type in this.Files)) { return -1 }
-
     let f = this.Files[type].find(f =>
       f.getCate() === cate && f.getName() === name
     )
     if (f !== undefined) {
       f.setPub(true)
       return 0
-    } else { return -2 }
+    } else { return -1 }
   }
 
   removePub (type, cate, name) {
-    if (!(type in this.Files)) { return -1 }
-
     let f = this.Files[type].find(f =>
       f.getCate() === cate && f.getName() === name
     )
@@ -60,7 +66,7 @@ module.exports = class User {
   }
 
   getPubs (type) {
-    return this.Files[type].filter(f => f.Pub)
+    return this.Files[type].filter(f => f.getPub())
   }
 
   async scanHome () {
@@ -74,7 +80,7 @@ module.exports = class User {
         const ftype = getFileType(f.name)
         if (ftype === fTypes.unknown) { continue }
         let nf = (ftype === fTypes.Class)
-          ? new ClassFile().setJPath(`${this.Name}.${cate}.${fname}`)
+          ? new ClassFile().setJPath(`${this.Name}.${fCates[cate]}.${fname}`)
           : new JavaFile()
 
         nf.setOwner(this.Name)

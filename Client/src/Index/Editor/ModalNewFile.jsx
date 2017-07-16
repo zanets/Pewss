@@ -26,8 +26,8 @@ export default class ModalNewFile extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      name: '',
-      category: 'generator'
+      Name: '',
+      Cate: 'generator'
     }
   }
 
@@ -38,42 +38,42 @@ export default class ModalNewFile extends React.Component {
   }
 
   create () {
-    if (this.state.name === '') {
+    if (this.state.Name === '') {
       this.props.toggleModalInfo(true, `File name is null`, 'danger', false, '')
       return
     }
 
     this.props.toggleMainLoader(true)
-    API.newFile({
-      name: this.state.name,
-      category: this.state.category,
-      content: this.props.fileEdit.code,
-      owner: this.username
-    }, (res) => {
+    API.newFile(
+      this.state.Name,
+      this.state.Cate,
+      this.props.fileEdit.Code,
+      this.username
+    , (res) => {
       this.props.toggleModalInfo(true, `Save as ${this.state.name} success`, 'success', false, '')
       this.props.setFileEdit({
-        name: {$set: this.state.name},
-        category: {$set: this.state.category},
-        owner: {$set: this.username},
+        Name: {$set: this.state.Name},
+        Cate: {$set: this.state.Cate},
+        Owner: {$set: this.username},
         isPub: {$set: false},
         isMod: {$set: false},
         isOpen: {$set: true},
-        code: {$set: this.props.fileEdit.code},
-        originCode: {$set: this.props.fileEdit.code}
+        Code: {$set: this.props.fileEdit.Code},
+        originCode: {$set: this.props.fileEdit.Code}
       })
     }, (res) => {
-      this.props.toggleModalInfo(true, `Save as ${this.state.name} fail`, 'danger', true, res)
+      this.props.toggleModalInfo(true, `Save as ${this.state.Name} fail`, 'danger', true, res)
     }, () => {
       this.props.toggleMainLoader(false)
     })
   }
 
   updateName (e) {
-    this.setState({name: e.target.value})
+    this.setState({Name: e.target.value})
   }
 
   updateCategory (e) {
-    this.setState({category: e.target.value})
+    this.setState({Cate: e.target.value})
   }
 
   render () {
@@ -92,7 +92,7 @@ export default class ModalNewFile extends React.Component {
           <FormGroup row>
             <Label sm={3}>{'Category'}</Label>
             <Col sm={9}>
-              <Input type='select' onChange={this.updateCategory.bind(this)} value={this.state.category}>
+              <Input type='select' onChange={this.updateCategory.bind(this)} value={this.state.Cate}>
                 <option key={uuid.v4()} value='generater'>{'Generater'}</option>
                 <option key={uuid.v4()} value='scheduler'>{'Scheduler'}</option>
                 <option key={uuid.v4()} value='simulator'>{'Simulator'}</option>

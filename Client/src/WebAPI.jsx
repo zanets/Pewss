@@ -1,8 +1,8 @@
 import jq from 'jquery'
 class WebAPI {
-  getClassList (meta, success, fail, always) {
+  getClassList (env, success, fail, always) {
     jq.get('/api/uses/class', {
-      env: meta.env
+      env: env
     }, success).fail(fail).always(always)
   }
 
@@ -10,75 +10,75 @@ class WebAPI {
     jq.get('/api/uses/source', success).fail(fail).always(always)
   }
 
-  simulate (meta, success, fail, always) {
+  simulate (env, gen, sche, sim, plat, arg, success, fail, always) {
     jq.post('/api/uses/simulate', {
-      env: meta.env,
-      generator: meta.generator,
-      scheduler: meta.scheduler,
-      simulator: meta.simulator,
-      platform: meta.platform,
-      argums: meta.argums
+      env: env,
+      generator: gen,
+      scheduler: sche,
+      simulator: sim,
+      platform: plat,
+      argums: arg
     }, success).fail(fail).always(always)
   }
 
-  getSourceCode (meta, success, fail, always) {
+  getSourceCode (cate, name, owner, success, fail, always) {
     jq.get('/api/uses/source_content', {
-      category: meta.category,
-      name: meta.name,
-      owner: meta.owner
+      fCate: cate,
+      fName: name,
+      fOwner: owner
     }, success).fail(fail).always(always)
   }
 
-  setSourceCode (meta, success, fail, always) {
+  setSourceCode (name, cate, content, owner, success, fail, always) {
     jq.ajax({
-      url: `/api/uses/source_content/${meta.name}`,
+      url: `/api/uses/source_content/${name}`,
       data: {
-        name: meta.name,
-        category: meta.category,
-        content: meta.content,
-        owner: meta.owner
+        fName: name,
+        fCate: cate,
+        fContent: content,
+        fOwner: owner
       },
       type: 'patch'
     }).done(success).fail(fail).always(always)
   }
 
-  newFile (meta, success, fail, always) {
-    jq.post(`/api/uses/source_content/${meta.name}`, {
-      name: meta.name,
-      category: meta.category,
-      content: meta.content,
-      owner: meta.owner
+  newFile (name, cate, content, owner, success, fail, always) {
+    jq.post(`/api/uses/source_content/${name}`, {
+      fName: name,
+      fCate: cate,
+      fContent: content,
+      fOwner: owner
     }, success).fail(fail).always(always)
   }
 
-  compile (meta, success, fail, always) {
+  compile (env, name, cate, owner, success, fail, always) {
     jq.post('/api/uses/compile', {
-      env: meta.env,
-      name: meta.name,
-      category: meta.category,
-      owner: meta.owner
+      env: env,
+      fName: name,
+      fCate: cate,
+      fOwner: owner
     }, success).fail(fail).always(always)
   }
 
-  addPublish (meta, success, fail, always) {
+  addPublish (name, cate, type, success, fail, always) {
     jq.ajax({
-      url: `/api/users/public/${meta.name}`,
+      url: `/api/users/public/${name}`,
       data: {
-        name: meta.name,
-        category: meta.category,
-        type: meta.type
+        fName: name,
+        fCate: cate,
+        fType: type
       },
       type: 'patch'
     }).done(success).fail(fail).always(always)
   }
 
-  deletePublish (meta, success, fail, always) {
+  deletePublish (name, cate, type, success, fail, always) {
     jq.ajax({
-      url: `/api/users/public/${meta.name}`,
+      url: `/api/users/public/${name}`,
       data: {
-        name: meta.name,
-        category: meta.category,
-        type: meta.type
+        fName: name,
+        fCate: cate,
+        fType: type
       },
       type: 'delete'
     }).done(success).fail(fail).always(always)
@@ -94,11 +94,11 @@ class WebAPI {
     jq.get('/api/uses/username', success).fail(fail).always(always)
   }
 
-  updatePassword (meta, success, fail, always) {
+  updatePassword (name, password, success, fail, always) {
     jq.ajax({
-      url: `/api/users/password/${meta.name}`,
+      url: `/api/users/password/${name}`,
       data: {
-        password: meta.password
+        passwd: password
       },
       type: 'patch'
     }).done(success).fail(fail).always(always)

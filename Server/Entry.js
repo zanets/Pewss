@@ -16,9 +16,11 @@ import {fTypes} from './File.js'
 const APP = Express()
 const PORT = 8081
 UserManager.init().then(async () => {
+  await UserManager.loadUsers()
   const Users = UserManager.getUsers()
   for (const user in Users) {
     await Users[user].scanHome()
+    Users[user].restore()
   }
   LocalPass(Passport, Users)
 })
@@ -54,10 +56,10 @@ const isLogin = (req, res, next) => {
   }
 }
 
-const getJPath = (env, owner, cate, fname) => {
-  return (owner === 'admin')
-    ? SimController.getBultin(env).find(f => f.Owner === owner && f.Cate === cate && f.Name === fname)
-    : UserManager.getUser(owner).getFile().getJPath()
+const getJPath = (env, meta) => {
+  return (meta.Owner === 'admin')
+    ? SimController.getBuiltin(env).find(f => f.Owner === meta.Owner && f.Cate === meta.Cate && f.Name === meta.Name).JPath
+    : UserManager.getUser(meta.Owner).getFile(meta.Type, meta.Cate, meta.Name).getJPath()
 }
 
 const getUser = (req) => {
@@ -159,14 +161,14 @@ APP.post('/api/uses/simulate', isLogin, async (req, res) => {
   }
 
   try {
-    const simres = await SimController.simulate({
-      env: req.body.env,
-      generator: getJPath(req.body.env, req.body.generator),
-      scheduler: getJPath(req.body.env, req.body.scheduler),
-      simulator: getJPath(req.body.env, req.body.simulator),
-      platform: getJPath(req.body.env, req.body.platform),
-      argums: req.body.argums
-    })
+    const simres = await SimController.simulate(
+      req.body.env,
+      getJPath(req.body.env, req.body.generator),
+      getJPath(req.body.env, req.body.scheduler),
+      getJPath(req.body.env, req.body.simulator),
+      getJPath(req.body.env, req.body.platform),
+      req.body.argums
+    )
     res.status(200).json(simres)
     log(lmsg, 'info', {c: 200, req})
   } catch (err) {
@@ -185,12 +187,12 @@ APP.post('/api/uses/compile', isLogin, async (req, res) => {
     res.sendStatus(401)
     return
   }
-  await SimController.compile({
-    env: req.body.env,
-    name: req.body.name,
-    category: req.body.category,
-    owner: req.body.owner
-  }).then(async (_res) => {
+  await SimController.compile(
+    req.body.env,
+    req.body.fOwner,
+    req.body.fCate,
+    req.body.fName
+  ).then(async (_res) => {
     log(lmsg, 'info', {c: 200, req})
     res.status(200).json(_res)
     await User.scanHome()
@@ -210,12 +212,12 @@ APP.get('/api/uses/source_content', isLogin, async (req, res) => {
     return
   }
 
-  const content = await User.getFileContent(req.query.name, req.query.category)
+  const content = await User.getFileContent(req.query.fCate, req.query.fName)
   const isPub = UserManager.isPub(
-    req.query.owner,
+    req.query.fOwner,
     fTypes.Class,
-    req.query.category,
-    req.query.name
+    req.query.fCate,
+    req.query.fName
   )
   if (content) {
     log(lmsg, 'info', {c: 200, req})
@@ -243,9 +245,9 @@ APP.patch('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
 
   try {
     await User.setFileContent(
-      req.body.category,
-      req.body.name,
-      req.body.content
+      req.body.fCate,
+      req.body.fName,
+      req.body.fContent
     )
     log(lmsg, 'info', {c: 200, req})
     res.status(200).send('Save complete')
@@ -267,11 +269,11 @@ APP.post('/api/uses/source_content/:file_name', isLogin, async (req, res) => {
   }
 
   try {
-    await User.newFile({
-      category: req.body.category,
-      name: req.body.name,
-      content: req.body.content
-    })
+    await User.newFile(
+      req.body.fCate,
+      req.body.fName,
+      req.body.fContent
+    )
     await User.scanHome()
     log(lmsg, 'info', {c: 200, req})
     res.status(200).send('Save complete')
@@ -299,11 +301,11 @@ APP.patch('/api/users/public/:target', async (req, res) => {
   }
 
   try {
-    await UserManager.modUser(User, {
+    await UserManager.modUser(User.getName(), {
       $addPub: {
-        type: req.body.type,
-        cate: req.body.cate,
-        name: req.body.name
+        type: req.body.fType,
+        cate: req.body.fCate,
+        name: req.body.fName
       }
     })
     log(lmsg, 'info', {c: 200, req})
@@ -320,9 +322,9 @@ APP.delete('/api/users/public/:target', async (req, res) => {
   if (User) {
     await UserManager.modUser(User.getName(), {
       $removePub: {
-        type: req.body.type,
-        cate: req.body.cate,
-        name: req.body.name
+        type: req.body.fType,
+        cate: req.body.fCate,
+        name: req.body.fName
       }
     })
     log(lmsg, 'info', {c: 200, req})
@@ -338,7 +340,7 @@ APP.patch('/api/users/password/:target', async (req, res) => {
   const lmsg = `${req.method} ${req.originalUrl}`
   if (User) {
     await UserManager.modUser(User.getName(), {
-      $updatePassword: req.body.password
+      $updatePassword: req.body.passwd
     })
     log(lmsg, 'info', {c: 200, req})
     res.sendStatus(200)

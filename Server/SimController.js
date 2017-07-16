@@ -4,6 +4,7 @@ import envConf from './Sim/envConfig.json'
 
 module.exports = class SimController {
   static simulate (env, gen, sche, sim, plat, arg) {
+    console.log(gen)
     const JavaArguments = `-cp ${this.getEnvLibrary(env)} ` +
       'com.use.CLILauncher ' +
       `--generator ${gen} ` +
@@ -103,10 +104,6 @@ module.exports = class SimController {
   }
 
   static getBuiltin (env) {
-    let res = []
-    envConf[env].builtin.forEach(f => {
-      res.push(f)
-    })
-    return res
+    return envConf[env].builtin
   }
 }

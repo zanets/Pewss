@@ -57,9 +57,9 @@ class Index extends React.Component {
 
   toSimulator () {
     this.setInitState()
-    API.getClassList({
-      env: 'workflow'
-    }, (res) => {
+    API.getClassList(
+      'workflow'
+    , (res) => {
       setTimeout(() => {
         this.setState({
           ready: true,
@@ -72,7 +72,7 @@ class Index extends React.Component {
 
   toEditor () {
     this.setInitState()
-    API.getSourceList((res) => {
+    API.getSourceList(res => {
       setTimeout(() => {
         this.setState({
           ready: true,

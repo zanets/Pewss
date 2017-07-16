@@ -63,14 +63,14 @@ export default class Task extends React.Component {
 
     this.setState({resStatus: Status.RUNNING})
     // TODO: filer stderr and stdout
-    API.simulate({
-      env: 'workflow',
-      generator: this.props.generator,
-      scheduler: this.props.scheduler,
-      simulator: this.props.simulator,
-      platform: this.props.platform,
-      argums: this.state.settings
-    }, (res) => {
+    API.simulate(
+      'workflow',
+      this.props.generator,
+      this.props.scheduler,
+      this.props.simulator,
+      this.props.platform,
+      this.state.settings
+    , (res) => {
       this.setState({
         resStatus: Status.FIN_OK,
         res: this.filter(res.msg, Status.FIN_OK)
@@ -153,16 +153,16 @@ export default class Task extends React.Component {
           </Button>
         </td>
         <td>
-          {`${this.props.generator.name} @ ${this.props.generator.owner}`}
+          {`${this.props.generator.Name} @ ${this.props.generator.Owner}`}
         </td>
         <td>
-          {`${this.props.platform.name} @ ${this.props.platform.owner}`}
+          {`${this.props.platform.Name} @ ${this.props.platform.Owner}`}
         </td>
         <td>
-          {`${this.props.simulator.name} @ ${this.props.simulator.owner}`}
+          {`${this.props.simulator.Name} @ ${this.props.simulator.Owner}`}
         </td>
         <td>
-          {`${this.props.scheduler.name} @ ${this.props.scheduler.owner}`}
+          {`${this.props.scheduler.Name} @ ${this.props.scheduler.Owner}`}
         </td>
         <td>
           <Button size='sm' color='warning'

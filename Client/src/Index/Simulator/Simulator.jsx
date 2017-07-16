@@ -106,7 +106,7 @@ export default class Simulator extends React.Component {
     let targetsComp = []
     const size = 100 / targets.length - 5
     for (const task of targets)		{
-      this.compare.header += `##${task.scheduler.name} @ ${task.scheduler.owner} `
+      this.compare.header += `##${task.scheduler.Name} @ ${task.scheduler.Owner} `
       targetsComp.push(
         <div style={{width: `${size}%`, marginLeft: '1%'}}>
           {this.refs[task.id].getSlectedData()}

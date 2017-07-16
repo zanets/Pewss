@@ -30,9 +30,9 @@ export default class BarTool extends React.Component {
       isDropdownOpen: false,
       fileSelect: {
         isSelect: false,
-        name: this.props.fileEdit.name,
-        owner: '',
-        category: ''
+        Name: this.props.fileEdit.name,
+        Owner: '',
+        Cate: ''
       }
     }
   }
@@ -45,7 +45,7 @@ export default class BarTool extends React.Component {
       generator: []
     }
 
-    for (const file of this.props.sourceList) { files[file.category].push(file) }
+    for (const file of this.props.sourceList) { files[file.Cate].push(file) }
 
     let cmps = []
     for (const key in files) {
@@ -58,7 +58,7 @@ export default class BarTool extends React.Component {
       for (const file of files[key]) {
         cmps.push(
           <DropdownItem key={uuid.v4()} onClick={this.setFileSelect.bind(this, file, true)}>
-            {`${file.name} @ ${file.owner}`}
+            {`${file.Name} @ ${file.Owner}`}
           </DropdownItem>
         )
       }
@@ -69,9 +69,9 @@ export default class BarTool extends React.Component {
   setFileSelect (meta, isSelect) {
     const n = update(this.state.fileSelect, {
       isSelect: {$set: isSelect},
-      name: {$set: meta.name},
-      owner: {$set: meta.owner},
-      category: {$set: meta.category}
+      Name: {$set: meta.Name},
+      Owner: {$set: meta.Owner},
+      Cate: {$set: meta.Cate}
     })
     this.setState({fileSelect: n})
   }
@@ -96,22 +96,22 @@ export default class BarTool extends React.Component {
 
   clkOpen () {
     this.props.toggleMainLoader(true)
-    API.getSourceCode({
-      category: this.state.fileSelect.category,
-      owner: this.state.fileSelect.owner,
-      name: this.state.fileSelect.name
-    }, (res) => {
+    API.getSourceCode(
+      this.state.fileSelect.Cate,
+      this.state.fileSelect.Name,
+      this.state.fileSelect.Owner
+    , (res) => {
       this.props.setFileEdit({
-        name: {$set: this.state.fileSelect.name},
-        category: {$set: this.state.fileSelect.category},
-        owner: {$set: this.state.fileSelect.owner},
+        Name: {$set: this.state.fileSelect.Name},
+        Cate: {$set: this.state.fileSelect.Cate},
+        Owner: {$set: this.state.fileSelect.Owner},
         isPub: {$set: res.isPub},
         isMod: {$set: false},
         isOpen: {$set: true},
-        code: {$set: res.data},
+        Code: {$set: res.data},
         originCode: {$set: res.data}
       })
-      this.props.toggleModalInfo(true, `Open file ${this.state.fileSelect.name}`, 'success')
+      this.props.toggleModalInfo(true, `Open file ${this.state.fileSelect.Name}`, 'success')
     }, (res) => {
       this.props.toggleModalInfo(true, res.error, 'danger')
     }, (res) => {
@@ -122,15 +122,15 @@ export default class BarTool extends React.Component {
   clkSave () {
     this.props.toggleMainLoader(true)
     const content = this.props.getEditorContent()
-    API.setSourceCode({
-      name: this.props.fileEdit.name,
-      owner: this.props.fileEdit.owner,
-      category: this.props.fileEdit.category,
-      content: content
-    }, (res) => {
+    API.setSourceCode(
+      this.props.fileEdit.Name,
+      this.props.fileEdit.Cate,
+      content,
+      this.props.fileEdit.Owner
+    , (res) => {
       this.props.setFileEdit({
         isMod: {$set: false},
-        code: {$set: content},
+        Code: {$set: content},
         originCode: {$set: content}
       })
       this.props.toggleModalInfo(true, 'Save complete.', 'success', false, '')
@@ -147,12 +147,12 @@ export default class BarTool extends React.Component {
       return
     }
     this.props.toggleMainLoader(true)
-    API.compile({
-      env: 'workflow',
-      owner: this.props.fileEdit.owner,
-      name: this.props.fileEdit.name,
-      category: this.props.fileEdit.category
-    }, (res) => {
+    API.compile(
+      'workflow',
+      this.props.fileEdit.Name,
+      this.props.fileEdit.Cate,
+      this.props.fileEdit.Owner
+    , (res) => {
       if (res.status === 'stderr') {
         this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.msg)
       } else {
@@ -168,11 +168,11 @@ export default class BarTool extends React.Component {
   clkPub () {
     this.props.toggleMainLoader(true)
     if (this.props.fileEdit.isPub) {
-      API.deletePublish({
-        name: this.props.fileEdit.name,
-        category: this.props.fileEdit.category,
-        type: 'class'
-      }, (res) => {
+      API.deletePublish(
+        this.props.fileEdit.Name,
+        this.props.fileEdit.Cate,
+        'class'
+      , (res) => {
         this.props.toggleModalInfo(true, 'Set private success', 'success', false, '')
         this.props.setFileEdit({
           isPub: {$set: false}
@@ -183,11 +183,11 @@ export default class BarTool extends React.Component {
         this.props.toggleMainLoader(false)
       })
     } else {
-      API.addPublish({
-        name: this.props.fileEdit.name,
-        category: this.props.fileEdit.category,
-        type: 'class'
-      }, (res) => {
+      API.addPublish(
+        this.props.fileEdit.Name,
+        this.props.fileEdit.Cate,
+        'class'
+      , (res) => {
         this.props.toggleModalInfo(true, 'Set publish success', 'success', false, '')
         this.props.setFileEdit({
           isPub: {$set: true}
@@ -203,9 +203,9 @@ export default class BarTool extends React.Component {
   clkNew () {
     this.props.fileNew(true)
     this.setFileSelect({
-      name: '',
-      owner: '',
-      category: '',
+      Name: '',
+      Owner: '',
+      Cate: '',
       isPub: false
     }, false)
   }
@@ -220,7 +220,7 @@ export default class BarTool extends React.Component {
       <ButtonToolbar>
         <ButtonDropdown isOpen={this.state.isDropdownOpen} toggle={this.toggleDropdown.bind(this)}>
           <DropdownToggle caret>
-            {this.state.fileSelect.name === '' ? 'Select File ' : this.state.fileSelect.name}
+            {this.state.fileSelect.Name === '' ? 'Select File ' : this.state.fileSelect.Name}
           </DropdownToggle>
           <DropdownMenu>
             {this.getFileList.apply(this)}
