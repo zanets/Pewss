@@ -60,7 +60,6 @@ class UserManager {
   // update user data in DB
   async updateDB (tUsr) {
     assert.ok(tUsr !== null, `User ${tUsr.getName()} NOT exist`)
-    console.log(JSON.stringify(tUsr.getProperty()))
     return MongoController.updateDocument(
       this.CollectionName,
       { Name: tUsr.getName() },

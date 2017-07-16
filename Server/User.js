@@ -21,10 +21,9 @@ module.exports = class User {
   }
 
   restore () {
-    this.Files[fTypes.Class].forEach(f => {
-      let reFile = this.pros.Files[fTypes.Class].find(_f => _f.Name === f.Name && _f.Cate === f.Cate)
-      if (reFile === undefined) { return }
-      f.setPub(reFile.Pub)
+    this.pros.Files[fTypes.Class].forEach(reFile => {
+      let f = this.getFile(fTypes.Class, reFile.Cate, reFile.Name)
+      if (f !== undefined) { f.setPub(reFile.Pub) }
     })
     this.pros = null
   }
