@@ -119,7 +119,7 @@ class ClassFile extends File {
 class JavaFile extends File {
   constructor () {
     super()
-    this.Type = fTypes.java
+    this.Type = fTypes.Java
   }
 }
 
