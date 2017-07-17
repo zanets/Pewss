@@ -39,15 +39,14 @@ const igFs = (files) => {
   return files
 }
 
-class ClassFile {
+class File {
   constructor () {
     this.Owner = null
     this.Name = null
-    this.Type = fTypes.Class
     this.Cate = null
-    this.JPath = null
     this.Path = null
     this.Pub = false
+    this.Type = fTypes.unknown
   }
 
   setOwner (n) {
@@ -56,7 +55,7 @@ class ClassFile {
   }
 
   getOwner () {
-    return this.Type
+    return this.Owner
   }
 
   setName (n) {
@@ -69,7 +68,7 @@ class ClassFile {
   }
 
   getType () {
-    return this.t
+    return this.Type
   }
 
   setCate (c) {
@@ -79,15 +78,6 @@ class ClassFile {
 
   getCate () {
     return this.Cate
-  }
-
-  setJPath (p) {
-    this.JPath = p
-    return this
-  }
-
-  getJPath () {
-    return this.JPath
   }
 
   setPath (p) {
@@ -109,63 +99,27 @@ class ClassFile {
   }
 }
 
-class JavaFile {
+class ClassFile extends File {
   constructor () {
-    this.Owner = null
-    this.Name = null
+    super()
+    this.Type = fTypes.Class
+    this.JPath = null
+  }
+
+  setJPath (p) {
+    this.JPath = p
+    return this
+  }
+
+  getJPath () {
+    return this.JPath
+  }
+}
+
+class JavaFile extends File {
+  constructor () {
+    super()
     this.Type = fTypes.java
-    this.Cate = null
-    this.Path = null
-    this.Pub = false
-  }
-
-  setOwner (n) {
-    this.Owner = n
-    return this
-  }
-
-  getOwner () {
-    return this.Type
-  }
-
-  setName (n) {
-    this.Name = n
-    return this
-  }
-
-  getName () {
-    return this.Name
-  }
-
-  getType () {
-    return this.Type
-  }
-
-  setCate (c) {
-    this.Cate = c
-    return this
-  }
-
-  getCate () {
-    return this.Cate
-  }
-
-  setPath (p) {
-    this.Path = p
-    return this
-  }
-
-  getPath () {
-    return this.Path
-  }
-
-  setPub (p) {
-    this.Pub = p
-    return this
-  }
-
-  getPub () {
-    return this.Pub
   }
 }
 
