@@ -5,6 +5,7 @@ import Passport from 'passport'
 import Session from 'express-session'
 import https from 'https'
 import helmet from 'helmet'
+import kue from 'kue'
 
 import Secrets from './Secrets.js'
 import SimController from './SimController.js'
@@ -20,6 +21,42 @@ const PORT = 8081
 
 const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
+})
+
+const queue = kue.createQueue()
+
+queue.process('simulation', (job, done) => {
+  const instance = SimController.simulate(
+    job.data.env,
+    job.data.gen,
+    job.data.sche,
+    job.data.sim,
+    job.data.plat,
+    job.data.argu
+  )
+  let _res = { status: null, msg: '' }
+
+  const killer = setTimeout(() => {
+    console.log('kill')
+    instance.kill('SIGHUP')
+  }, job.data.ttl)
+
+  instance.stdout.on('data', (chunk) => {
+    _res.status = 'stdin'
+    _res.msg += chunk
+  })
+  instance.stderr.on('data', (chunk) => {
+    _res.status = 'stderr'
+    _res.msg += chunk
+  })
+  instance.on('exit', (code) => {
+    clearTimeout(killer)
+    if (code === 0) {
+      done(null, _res)
+    } else {
+      done(`Exit with ${code}`)
+    }
+  })
 })
 
 APP.use(helmet())
@@ -203,17 +240,20 @@ RTR.route('/sim')
   })
   /* simulate */
   .post(async (req, res) => {
-    try {
-      const simres = await SimController.simulate(
-        req.body.env,
-        getJPath(req.body.env, req.body.generator),
-        getJPath(req.body.env, req.body.scheduler),
-        getJPath(req.body.env, req.body.simulator),
-        getJPath(req.body.env, req.body.platform),
-        req.body.argums
-      )
-      res.status(200).json(simres)
-    } catch (err) { res.status(500).send() }
+    const job = queue.create('simulation', {
+      env: req.body.env,
+      gen: getJPath(req.body.env, req.body.generator),
+      sche: getJPath(req.body.env, req.body.scheduler),
+      sim: getJPath(req.body.env, req.body.simulator),
+      plat: getJPath(req.body.env, req.body.platform),
+      argu: req.body.argums,
+      ttl: 60 * 1000
+    }).ttl(60 * 1000).save()
+    job.on('complete', (result) => {
+      res.status(200).json(result)
+    }).on('failed', (result) => {
+      res.status(500).send(result)
+    })
   })
 
 APP.use('/api', RTR)

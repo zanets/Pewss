@@ -4,39 +4,12 @@ import envConf from './Sim/envConfig.json'
 
 module.exports = class SimController {
   static simulate (env, gen, sche, sim, plat, arg) {
-    console.log(gen)
-    const JavaArguments = `-cp ${this.getEnvLibrary(env)} ` +
-      'com.use.CLILauncher ' +
-      `--generator ${gen} ` +
-      `--scheduler ${sche} ` +
-      `--simulator ${sim} ` +
-      `--platform ${plat}`
+    const JavaArguments = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
 
     const javaProc = spawn('java', JavaArguments.split(' '))
     javaProc.stdin.write(this.getEnvArgument(arg))
     javaProc.stdin.end()
-
-    return new Promise((resolve, reject) => {
-      let _res = { status: null, msg: '' }
-
-      javaProc.stdout.on('data', (chunk) => {
-        _res.status = 'stdin'
-        _res.msg += chunk
-      })
-
-      javaProc.stderr.on('data', (chunk) => {
-        _res.status = 'stderr'
-        _res.msg += chunk
-      })
-
-      javaProc.on('close', (code) => {
-        resolve(_res)
-      })
-
-      javaProc.on('error', (code) => {
-        reject(_res)
-      })
-    })
+    return javaProc
   }
 
   static compile (env, owner, cate, fname) {
