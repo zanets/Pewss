@@ -146,7 +146,6 @@ RTR.route('/users/:uname/files/source/:fname')
   })
   /* update file content */
   .patch(async (req, res) => {
-    console.log(req.body.fContent)
     const User = req.pewss.user
     try {
       await User.setFileContent(
