@@ -8,21 +8,15 @@ const HomeDir = `${ServerDir}/Home`
 const SimDir = `${ServerDir}/Sim`
 
 const log = (msg, lv, orig) => {
-  let lmsg = ''
-  if (orig !== undefined) {
-    if ('req' in orig) {
-      lmsg += `${('user' in orig.req && orig.req.user !== null) ? orig.req.user.Name : '*'} - ` +
-              `${orig.req.ip} - `
-    }
+  orig = orig || {}
 
-    lmsg += `${('name' in orig) ? orig.name : '*'} - ` +
-            `${('ip' in orig) ? orig.ip : '*'} - ` +
-            `${('c' in orig) ? orig.c : '*'} - ` +
-            `${('err' in orig) ? orig.err : '*'} - ` +
-            `${msg}`
-  }
+  msg = `${('name' in orig) ? orig.name : '*'} - ` +
+    `${('ip' in orig) ? orig.ip : '*'} - ` +
+    `${('sc' in orig) ? orig.sc : '*'} - ` +
+    `${('err' in orig) ? orig.err : '*'} - ` +
+    `${msg}`
 
-  if (typeof Logger[lv] === 'function') { Logger[lv](lmsg) }
+  if (typeof Logger[lv] === 'function') { Logger[lv](msg) }
 }
 
 const pErrHandler = (err) => {
@@ -38,6 +32,13 @@ const thErrHandler = (err) => {
   throw err
 }
 
+const JobState = {
+  Q: 'in-queue',
+  R: 'running',
+  E: 'error',
+  F: 'finish'
+}
+
 module.exports = {
   BaseDir,
   HomeDir,
@@ -46,5 +47,6 @@ module.exports = {
   pErrHandler,
   eErrHandler,
   thErrHandler,
-  log
+  log,
+  JobState
 }
