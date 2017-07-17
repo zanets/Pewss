@@ -9,7 +9,6 @@ Server/Home/*
 Secrets/
 npm-debug.log
 simulator.conf
-yarn.lock
 .yarnclean
 .DS_Store
 *.swp
