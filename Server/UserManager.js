@@ -106,10 +106,11 @@ class UserManager {
   getClassFiles (uname) {
     // private
     let res = this.getUser(uname).getFilesByType(fTypes.Class)
-
     // publish
     for (const u in this.Users) {
-      res = res.concat(this.Users[u].getPubs(fTypes.Class))
+      const user = this.Users[u]
+      if (user.getName() === uname) continue
+      res = res.concat(user.getPubs(fTypes.Class))
     }
     return res
   }
@@ -118,7 +119,6 @@ class UserManager {
   getJavaFiles (uname) {
     // private
     let res = this.getUser(uname).getFilesByType(fTypes.Java)
-
     return res
   }
 }
