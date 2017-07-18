@@ -5,7 +5,6 @@ import Passport from 'passport'
 import Session from 'express-session'
 import https from 'https'
 import helmet from 'helmet'
-import kue from 'kue'
 
 import Secrets from './Secrets.js'
 import SimController from './SimController.js'
@@ -22,8 +21,6 @@ const PORT = 8081
 const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
-
-const queue = kue.createQueue()
 
 queue.process('simulation', (job, done) => {
   const instance = SimController.simulate(
