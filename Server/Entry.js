@@ -13,6 +13,8 @@ import { BaseDir, log } from './Utils.js'
 import { PewssAPI, isLogin, writeLog } from './MiddleWare.js'
 import LocalPass from './Passport/LocalPass.js'
 import {fTypes} from './File.js'
+import {JobManager} from './JobManager.js'
+import {SimJob, CompJob} from './Job.js'
 
 const APP = Express()
 const RTR = Express.Router()
@@ -22,39 +24,8 @@ const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
 
-queue.process('simulation', (job, done) => {
-  const instance = SimController.simulate(
-    job.data.env,
-    job.data.gen,
-    job.data.sche,
-    job.data.sim,
-    job.data.plat,
-    job.data.argu
-  )
-  let _res = { status: null, msg: '' }
-
-  const killer = setTimeout(() => {
-    console.log('kill')
-    instance.kill('SIGHUP')
-  }, job.data.ttl)
-
-  instance.stdout.on('data', (chunk) => {
-    _res.status = 'stdin'
-    _res.msg += chunk
-  })
-  instance.stderr.on('data', (chunk) => {
-    _res.status = 'stderr'
-    _res.msg += chunk
-  })
-  instance.on('exit', (code) => {
-    clearTimeout(killer)
-    if (code === 0) {
-      done(null, _res)
-    } else {
-      done(`Exit with ${code}`)
-    }
-  })
-})
+JobManager.register(SimJob)
+JobManager.register(CompJob)
 
 APP.use(helmet())
 APP.use(Session(Secrets.Session))
@@ -169,15 +140,12 @@ RTR.route('/users/:uname/files/source/:fname')
   /* compile */
   .post(async (req, res) => {
     const User = req.pewss.user
-    await SimController.compile(
-      req.body.env,
-      req.body.fOwner,
-      req.body.fCate,
-      req.body.fName
-    ).then(async (_res) => {
-      res.status(200).json(_res)
+    JobManager.add(new CompJob(req.body), async (result) => {
+      res.status(200).json(result)
       await User.scanHome()
-    }).catch(err => { res.status(500).json(err) })
+    }, (result) => {
+      res.status(500).send(result)
+    })
   })
   /* update file content */
   .patch(async (req, res) => {
@@ -218,18 +186,6 @@ RTR.route('/users/:uname/files/public/:fname')
     res.sendStatus(200)
   })
 
-const getJPath = (env, meta) => {
-  return (meta.Owner === 'admin')
-    ? SimController.getBuiltin(env).find(f =>
-        f.Owner === meta.Owner &&
-        f.Cate === meta.Cate &&
-        f.Name === meta.Name
-      ).JPath
-    : UserManager.getUser(meta.Owner)
-      .getFile(meta.Type, meta.Cate, meta.Name)
-      .getJPath()
-}
-
 RTR.route('/sim')
   /* get supported env */
   .get((req, res, next) => {
@@ -237,18 +193,9 @@ RTR.route('/sim')
   })
   /* simulate */
   .post(async (req, res) => {
-    const job = queue.create('simulation', {
-      env: req.body.env,
-      gen: getJPath(req.body.env, req.body.generator),
-      sche: getJPath(req.body.env, req.body.scheduler),
-      sim: getJPath(req.body.env, req.body.simulator),
-      plat: getJPath(req.body.env, req.body.platform),
-      argu: req.body.argums,
-      ttl: 60 * 1000
-    }).ttl(60 * 1000).save()
-    job.on('complete', (result) => {
+    JobManager.add(new SimJob(req.body), (result) => {
       res.status(200).json(result)
-    }).on('failed', (result) => {
+    }, (result) => {
       res.status(500).send(result)
     })
   })

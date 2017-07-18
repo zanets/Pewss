@@ -4,42 +4,19 @@ import envConf from './Sim/envConfig.json'
 
 module.exports = class SimController {
   static simulate (env, gen, sche, sim, plat, arg) {
-    const JavaArguments = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
+    const argus = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
 
-    const javaProc = spawn('java', JavaArguments.split(' '))
-    javaProc.stdin.write(this.getEnvArgument(arg))
-    javaProc.stdin.end()
-    return javaProc
+    const proc = spawn('java', argus.split(' '))
+    proc.stdin.write(this.getEnvArgument(arg))
+    proc.stdin.end()
+    return proc
   }
 
   static compile (env, owner, cate, fname) {
-    const JavaArguments = '-Xlint:unchecked ' +
-      `-cp ${this.getEnvLibrary(env)} ` +
-      `${HomeDir}/${owner}/${cate}/${fname}.java`
+    const argus = `-Xlint:unchecked -cp ${this.getEnvLibrary(env)} ${HomeDir}/${owner}/${cate}/${fname}.java`
 
-    const javaProc = spawn('javac', JavaArguments.split(' '))
-
-    return new Promise((resolve, reject) => {
-      let _res = { status: null, msg: '' }
-
-      javaProc.stdout.on('data', (chunk) => {
-        _res.status = 'stdin'
-        _res.msg += chunk
-      })
-
-      javaProc.stderr.on('data', (chunk) => {
-        _res.status = 'stderr'
-        _res.msg += chunk
-      })
-
-      javaProc.on('close', (code) => {
-        resolve(_res)
-      })
-
-      javaProc.on('error', (code) => {
-        reject(_res)
-      })
-    })
+    const proc = spawn('javac', argus.split(' '))
+    return proc
   }
 
   static getEnvArgument (argums) {
