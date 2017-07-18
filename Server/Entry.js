@@ -24,8 +24,7 @@ const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
 
-JobManager.register(SimJob)
-JobManager.register(CompJob)
+JobManager.register(SimJob, CompJob)
 
 APP.use(helmet())
 APP.use(Session(Secrets.Session))

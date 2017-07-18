@@ -13,8 +13,16 @@ class JobManager {
     .on('failed', onFailed)
   }
 
-  register (JobClass) {
-    this.Q.process(JobClass.name, JobClass.onProcess)
+  register () {
+    for (const JobClass of arguments) {
+      if (!('onProcess' in JobClass)) {
+        console.error(
+          `Except job class but get ${JobClass.name || 'object'}`
+        )
+        process.exit(-1)
+      }
+      this.Q.process(JobClass.name, JobClass.onProcess)
+    }
   }
 }
 
