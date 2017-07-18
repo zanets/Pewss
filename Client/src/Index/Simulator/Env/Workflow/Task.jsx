@@ -64,6 +64,7 @@ export default class Task extends React.Component {
     this.setState({resStatus: Status.RUNNING})
     // TODO: filer stderr and stdout
     API.simulate(
+      this.props.id,
       'workflow',
       this.props.generator,
       this.props.scheduler,

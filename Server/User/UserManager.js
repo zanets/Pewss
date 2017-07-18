@@ -79,9 +79,9 @@ class UserManager {
     const v = operate[op]
 
     if (op === '$addPub') {
-      tarUser.addPub(v.type, v.cate, v.name)
+      tarUser.addPub(v.fType, v.fCate, v.fName)
     } else if (op === '$removePub') {
-      tarUser.removePub(v.type, v.cate, v.name)
+      tarUser.removePub(v.fType, v.fCate, v.fName)
     } else if (op === '$setPasswd') {
       tarUser.setPasswd(Encrypt.enc(v))
     } else {

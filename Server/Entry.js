@@ -37,8 +37,7 @@ JobManager.register(
   JFileStore,
   JUserMod,
   JCompile,
-  JSimulation,
-  JobManager
+  JSimulation
 )
 
 APP.use(helmet())
@@ -104,7 +103,7 @@ RTR.route('/users/:uname/profile')
   .patch(async (req, res) => {
     const uname = req.pewss.user.getName()
     JobManager.add(new JUserMod(uname, {
-      $setPasswd: req.body.passwd
+      $setPasswd: req.body
     }), (result) => {
       res.status(200).json(result)
     }, (result) => {
@@ -183,11 +182,7 @@ RTR.route('/users/:uname/files/public/:fname')
   .patch(async (req, res) => {
     const uname = req.pewss.user.getName()
     JobManager.add(new JUserMod(uname, {
-      $addPub: {
-        type: req.body.fType,
-        cate: req.body.fCate,
-        name: req.body.fName
-      }
+      $addPub: req.body
     }), (result) => {
       res.status(200).json(result)
     }, (result) => {
@@ -198,11 +193,7 @@ RTR.route('/users/:uname/files/public/:fname')
   .delete(async (req, res) => {
     const uname = req.pewss.user.getName()
     JobManager.add(new JUserMod(uname, {
-      $removePub: {
-        type: req.body.fType,
-        cate: req.body.fCate,
-        name: req.body.fName
-      }
+      $removePub: req.body
     }), (result) => {
       res.status(200).json(result)
     }, (result) => {
@@ -217,6 +208,14 @@ RTR.route('/sim')
   })
   /* simulate */
   .post(async (req, res) => {
+    JobManager.add(req.body.id, new JSimulation(req.body), (result) => {
+      res.status(200).json(result)
+    }, (result) => {
+      res.status(500).send(result)
+    })
+  })
+  /* delete simulation job */
+  .delete(async (req, res) => {
     JobManager.add(new JSimulation(req.body), (result) => {
       res.status(200).json(result)
     }, (result) => {

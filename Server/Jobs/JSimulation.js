@@ -1,21 +1,24 @@
 import Job from './Job.js'
 import { SimController } from '../Sim'
+import JobManager from './JobManager.js'
 
 module.exports = class JSimulation extends Job {
   constructor (data) {
     super(data)
     this.env = data.env || null
-    this.gen = data.generator.JPath || null
-    this.sche = data.scheduler.JPath || null
-    this.sim = data.simulator.JPath || null
-    this.plat = data.platform.JPath || null
-    this.argu = data.argums || null
+    this.gen = data.gen.JPath || null
+    this.sche = data.sche.JPath || null
+    this.sim = data.sim.JPath || null
+    this.plat = data.plat.JPath || null
+    this.argu = data.argu || null
   }
 
   static onProcess (job, done) {
     const d = job.data
     const sim = SimController.simulate(d.env, d.gen, d.sche, d.sim, d.plat, d.argu)
     const killer = Job.setKiller(sim, job.data.ttl)
+    console.log(job)
+    JobManager.addProc(job.id, sim)
     let result = { status: null, msg: '' }
     sim.stdout.on('data', data => Job.onOutData(data, result))
     sim.stderr.on('data', data => Job.onErrData(data, result))

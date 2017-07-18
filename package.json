@@ -8,7 +8,7 @@
     "dpack": "webpack -d --progress --colors --watch",
     "dpro": "webpack --progress --colors ",
     "db": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
-    "ctuser": "babel-node --presets es2015 Server/CreateUser.js"
+    "ctuser": "babel-node --presets es2015 Server/User/CreateUser.js"
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",

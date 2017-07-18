@@ -3,11 +3,12 @@ import { SimDir, HomeDir } from '../Utils.js'
 import conf from './Config.json'
 
 module.exports = class SimController {
-  static simulate (env, gen, sche, sim, plat, arg) {
-    const argus = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
+  static simulate (env, gen, sche, sim, plat, argu) {
+    const envArgu = this.getEnvArgument(argu)
+    const procArgu = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
 
-    const proc = spawn('java', argus.split(' '))
-    proc.stdin.write(this.getEnvArgument(arg))
+    const proc = spawn('java', procArgu.split(' '))
+    proc.stdin.write(envArgu)
     proc.stdin.end()
     return proc
   }
@@ -19,10 +20,10 @@ module.exports = class SimController {
     return proc
   }
 
-  static getEnvArgument (argums) {
+  static getEnvArgument (argu) {
     let argvs = ''
-    Object.keys(argums).forEach(key => {
-      const argv = argums[key]
+    Object.keys(argu).forEach(key => {
+      const argv = argu[key]
 
       argvs += `${key}=`
 

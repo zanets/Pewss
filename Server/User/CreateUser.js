@@ -15,7 +15,7 @@ const Users = [
 ];
 */
 const Users = [
-  'darg'
+  'test'
 ]
 
 UserManager.init().then(async () => {
