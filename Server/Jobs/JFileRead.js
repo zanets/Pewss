@@ -2,7 +2,7 @@ import Job from './Job.js'
 import { UserManager } from '../User'
 import { fTypes } from '../File'
 
-module.exports = class ReadJob extends Job {
+module.exports = class JFileRead extends Job {
   constructor (uname, data) {
     super(data)
     this.uname = uname || null

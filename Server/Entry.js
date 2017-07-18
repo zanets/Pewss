@@ -14,12 +14,13 @@ import { BaseDir, log } from './Utils.js'
 import { PewssAPI, isLogin, writeLog } from './MiddleWare.js'
 import { fTypes } from './File'
 import {
-  JobManager,
-  SimJob,
-  CompJob,
-  StoreJob,
-  ReadJob,
-  ModUserJob
+  JFileRead,
+  JFileDelete,
+  JFileStore,
+  JUserMod,
+  JCompile,
+  JSimulation,
+  JobManager
 } from './Jobs'
 
 const APP = Express()
@@ -30,7 +31,15 @@ const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
 
-JobManager.register(SimJob, CompJob, StoreJob, ReadJob, ModUserJob)
+JobManager.register(
+  JFileRead,
+  JFileDelete,
+  JFileStore,
+  JUserMod,
+  JCompile,
+  JSimulation,
+  JobManager
+)
 
 APP.use(helmet())
 APP.use(Session(Secrets.Session))
@@ -94,7 +103,7 @@ RTR.route('/users/:uname/profile')
   /* update user profile */
   .patch(async (req, res) => {
     const uname = req.pewss.user.getName()
-    JobManager.add(new ModUserJob(uname, {
+    JobManager.add(new JUserMod(uname, {
       $setPasswd: req.body.passwd
     }), (result) => {
       res.status(200).json(result)
@@ -121,7 +130,17 @@ RTR.route('/users/:uname/files/:type')
   /* create new file */
   .post(async (req, res) => {
     const User = req.pewss.user
-    JobManager.add(new StoreJob(User.getName(), req.body), async (result) => {
+    JobManager.add(new JFileStore(User.getName(), req.body), async (result) => {
+      res.status(200).json(result)
+      await User.scanHome()
+    }, (result) => {
+      res.status(500).send(result)
+    })
+  })
+  /* delete file */
+  .delete(async (req, res) => {
+    const User = req.pewss.user
+    JobManager.add(new JFileDelete(User.getName(), req.body), async (result) => {
       res.status(200).json(result)
       await User.scanHome()
     }, (result) => {
@@ -133,7 +152,7 @@ RTR.route('/users/:uname/files/source/:fname')
   /* get file content */
   .get(async (req, res) => {
     const uname = req.pewss.user.getName()
-    JobManager.add(new ReadJob(uname, req.query), async (result) => {
+    JobManager.add(new JFileRead(uname, req.query), async (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(404).send(result)
@@ -142,7 +161,7 @@ RTR.route('/users/:uname/files/source/:fname')
   /* compile */
   .post(async (req, res) => {
     const User = req.pewss.user
-    JobManager.add(new CompJob(req.body), async (result) => {
+    JobManager.add(new JCompile(req.body), async (result) => {
       res.status(200).json(result)
       await User.scanHome()
     }, (result) => {
@@ -152,7 +171,7 @@ RTR.route('/users/:uname/files/source/:fname')
   /* update file content */
   .patch(async (req, res) => {
     const uname = req.pewss.user.getName()
-    JobManager.add(new StoreJob(uname, req.body), (result) => {
+    JobManager.add(new JFileStore(uname, req.body), (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)
@@ -163,7 +182,7 @@ RTR.route('/users/:uname/files/public/:fname')
   /* add public file */
   .patch(async (req, res) => {
     const uname = req.pewss.user.getName()
-    JobManager.add(new ModUserJob(uname, {
+    JobManager.add(new JUserMod(uname, {
       $addPub: {
         type: req.body.fType,
         cate: req.body.fCate,
@@ -178,7 +197,7 @@ RTR.route('/users/:uname/files/public/:fname')
   /* remove public file */
   .delete(async (req, res) => {
     const uname = req.pewss.user.getName()
-    JobManager.add(new ModUserJob(uname, {
+    JobManager.add(new JUserMod(uname, {
       $removePub: {
         type: req.body.fType,
         cate: req.body.fCate,
@@ -198,7 +217,7 @@ RTR.route('/sim')
   })
   /* simulate */
   .post(async (req, res) => {
-    JobManager.add(new SimJob(req.body), (result) => {
+    JobManager.add(new JSimulation(req.body), (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)

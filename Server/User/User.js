@@ -45,9 +45,9 @@ module.exports = class User {
     this.Passwd = n
   }
 
-  addPub (type, cate, name) {
-    let f = this.Files[type].find(f =>
-      f.getCate() === cate && f.getName() === name
+  addPub (fType, fCate, fName) {
+    let f = this.Files[fType].find(f =>
+      f.getCate() === fCate && f.getName() === fName
     )
     if (f !== undefined) {
       f.setPub(true)
@@ -55,9 +55,9 @@ module.exports = class User {
     } else { return -1 }
   }
 
-  removePub (type, cate, name) {
-    let f = this.Files[type].find(f =>
-      f.getCate() === cate && f.getName() === name
+  removePub (fType, fCate, fName) {
+    let f = this.Files[fType].find(f =>
+      f.getCate() === fCate && f.getName() === fName
     )
     if (f !== undefined) {
       f.setPub(false)
@@ -65,35 +65,39 @@ module.exports = class User {
     } else { return -2 }
   }
 
-  getPubs (type) {
-    return this.Files[type].filter(f => f.getPub())
+  getPubs (fType) {
+    return this.Files[fType].filter(f => f.getPub())
   }
 
   async scanHome () {
-    for (const cate in fCates) {
+    for (const fCate in fCates) {
       let fs = await FileController
-            .scanDirAll(`${HomeDir}/${this.Name}/${cate}`)
+            .scanDirAll(`${HomeDir}/${this.Name}/${fCate}`)
             .catch(pErrHandler)
 
       for (const f of fs) {
-        const fname = trimExt(f.name)
-        const ftype = getFileType(f.name)
-        if (ftype === fTypes.unknown) { continue }
+        const fName = trimExt(f.name)
+        const fType = getFileType(f.name)
 
-        if (this.Files[ftype].find(f =>
-          f.getName() === fname &&
-          f.getCate() === fCates[cate])) { continue }
+        /* Ignore non-class and non-java files */
+        if (fType === fTypes.unknown) { continue }
 
-        let nf = (ftype === fTypes.Class)
-          ? new ClassFile().setJPath(`${this.Name}.${fCates[cate]}.${fname}`)
+        /* ScanHome may be called while file list is not empty */
+        if (this.Files[fType].find(f =>
+          f.getName() === fName &&
+          f.getCate() === fCates[fCate])
+        ) { continue }
+
+        let nf = (fType === fTypes.Class)
+          ? new ClassFile().setJPath(`${this.Name}.${fCates[fCate]}.${fName}`)
           : new JavaFile()
 
         nf.setOwner(this.Name)
-          .setName(fname)
+          .setName(fName)
           .setPath(f.path)
-          .setCate(fCates[cate])
+          .setCate(fCates[fCate])
 
-        this.Files[ftype].push(nf)
+        this.Files[fType].push(nf)
       }
     }
 
@@ -101,26 +105,30 @@ module.exports = class User {
     igFs(this.Files[fTypes.Java])
   }
 
-  getFile (type, cate, fname) {
-    return this.Files[type].find(f =>
-      f.getCate() === cate && f.getName() === fname
+  getFile (fType, fCate, fName) {
+    return this.Files[fType].find(f =>
+      f.getCate() === fCate && f.getName() === fName
     )
   }
 
-  getFilesByType (type) {
-    return this.Files[type]
+  getFilesByType (fType) {
+    return this.Files[fType]
   }
 
-  async newFile (cate, fname, content) {
-    return FileController.writeFile(`${HomeDir}/${this.Name}/${cate}/${fname}.java`, content)
+  async newFile (fCate, fName, fContent) {
+    return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
-  async getFileContent (cate, fname) {
-    return FileController.readFile(`${HomeDir}/${this.Name}/${cate}/${fname}.java`)
+  async deleteFile (fCate, fName) {
+    return FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`)
   }
 
-  async setFileContent (cate, fname, content) {
-    return FileController.writeFile(`${HomeDir}/${this.Name}/${cate}/${fname}.java`, content)
+  async getFileContent (fCate, fName) {
+    return FileController.readFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`)
+  }
+
+  async setFileContent (fCate, fName, fContent) {
+    return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
   getProperty () {

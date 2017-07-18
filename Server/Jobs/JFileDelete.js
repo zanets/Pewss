@@ -1,7 +1,7 @@
 import Job from './Job.js'
 import { UserManager } from '../User'
 
-module.exports = class StoreJob extends Job {
+module.exports = class JFileStore extends Job {
   constructor (uname, data) {
     super(data)
     this.uname = uname || null

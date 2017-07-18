@@ -1,4 +1,5 @@
 import { ChildProcess } from 'child_process'
+
 module.exports = class Job {
   constructor (data) {
     this.ttl = data.ttl || 60000

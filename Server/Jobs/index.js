@@ -1,15 +1,19 @@
-import CompJob from './CompJob.js'
-import ModUserJob from './ModUserJob.js'
-import ReadJob from './ReadJob.js'
-import SimJob from './SimJob.js'
-import StoreJob from './StoreJob.js'
+import JFileRead from './JFileRead.js'
+import JFileDelete from './JFileDelete.js'
+import JFileStore from './JFileStore.js'
+
+import JUserMod from './JUserMod.js'
+
+import JCompile from './JCompile.js'
+import JSimulation from './JSimulation.js'
 import JobManager from './JobManager.js'
 
 module.exports = {
-  CompJob,
-  ModUserJob,
-  ReadJob,
-  SimJob,
-  StoreJob,
+  JFileRead,
+  JFileDelete,
+  JFileStore,
+  JUserMod,
+  JCompile,
+  JSimulation,
   JobManager: new JobManager()
 }

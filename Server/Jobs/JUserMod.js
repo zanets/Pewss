@@ -1,7 +1,7 @@
 import Job from './Job.js'
 import { UserManager } from '../User'
 
-module.exports = class ModUserJob extends Job {
+module.exports = class JUserMod extends Job {
   constructor (uname, operator) {
     super({})
     this.uname = uname || null

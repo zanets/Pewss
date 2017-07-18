@@ -1,7 +1,7 @@
 import Job from './Job.js'
 import { SimController } from '../Sim'
 
-module.exports = class CompJob extends Job {
+module.exports = class JCompile extends Job {
   constructor (data) {
     super(data)
     this.env = data.env || null
