@@ -1,9 +1,10 @@
 import assert from 'assert'
-import MongoController from './MongoController.js'
+import MongoController from '../MongoController.js'
 import User from './User.js'
-import { eErrHandler, log } from './Utils.js'
-import Encrypt from './Encrypt.js'
-import {fTypes} from './File.js'
+import { eErrHandler, log } from '../Utils.js'
+import Encrypt from '../Encrypt.js'
+import {fTypes} from '../File'
+
 class UserManager {
   async init () {
     this.Users = {}

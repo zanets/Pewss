@@ -1,5 +1,5 @@
 import Job from './Job.js'
-import SimController from '../SimController.js'
+import { SimController } from '../Sim'
 
 module.exports = class SimJob extends Job {
   constructor (data) {

@@ -6,13 +6,13 @@ import Session from 'express-session'
 import https from 'https'
 import helmet from 'helmet'
 
-import Secrets from './Secrets.js'
-import SimController from './SimController.js'
-import UserManager from './UserManager.js'
+import Secrets from './Secrets'
+import { LocalPass } from './Passport'
+import { SimController } from './Sim'
+import { UserManager } from './User'
 import { BaseDir, log } from './Utils.js'
 import { PewssAPI, isLogin, writeLog } from './MiddleWare.js'
-import LocalPass from './Passport/LocalPass.js'
-import {fTypes} from './File.js'
+import { fTypes } from './File'
 import {
   JobManager,
   SimJob,

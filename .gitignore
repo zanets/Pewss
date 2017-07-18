@@ -6,7 +6,6 @@ Server/MongoDB/
 mongodLogs/
 Server/Sim/env/*.doc
 Server/Home/*
-Secrets/
 npm-debug.log
 simulator.conf
 .yarnclean
@@ -17,3 +16,5 @@ simulator.conf
 *.class
 *.jar
 SyntheticWorkflows/
+Server/Secrets/TLS/
+Server/Secrets/Config.json

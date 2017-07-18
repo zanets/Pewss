@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { pErrHandler } from './Utils.js'
+import { pErrHandler } from '../Utils.js'
 
 module.exports = class FileController {
   static async scanDirAll (dirPath, files) {

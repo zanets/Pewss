@@ -1,4 +1,5 @@
 import log4js from 'log4js'
+
 log4js.configure({
   appenders: [
     {
@@ -10,4 +11,5 @@ log4js.configure({
   ]
 })
 log4js.loadAppender('dateFile')
+
 module.exports = log4js.getLogger('dateFile')

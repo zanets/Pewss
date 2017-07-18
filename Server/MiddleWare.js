@@ -1,4 +1,4 @@
-import UserManager from './UserManager.js'
+import { UserManager } from './User'
 import { log } from './Utils.js'
 
 const getUser = (req) => {

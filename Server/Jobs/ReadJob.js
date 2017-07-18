@@ -1,6 +1,7 @@
 import Job from './Job.js'
-import UserManager from '../UserManager.js'
-import {fTypes} from '../File.js'
+import { UserManager } from '../User'
+import { fTypes } from '../File'
+
 module.exports = class ReadJob extends Job {
   constructor (uname, data) {
     super(data)

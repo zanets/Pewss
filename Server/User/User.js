@@ -1,6 +1,6 @@
-import {pErrHandler, HomeDir} from './utils.js'
-import FileController from './FileController.js'
+import {pErrHandler, HomeDir} from '../utils.js'
 import {
+  FileController,
   ClassFile,
   JavaFile,
   getFileType,
@@ -8,7 +8,8 @@ import {
   igFs,
   fTypes,
   fCates
-} from './File.js'
+} from '../File'
+
 module.exports = class User {
   constructor (pros) {
     this.Name = pros.Name || null

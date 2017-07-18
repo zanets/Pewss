@@ -1,5 +1,5 @@
 import Job from './Job.js'
-import UserManager from '../UserManager.js'
+import { UserManager } from '../User'
 
 module.exports = class StoreJob extends Job {
   constructor (uname, data) {

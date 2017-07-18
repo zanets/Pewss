@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
-import { SimDir, HomeDir } from './Utils.js'
-import envConf from './Sim/envConfig.json'
+import { SimDir, HomeDir } from '../Utils.js'
+import conf from './Config.json'
 
 module.exports = class SimController {
   static simulate (env, gen, sche, sim, plat, arg) {
@@ -38,7 +38,7 @@ module.exports = class SimController {
   }
 
   static getEnvLibrary (env) {
-    const _libs = envConf[env].lib
+    const _libs = conf[env].lib
 
     let libs = ''
 
@@ -50,10 +50,10 @@ module.exports = class SimController {
   }
 
   static getEnvs () {
-    return Object.keys(envConf)
+    return Object.keys(conf)
   }
 
   static getBuiltin (env) {
-    return envConf[env].builtin
+    return conf[env].builtin
   }
 }
