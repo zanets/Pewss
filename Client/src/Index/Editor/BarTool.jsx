@@ -153,7 +153,7 @@ export default class BarTool extends React.Component {
       this.props.fileEdit.Cate,
       this.props.fileEdit.Owner
     , (res) => {
-      if (res.status === 'stderr') {
+      if (res.type === 'stderr') {
         this.props.toggleModalInfo(true, 'Compile fail.', 'danger', true, res.msg)
       } else {
         this.props.toggleModalInfo(true, 'Compile success.', 'success', false, '')

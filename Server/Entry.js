@@ -161,6 +161,7 @@ RTR.route('/users/:uname/files/source/:fname')
   })
 
 RTR.route('/users/:uname/files/public/:fname')
+  /* add public file */
   .patch(async (req, res) => {
     const User = req.pewss.user
     try {
@@ -174,6 +175,7 @@ RTR.route('/users/:uname/files/public/:fname')
       res.sendStatus(200)
     } catch (err) { res.status(500).send(err.msg) }
   })
+  /* remove public file */
   .delete(async (req, res) => {
     const User = req.pewss.user
     await UserManager.modUser(User.getName(), {
