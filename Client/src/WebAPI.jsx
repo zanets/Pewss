@@ -91,12 +91,12 @@ class WebAPI {
   }
 
   getUserName (success, fail, always) {
-    jq.get('/api/users/name', success).fail(fail).always(always)
+    jq.get('/api/users/name/profile', success).fail(fail).always(always)
   }
 
   updatePassword (name, password, success, fail, always) {
     jq.ajax({
-      url: `/api/users/${name}/passwd`,
+      url: `/api/users/${name}/profile`,
       data: {
         passwd: password
       },

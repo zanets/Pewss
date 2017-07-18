@@ -13,8 +13,14 @@ import { BaseDir, log } from './Utils.js'
 import { PewssAPI, isLogin, writeLog } from './MiddleWare.js'
 import LocalPass from './Passport/LocalPass.js'
 import {fTypes} from './File.js'
-import {JobManager} from './JobManager.js'
-import {SimJob, CompJob} from './Job.js'
+import {
+  JobManager,
+  SimJob,
+  CompJob,
+  StoreJob,
+  ReadJob,
+  ModUserJob
+} from './Jobs'
 
 const APP = Express()
 const RTR = Express.Router()
@@ -24,7 +30,7 @@ const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
 
-JobManager.register(SimJob, CompJob)
+JobManager.register(SimJob, CompJob, StoreJob, ReadJob, ModUserJob)
 
 APP.use(helmet())
 APP.use(Session(Secrets.Session))
@@ -80,61 +86,58 @@ RTR.param(['uname', 'type', 'fname', 'info'], (req, res, next, id) => {
 
 RTR.all('*', isLogin)
 
-RTR.route('/users/:info')
+RTR.route('/users/:uname/profile')
   /* get user name */
   .get((req, res, next) => {
     res.status(200).send(req.user.Name)
   })
   /* update user profile */
-  .post(async (req, res) => {
-    const User = req.pewss.user
-    await UserManager.modUser(User.getName(), {
-      $updatePassword: req.body.passwd
+  .patch(async (req, res) => {
+    const uname = req.pewss.user.getName()
+    JobManager.add(new ModUserJob(uname, {
+      $setPasswd: req.body.passwd
+    }), (result) => {
+      res.status(200).json(result)
+    }, (result) => {
+      res.status(500).send(result)
     })
-    res.sendStatus(200)
   })
+
+const getAllClassFiles = (type, env, uname) => {
+  if (type === fTypes.Class) {
+    return UserManager.getClassFiles(uname)
+      .concat(SimController.getBuiltin(env))
+  } else if (type === fTypes.Java) {
+    return UserManager.getJavaFiles(uname)
+  }
+}
 
 RTR.route('/users/:uname/files/:type')
   /* get file list */
   .get((req, res, next) => {
-    const User = req.pewss.user
-    let resFiles = null
-    if (req.params.type === fTypes.Class) {
-      resFiles = UserManager.getClassFiles(User.getName())
-      resFiles = resFiles.concat(SimController.getBuiltin(req.query.env))
-    } else if (req.params.type === fTypes.Java) {
-      resFiles = UserManager.getJavaFiles(User.getName())
-    }
-    res.status(200).json(resFiles)
+    const uname = req.pewss.user.getName()
+    res.status(200).json(getAllClassFiles(req.params.type, req.query.env, uname))
   })
   /* create new file */
   .post(async (req, res) => {
     const User = req.pewss.user
-    try {
-      await User.newFile(
-      req.body.fCate,
-      req.body.fName,
-      req.body.fContent
-    )
+    JobManager.add(new StoreJob(User.getName(), req.body), async (result) => {
+      res.status(200).json(result)
       await User.scanHome()
-      res.status(200).send('Save complete')
-    } catch (err) { res.status(500).send(err.msg) }
+    }, (result) => {
+      res.status(500).send(result)
+    })
   })
 
 RTR.route('/users/:uname/files/source/:fname')
   /* get file content */
   .get(async (req, res) => {
-    const User = req.pewss.user
-    const content = await User.getFileContent(req.query.fCate, req.query.fName)
-    const isPub = UserManager.isPub(
-      req.query.fOwner,
-      fTypes.Class,
-      req.query.fCate,
-      req.query.fName
-    )
-    if (content) {
-      res.status(200).json({ data: content, isPub })
-    } else { res.sendStatus(404) }
+    const uname = req.pewss.user.getName()
+    JobManager.add(new ReadJob(uname, req.query), async (result) => {
+      res.status(200).json(result)
+    }, (result) => {
+      res.status(404).send(result)
+    })
   })
   /* compile */
   .post(async (req, res) => {
@@ -148,43 +151,44 @@ RTR.route('/users/:uname/files/source/:fname')
   })
   /* update file content */
   .patch(async (req, res) => {
-    const User = req.pewss.user
-    try {
-      await User.setFileContent(
-        req.body.fCate,
-        req.body.fName,
-        req.body.fContent
-      )
-      res.status(200).send('Save complete')
-    } catch (err) { res.status(500).send(err.msg) }
+    const uname = req.pewss.user.getName()
+    JobManager.add(new StoreJob(uname, req.body), (result) => {
+      res.status(200).json(result)
+    }, (result) => {
+      res.status(500).send(result)
+    })
   })
 
 RTR.route('/users/:uname/files/public/:fname')
   /* add public file */
   .patch(async (req, res) => {
-    const User = req.pewss.user
-    try {
-      await UserManager.modUser(User.getName(), {
-        $addPub: {
-          type: req.body.fType,
-          cate: req.body.fCate,
-          name: req.body.fName
-        }
-      })
-      res.sendStatus(200)
-    } catch (err) { res.status(500).send(err.msg) }
+    const uname = req.pewss.user.getName()
+    JobManager.add(new ModUserJob(uname, {
+      $addPub: {
+        type: req.body.fType,
+        cate: req.body.fCate,
+        name: req.body.fName
+      }
+    }), (result) => {
+      res.status(200).json(result)
+    }, (result) => {
+      res.status(500).send(result)
+    })
   })
   /* remove public file */
   .delete(async (req, res) => {
-    const User = req.pewss.user
-    await UserManager.modUser(User.getName(), {
+    const uname = req.pewss.user.getName()
+    JobManager.add(new ModUserJob(uname, {
       $removePub: {
         type: req.body.fType,
         cate: req.body.fCate,
         name: req.body.fName
       }
+    }), (result) => {
+      res.status(200).json(result)
+    }, (result) => {
+      res.status(500).send(result)
     })
-    res.sendStatus(200)
   })
 
 RTR.route('/sim')

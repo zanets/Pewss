@@ -1,5 +1,6 @@
 import kue from 'kue'
-class JobManager {
+
+module.exports = class JobManager {
   constructor () {
     this.Q = kue.createQueue()
     this.TTL = 60000
@@ -17,15 +18,11 @@ class JobManager {
     for (const JobClass of arguments) {
       if (!('onProcess' in JobClass)) {
         console.error(
-          `Except job class but get ${JobClass.name || 'object'}`
+          `onProcess not found in ${JobClass.name || 'object'}`
         )
         process.exit(-1)
       }
       this.Q.process(JobClass.name, JobClass.onProcess)
     }
   }
-}
-
-module.exports = {
-  JobManager: new JobManager()
 }

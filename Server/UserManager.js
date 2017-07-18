@@ -73,11 +73,8 @@ class UserManager {
   // op: $removeFile | $addPublicFile | $removePublicFile | $updatePassword
   async modUser (uname, operate) {
     const tarUser = this.getUser(uname)
-
     assert.ok(tarUser !== null, `User ${uname} NOT exist`)
-
     const op = Object.keys(operate)[0]
-
     const v = operate[op]
 
     if (op === '$addPub') {
