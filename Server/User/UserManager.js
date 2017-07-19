@@ -105,17 +105,6 @@ class UserManager {
     return this.updateDB(tarUser)
   }
 
-  isPub (uid, fType, fCate, fName) {
-    const pubs = this.getUser(uid).getPubs(fType)
-    for (const pub of pubs) {
-      if (pub.getName() === fName && pub.getCate() === fCate) {
-        return true
-      }
-    }
-
-    return false
-  }
-
   getClassFiles (uid) {
     // private
     let res = this.getUser(uid).getFilesByType(fTypes.Class)

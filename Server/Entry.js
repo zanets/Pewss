@@ -30,7 +30,7 @@ const PORT = 8081
 const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
-
+require('events').EventEmitter.prototype._maxListeners = 0
 JobManager.register(
   JFileRead,
   JFileDelete,
@@ -207,7 +207,7 @@ RTR.route('/sim')
   })
   /* simulate */
   .post(async (req, res) => {
-    JobManager.add(req.body.id, new JSimulation(req.body), (result) => {
+    JobManager.add(new JSimulation(req.body), (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)

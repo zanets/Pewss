@@ -79,7 +79,7 @@ export default class Task extends React.Component {
     }, (res) => {
       this.setState({
         resStatus: Status.FIN_ERR,
-        res: this.filter(res.responseJSON.stderr, Status.FIN_ERR)
+        res: this.filter(res.msg, Status.FIN_ERR)
       })
     })
   }

@@ -77,6 +77,12 @@ module.exports = class User {
     return this.Files[fType].filter(f => f.getPub())
   }
 
+  isPub (fType, fCate, fName) {
+    return this.getPubs(fType).find(f =>
+      f.getCate() === fCate && f.getName() === fName
+    )
+  }
+
   async scanHome () {
     for (const fCate in fCates) {
       let fs = await FileController

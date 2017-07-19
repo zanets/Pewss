@@ -2,9 +2,9 @@ import Job from './Job.js'
 import { UserManager } from '../User'
 
 module.exports = class JFileStore extends Job {
-  constructor (uname, data) {
+  constructor (uid, data) {
     super(data)
-    this.uname = uname || null
+    this.uid = uid || null
     this.fCate = data.fCate || null
     this.fName = data.fName || null
     this.fContent = data.fContent || null
@@ -13,15 +13,17 @@ module.exports = class JFileStore extends Job {
   static async onProcess (job, done) {
     const d = job.data
     try {
-      const User = UserManager.getUser(d.uname)
+      const User = UserManager.getUser(d.uid)
       await User.setFileContent(d.fCate, d.fName, d.fContent)
       done(null, 'Save complete')
-    } catch (err) { done(err.msg) }
+    } catch (err) {
+      done(err.msg)
+    }
   }
 
   getData () {
     return {
-      uname: this.uname,
+      uid: this.uid,
       fCate: this.fCate,
       fName: this.fName,
       fContent: this.fContent,

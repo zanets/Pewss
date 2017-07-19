@@ -3,9 +3,9 @@ import { UserManager } from '../User'
 import { fTypes } from '../File'
 
 module.exports = class JFileRead extends Job {
-  constructor (uname, data) {
+  constructor (uid, data) {
     super(data)
-    this.uname = uname || null
+    this.uid = uid || null
     this.fOwner = data.fOwner || null
     this.fCate = data.fCate || null
     this.fName = data.fName || null
@@ -15,9 +15,9 @@ module.exports = class JFileRead extends Job {
   static async onProcess (job, done) {
     const d = job.data
     try {
-      const User = UserManager.getUser(d.uname)
+      const User = UserManager.getUser(d.uid)
       const content = await User.getFileContent(d.fCate, d.fName)
-      const isPub = UserManager.isPub(d.fOwner, fTypes.Class, d.fCate, d.fName)
+      const isPub = User.isPub(fTypes.Class, d.fCate, d.fName)
 
       if (content) {
         done(null, { data: content, isPub })
@@ -29,7 +29,7 @@ module.exports = class JFileRead extends Job {
 
   getData () {
     return {
-      uname: this.uname,
+      uid: this.uid,
       fOwner: this.fOwner,
       fCate: this.fCate,
       fName: this.fName,

@@ -7,7 +7,6 @@ class Encrypt {
 
   async compare (pwd, hash) {
     const res = await bcrypt.compare(pwd, hash)
-    console.log(res)
     return res
   }
 }
