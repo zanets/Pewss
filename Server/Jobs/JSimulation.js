@@ -1,6 +1,6 @@
 import Job from './Job.js'
 import { SimController } from '../Sim'
-
+import fs from 'fs'
 module.exports = class JSimulation extends Job {
   constructor (data) {
     super(data)
@@ -18,8 +18,9 @@ module.exports = class JSimulation extends Job {
 
     let result = { type: null, msg: '' }
     const killer = Job.setKiller(sim, job.data.ttl, result)
-    sim.stdout.on('data', data => Job.onOutData(data, result))
-    sim.stderr.on('data', data => Job.onErrData(data, result))
+    const logStream = fs.createWriteStream('./logFile.log', {flags: 'a'})
+    sim.stdout.pipe(logStream)
+    sim.stderr.pipe(logStream)
 
     sim.on('exit', (code) => {
       Job.clearKiller(killer)

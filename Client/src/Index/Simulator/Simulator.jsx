@@ -13,8 +13,7 @@ import {
   ModalBody,
   ModalFooter,
   Jumbotron,
-  Col,
-  FormControl
+  Col
 } from 'reactstrap'
 
 const propTypes = {
