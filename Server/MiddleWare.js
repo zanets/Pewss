@@ -4,15 +4,8 @@ const getUser = (req) => {
   return UserManager.getUser(req.user.Id)
 }
 
-const PewssAPI = (req, res, next) => {
-  req['pewss'] = { user: null }
-  next()
-}
-
 const isLogin = (req, res, next) => {
-  console.log(req.user)
   if (req.isAuthenticated() && getUser(req)) {
-    req.pewss.user = getUser(req)
     next()
   } else {
     res.redirect('/login')
@@ -54,5 +47,5 @@ const writeLog = (req, res, next) => {
 }
 
 module.exports = {
-  PewssAPI, isLogin, writeLog
+  isLogin, writeLog
 }
