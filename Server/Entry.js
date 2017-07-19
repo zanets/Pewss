@@ -56,7 +56,7 @@ APP.use('/doc-workflow', Express.static(`${BaseDir}/Server/Sim/env/workflow.doc`
 
 UserManager.init().then(async () => {
   await UserManager.loadUsers()
-  UserManager.createUsers()
+  UserManager.restoreUsers()
   UserManager.getUsers().forEach(async u => {
     await u.scanHome()
     u.restore()
