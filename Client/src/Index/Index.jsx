@@ -40,9 +40,7 @@ class Index extends React.Component {
   }
 
   componentWillMount () {
-    API.getUserName(res => {
-      this.setState({username: res})
-    })
+    this.setState({username: sessionStorage.getItem('uname')})
   }
 
   componentDidMount () {
