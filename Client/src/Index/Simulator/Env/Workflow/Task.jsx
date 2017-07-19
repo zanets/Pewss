@@ -72,14 +72,16 @@ export default class Task extends React.Component {
       this.props.platform,
       this.state.settings
     , (res) => {
+      console.log(res)
       this.setState({
         resStatus: Status.FIN_OK,
         res: this.filter(res.msg, Status.FIN_OK)
       })
     }, (res) => {
+      console.log(res)
       this.setState({
         resStatus: Status.FIN_ERR,
-        res: this.filter(res.msg, Status.FIN_ERR)
+        res: {errcode: Status.FIN_ERR.code, dbgs: null, raw: res.responseText }
       })
     })
   }

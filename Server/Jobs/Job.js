@@ -15,10 +15,12 @@ module.exports = class Job {
     res.msg += data
   }
 
-  static setKiller (target, ttl) {
+  static setKiller (target, ttl, result) {
     if (target instanceof ChildProcess) {
       const killer = setTimeout(() => {
         target.kill('SIGHUP')
+        result.type = 'stderr'
+        result.msg = 'Exceed Maximum of execution time.'
       }, ttl)
       return killer
     }

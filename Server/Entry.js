@@ -30,7 +30,7 @@ const PORT = 8081
 const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
-require('events').EventEmitter.prototype._maxListeners = 0
+//require('events').EventEmitter.prototype._maxListeners = 0
 JobManager.register(
   JFileRead,
   JFileDelete,
