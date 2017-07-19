@@ -19,13 +19,6 @@ module.exports = class User {
     this.Files[fTypes.Java] = []
   }
 
-  restore () {
-    this.Files[fTypes.Class].forEach(reFile => {
-      let f = this.getFile(fTypes.Class, reFile.Cate, reFile.Name)
-      if (f !== undefined) { f.setPub(reFile.Pub) }
-    })
-  }
-
   setId (n) {
     this.Id = n
     return this
@@ -84,35 +77,45 @@ module.exports = class User {
   }
 
   async scanHome () {
-    for (const fCate in fCates) {
-      let fs = await FileController
-            .scanDirAll(`${HomeDir}/${this.Name}/${fCate}`)
-            .catch(pErrHandler)
+    let nfs = []
+    for (let fCate in fCates) {
+      fCate = fCates[fCate]
+      let _nfs = await FileController
+        .scanDirAll(`${HomeDir}/${this.Name}/${fCate}`)
+        .catch(pErrHandler)
+      _nfs.forEach(_n => _n.cate = fCate)
+      nfs = nfs.concat(_nfs)
+    }
 
-      for (const f of fs) {
-        const fName = trimExt(f.name)
-        const fType = getFileType(f.name)
-
-        /* Ignore non-class and non-java files */
-        if (fType === fTypes.unknown) { continue }
-
-        /* ScanHome may be called while file list is not empty */
-        if (this.Files[fType].find(f =>
-          f.getName() === fName &&
-          f.getCate() === fCates[fCate])
-        ) { continue }
-
-        let nf = (fType === fTypes.Class)
-          ? new ClassFile().setJPath(`${this.Name}.${fCates[fCate]}.${fName}`)
-          : new JavaFile()
-
-        nf.setOwner(this.Name)
-          .setName(fName)
-          .setPath(f.path)
-          .setCate(fCates[fCate])
-
-        this.Files[fType].push(nf)
-      }
+    /* create new file object */
+    nfs = nfs.map(nf => {
+      const fName = trimExt(nf.name)
+      const fType = getFileType(nf.name)
+      const fCate = nf.cate
+      const nfile = (fType === fTypes.Class)
+        ? new ClassFile().setJPath(`${this.Name}.${fCate}.${fName}`)
+        : new JavaFile()
+      nfile.setOwner(this.Name)
+        .setName(fName)
+        .setPath(nf.path)
+        .setCate(fCate)
+      return nfile
+    })
+    const isFileEqual = (of, nf) => {
+      return of.getName() === nf.getName()
+          && of.getCate() === nf.getCate()
+          && nf.getType() === nf.getType()
+    }
+    for (let fType in fTypes) {
+      fType = fTypes[fType]
+      if (this.Files[fType] === undefined ) continue
+      /* delete old files not exist in new files */
+      this.Files[fType] = this.Files[fType].filter( of => nfs.find(nf => isFileEqual(of, nf)) )
+      /* add new file not exist in old files */
+      nfs.forEach(nf => {
+        const isExist = this.Files[fType].find( of => isFileEqual(of, nf) )
+        if (!isExist) {this.Files[fType].push(nf)}
+      })
     }
 
     igFs(this.Files[fTypes.Class])
@@ -133,8 +136,9 @@ module.exports = class User {
     return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
-  async deleteFile (fCate, fName) {
-    return FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`)
+  async deleteFile (fType, fCate, fName) {
+     await FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.${fType}`)
+     await this.scanHome()
   }
 
   async getFileContent (fCate, fName) {

@@ -19,7 +19,7 @@ module.exports = class JobManager {
         console.error(`onProcess not found in ${JobClass.name || 'object'}`)
         process.exit(-1)
       }
-      this.Q.process(JobClass.name, (JobClass.name === 'JSimulation') ? 10 : 1, JobClass.onProcess)
+      this.Q.process(JobClass.name, 1, JobClass.onProcess)
     }
   }
 }

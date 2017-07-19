@@ -60,7 +60,6 @@ UserManager.init().then(async () => {
   UserManager.restoreUsers()
   UserManager.getUsers().forEach(async u => {
     await u.scanHome()
-    u.restore()
   })
   LocalStrategy(Passport)
 })
@@ -130,8 +129,8 @@ RTR.route('/users/:uname/files/:type')
   .post(async (req, res) => {
     const User = req.user
     JobManager.add(new JFileStore(User.getId(), req.body), async (result) => {
-      res.status(200).json(result)
       await User.scanHome()
+      res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)
     })
@@ -140,8 +139,8 @@ RTR.route('/users/:uname/files/:type')
   .delete(async (req, res) => {
     const User = req.user
     JobManager.add(new JFileDelete(User.getId(), req.body), async (result) => {
-      res.status(200).json(result)
       await User.scanHome()
+      res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)
     })

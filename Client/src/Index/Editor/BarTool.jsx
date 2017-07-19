@@ -214,13 +214,24 @@ export default class BarTool extends React.Component {
     this.props.toggleModalNewFile(true)
   }
 
+  clkDelete () {
+    API.deleteFile(
+      this.props.fileEdit.Name,
+      this.props.fileEdit.Cate
+    , () => {
+      location.reload(true)
+    }, (err) => {
+      console.error(err)
+    })
+  }
+
   render () {
     const pubColor = this.props.fileEdit.isPub ? 'primary' : 'secondary'
     return (
       <ButtonToolbar>
         <ButtonDropdown isOpen={this.state.isDropdownOpen} toggle={this.toggleDropdown.bind(this)}>
           <DropdownToggle caret>
-            {this.state.fileSelect.Name === '' ? 'Select File ' : this.state.fileSelect.Name}
+            {this.state.fileSelect.Name === '' ? 'Select ' : this.state.fileSelect.Name}
           </DropdownToggle>
           <DropdownMenu>
             {this.getFileList.apply(this)}
@@ -228,22 +239,25 @@ export default class BarTool extends React.Component {
         </ButtonDropdown>
 
         <Button onClick={this.clkOpen.bind(this)} disabled={!this.isFileSelect.apply(this)}>
-          <span className='fa fa-pencil-square-o fa-lg' />{' Open'}
+          <span className='fa fa-pencil-square-o fa-lg' />
         </Button>
         <Button onClick={this.clkSave.bind(this)} disabled={!this.isFileOpen.apply(this)}>
-          <span className='fa fa-save fa-lg' />{' Save'}
+          <span className='fa fa-save fa-lg' />
         </Button>
         <Button onClick={this.clkCompile.bind(this)} disabled={!this.isFileOpen.apply(this)}>
-          <span className='fa fa-asterisk fa-lg' />{' Compile'}
+          <span className='fa fa-asterisk fa-lg' />
         </Button>
         <Button onClick={this.clkPub.bind(this)} color={pubColor} disabled={!this.isFileOpen.apply(this)}>
-          <span className='fa fa-group fa-lg' />{' Publish'}
+          <span className='fa fa-group fa-lg' />
         </Button>
         <Button onClick={this.clkNew.bind(this)}>
-          <span className='fa fa-file-code-o fa-lg' />{' New File'}
+          <span className='fa fa-file-code-o fa-lg' />
         </Button>
         <Button onClick={this.clkSaveAs.bind(this)}>
-          <span className='fa fa-plus fa-lg' />{' Save as'}
+          <span className='fa fa-plus fa-lg' />
+        </Button>
+        <Button onClick={this.clkDelete.bind(this)}>
+          <span className='fa fa-trash fa-lg' />
         </Button>
 
       </ButtonToolbar>

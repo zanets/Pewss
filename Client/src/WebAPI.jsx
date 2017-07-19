@@ -40,6 +40,14 @@ class WebAPI {
     }, success).fail(fail).always(always)
   }
 
+  deleteFile (fName, fCate, success, fail, always) {
+    jq.ajax({
+      url: `/api/users/${fName}/files/all`,
+      data: { fName, fCate },
+      type: 'delete'
+    }).done(success).fail(fail).always(always)
+  }
+
   compile (env, fName, fCate, fOwner, success, fail, always) {
     jq.post(`/api/users/${fName}/files/source/${fName}`, {
       env, fName, fCate, fOwner
