@@ -1,4 +1,5 @@
 import jq from 'jquery'
+
 class WebAPI {
   getEnvs (success, fail, always) {
     jq.get('/api/sim', success).fail(fail).always(always)
@@ -74,6 +75,10 @@ class WebAPI {
     jq.get('/logout', (data) => {
       window.location = data
     })
+  }
+
+  login (name, passwd, success) {
+    jq.post('/login', {name, passwd}, success)
   }
 
   updatePassword (name, passwd, success, fail, always) {

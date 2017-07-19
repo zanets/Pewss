@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
 import uuid from 'node-uuid'
 import update from 'immutability-helper'
-import {default as API} from '../../WebAPI.jsx'
+import API from '../../WebAPI.jsx'
 import {
   Button,
   ButtonToolbar,

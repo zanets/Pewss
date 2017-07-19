@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Loader from 'react-loader'
-import {default as API} from '../WebAPI.jsx'
-import Editors from './Editor/Editors.jsx'
+import API from '../WebAPI.jsx'
+import Editor from './Editor/Editor.jsx'
 import Simulator from './Simulator/Simulator.jsx'
 import Profile from './Profile/Profile.jsx'
+import Storage from '../Storage.jsx'
 import {
   Navbar,
   Nav,
@@ -40,7 +41,7 @@ class Index extends React.Component {
   }
 
   componentWillMount () {
-    this.setState({username: sessionStorage.getItem('uname')})
+    this.setState({username: Storage.getUname()})
   }
 
   componentDidMount () {
@@ -106,22 +107,14 @@ class Index extends React.Component {
   }
 
   render () {
-    let page = (
-      <Simulator
-        class_list={this.state.classList}
-        envs={this.state.envs}
-        username={this.state.username} />
-    )
+    let page = null
 
     if (this.state.page === PAGES.EDI) {
-      page = (
-        <Editors source_list={this.state.sourceList}
-          username={this.state.username} />
-      )
+      page = <Editor source_list={this.state.sourceList}/>
     } else if (this.state.page === PAGES.PRO) {
-      page = (
-        <Profile username={this.state.username} />
-      )
+      page = <Profile/>
+    } else if (this.state.page === PAGES.SIM) {
+      page = <Simulator envs={this.state.envs} class_list={this.state.classList}/>
     }
 
     return (

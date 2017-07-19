@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 import { default as WorkflowTask } from './Env/Workflow/Task.jsx'
 import ReactDOM from 'react-dom'
 import uuid from 'node-uuid'
+import Storage from '../../Storage.jsx'
 import {
   Input,
   Button,
@@ -17,7 +18,6 @@ import {
 } from 'reactstrap'
 
 const propTypes = {
-  username: PropTypes.string.isRequired,
   class_list: PropTypes.array.isRequired,
   envs: PropTypes.array.isRequired
 }
@@ -30,9 +30,10 @@ export default class Simulator extends React.Component {
       envs: props.envs,
       class_list: this.fixClassName(props.class_list),
       isOpenNewTask: false,
-      isOpenCompare: false
+      isOpenCompare: false,
+      uname: Storage.getUname()
     }
-    const oldTasks = window.localStorage.getItem('Tasks')
+    const oldTasks = Storage.getTasks()
     this.state.tasks = oldTasks ? JSON.parse(oldTasks) : []
 
     this.compare = {
@@ -75,13 +76,13 @@ export default class Simulator extends React.Component {
 
     this.setState({tasks: tasks})
     this.toggleNewTaskModal(false)
-    localStorage.setItem('Tasks', JSON.stringify(tasks))
+    Storage.setTasks(tasks)
   }
 
   delTask (id) {
     const newTasks = this.state.tasks.filter(task => id !== task.id)
     this.setState({tasks: newTasks})
-    localStorage.setItem('Tasks', JSON.stringify(newTasks))
+    Storage.setTasks(newTasks)
   }
 
   getTaskComponent () {

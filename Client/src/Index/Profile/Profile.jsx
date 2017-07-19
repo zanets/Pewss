@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react'
 import update from 'immutability-helper'
-import {default as API} from '../../WebAPI.jsx'
+import API from '../../WebAPI.jsx'
+import Storage from '../../Storage.jsx'
 import {
   FormFeedback,
   Input,
@@ -11,10 +12,6 @@ import {
   Jumbotron
 } from 'reactstrap'
 
-const propTypes = {
-  username: PropTypes.string.isRequired
-}
-
 const STATE = {
   OK: 'success',
   FAIL: 'warning'
@@ -24,6 +21,7 @@ export default class Profile extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      uname: Storage.getUname(),
       newPassword: {
         value: '',
         state: STATE.FAIL,
@@ -103,7 +101,7 @@ export default class Profile extends React.Component {
     }
 
     API.updatePassword(
-      this.props.username,
+      this.state.uname,
       this.state.newPassword.value
     , res => {
       API.logout()
@@ -120,7 +118,7 @@ export default class Profile extends React.Component {
         <div className='row'>
           <i className='fa fa-user-circle-o fa-5x' />
           <h2 className='display-3' style={{marginLeft: '20px'}}>
-            {this.props.username}
+            {this.state.uname}
           </h2>
         </div>
         <Form>
@@ -143,5 +141,3 @@ export default class Profile extends React.Component {
     )
   }
 }
-
-Profile.propTypes = propTypes

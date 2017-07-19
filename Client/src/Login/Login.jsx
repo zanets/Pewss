@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import jq from 'jquery'
+import API from '../WebAPI.jsx'
+import Storage from '../Storage.jsx'
 import {
   Input,
   Card,
@@ -20,9 +21,9 @@ class Login extends React.Component {
   login () {
     const name = ReactDOM.findDOMNode(this.refs['login-name']).value
     const passwd = ReactDOM.findDOMNode(this.refs['login-passwd']).value
-    jq.post('/login', {name, passwd}, (data) => {
-      sessionStorage.setItem('uname', name);
-      window.location = data
+    API.login(name, passwd, (data) => {
+      Storage.setUname(name)
+      location = data
     })
   }
 

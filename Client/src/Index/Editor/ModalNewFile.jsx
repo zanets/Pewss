@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react'
 import uuid from 'node-uuid'
-import {default as API} from '../../WebAPI.jsx'
+import API from '../../WebAPI.jsx'
+import Storage from '../../Storage.jsx'
 import {
   Modal,
   ModalHeader,
@@ -26,13 +27,10 @@ export default class ModalNewFile extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      uname: Storage.getUname(),
       Name: '',
       Cate: 'generator'
     }
-  }
-
-  componentDidMount () {
-    this.username = sessionStorage.getItem('uname')
   }
 
   create () {
@@ -46,13 +44,13 @@ export default class ModalNewFile extends React.Component {
       this.state.Name,
       this.state.Cate,
       this.props.fileEdit.Code,
-      this.username
+      this.state.uname
     , (res) => {
       this.props.toggleModalInfo(true, `Save as ${this.state.name} success`, 'success', false, '')
       this.props.setFileEdit({
         Name: {$set: this.state.Name},
         Cate: {$set: this.state.Cate},
-        Owner: {$set: this.username},
+        Owner: {$set: this.state.uname},
         isPub: {$set: false},
         isMod: {$set: false},
         isOpen: {$set: true},

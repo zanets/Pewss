@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 import Loader from 'react-loader'
 import update from 'immutability-helper'
 import NewFileGenerator from './NewFileGnerator.jsx'
+import Storage from '../../Storage.jsx'
 import {
   ModalInfo,
   ModalNewFile,
@@ -14,10 +15,6 @@ import {
   Col
 } from 'reactstrap'
 
-const propTypes = {
-  username: PropTypes.string.isRequired
-}
-
 export default class Editor extends React.Component {
   constructor (props) {
     super(props)
@@ -25,8 +22,10 @@ export default class Editor extends React.Component {
   }
 
   fileNew (isForce) {
-    const defailtCode = NewFileGenerator.get(this.props.username)
+    const uname = Storage.getUname()
+    const defailtCode = NewFileGenerator.get(uname)
     this.state = {
+      uname: uname,
       sourceList: this.props.source_list,
       editorId: this.props.id,
       fileEdit: {
@@ -126,7 +125,7 @@ export default class Editor extends React.Component {
                 toggleMainLoader={this.toggleMainLoader.bind(this)}
                 toggleModalInfo={this.toggleModalInfo.bind(this)}
                 toggleModalNewFile={this.toggleModalNewFile.bind(this)}
-                username={this.props.username}
+                username={this.state.uname}
               />
             </Col>
           </Row>
@@ -159,5 +158,3 @@ export default class Editor extends React.Component {
     )
   }
 }
-
-Editor.propTypes = propTypes

@@ -3,7 +3,7 @@ import Status from '../../Status.jsx'
 import ModalRes from './ModalRes.jsx'
 import ModalSettings from './ModalSettings.jsx'
 import update from 'immutability-helper'
-import {default as API} from '../../../../WebAPI.jsx'
+import API from '../../../../WebAPI.jsx'
 import {
   Button
 } from 'reactstrap'
