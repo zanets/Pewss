@@ -5,6 +5,7 @@ module.exports = class SimController {
   static simulate (env, gen, sche, sim, plat, argu) {
     const envArgu = this.getEnvArgument(argu)
     const procArgu = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
+    log(`java ${procArgu}`, 'info')
     const proc = spawn('java', procArgu.split(' '))
     proc.stdin.write(envArgu)
     proc.stdin.end()
@@ -13,6 +14,7 @@ module.exports = class SimController {
 
   static compile (env, owner, cate, fname) {
     const argus = `-Xlint:unchecked -cp ${this.getEnvLibrary(env)} ${HomeDir}/${owner}/${cate}/${fname}.java`
+    log(`javac ${argus}`, 'info')
     const proc = spawn('javac', argus.split(' '))
     return proc
   }

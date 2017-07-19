@@ -106,13 +106,12 @@ module.exports = class User {
           && of.getCate() === nf.getCate()
           && nf.getType() === nf.getType()
     }
-    for (let fType in fTypes) {
-      fType = fTypes[fType]
-      if (this.Files[fType] === undefined ) continue
+    for (let fType of ['class', 'java']) {
       /* delete old files not exist in new files */
       this.Files[fType] = this.Files[fType].filter( of => nfs.find(nf => isFileEqual(of, nf)) )
       /* add new file not exist in old files */
       nfs.forEach(nf => {
+        if(nf.getType()!== fType)return
         const isExist = this.Files[fType].find( of => isFileEqual(of, nf) )
         if (!isExist) {this.Files[fType].push(nf)}
       })
@@ -137,8 +136,7 @@ module.exports = class User {
   }
 
   async deleteFile (fType, fCate, fName) {
-     await FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.${fType}`)
-     await this.scanHome()
+    return FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.${fType}`)
   }
 
   async getFileContent (fCate, fName) {
