@@ -49,6 +49,9 @@ export default class Task extends React.Component {
         visualization: [0, 0, 0]
       }
     }
+
+    const oldData = window.localStorage.getItem(`Settings-${this.props.id}`)
+    this.state.settings = oldData ? JSON.parse(oldData) : this.state.settings
   }
 
   toggleIsSelected () {
@@ -114,6 +117,7 @@ export default class Task extends React.Component {
   setSettings (meta) {
     const n = update(this.state.settings, meta)
     this.setState({settings: n})
+    window.localStorage.setItem(`Settings-${this.props.id}`, JSON.stringify(this.state.settings))
   }
 
   toggleRes (isOpen) {

@@ -4,6 +4,7 @@ import fs from 'fs'
 module.exports = class JSimulation extends Job {
   constructor (data) {
     super(data)
+    this.id = data.id || null
     this.env = data.env || null
     this.gen = data.gen.JPath || null
     this.sche = data.sche.JPath || null
@@ -18,9 +19,8 @@ module.exports = class JSimulation extends Job {
 
     let result = { type: null, msg: '' }
     const killer = Job.setKiller(sim, job.data.ttl, result)
-    const logStream = fs.createWriteStream('./logFile.log', {flags: 'a'})
-    sim.stdout.pipe(logStream)
-    sim.stderr.pipe(logStream)
+    sim.stdout.pipe(fs.createWriteStream(`./Server/home/darg/log/${d.id}.out.log`))
+    sim.stderr.pipe(fs.createWriteStream(`./Server/home/darg/log/${d.id}.err.log`))
 
     sim.on('exit', (code) => {
       Job.clearKiller(killer)
@@ -34,6 +34,7 @@ module.exports = class JSimulation extends Job {
 
   getData () {
     return {
+      id: this.id,
       env: this.env,
       gen: this.gen,
       sche: this.sche,

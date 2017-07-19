@@ -30,7 +30,7 @@ const PORT = 8081
 const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
-//require('events').EventEmitter.prototype._maxListeners = 0
+// require('events').EventEmitter.prototype._maxListeners = 0
 JobManager.register(
   JFileRead,
   JFileDelete,
@@ -48,6 +48,7 @@ APP.use(Compression())
 APP.use(Passport.initialize())
 APP.use(Passport.session())
 APP.use('/build', Express.static(`${BaseDir}/Client/build`))
+APP.use('/log', Express.static(`${BaseDir}/Server/Home/`))
 APP.use('/vs', Express.static(`${BaseDir}/node_modules/monaco-editor/min/vs`))
 APP.use('/node_modules', Express.static(`${BaseDir}/node_modules`))
 APP.use('/', Express.static(`${BaseDir}/Client/build`))

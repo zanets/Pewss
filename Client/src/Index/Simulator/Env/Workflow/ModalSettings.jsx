@@ -56,7 +56,7 @@ export default class ModalSettings extends React.Component {
               <Col sm={6}><InputGroup>
                 <Input type='number' step='1' value={this.props.numberOfExperiments} onChange={proxy => {
                   const ivalue = Number(proxy.target.value)
-                  if (ivalue <= 0 || ivalue > 10000) return
+                  if (ivalue <= 0 || ivalue > 100000) return
                   this.props.setSettings({numberOfExperiments: {$set: ivalue}})
                 }} />
                 <InputGroupAddon>{'1 ~ 10000'}</InputGroupAddon>
@@ -78,7 +78,7 @@ export default class ModalSettings extends React.Component {
               <Col sm={6}><InputGroup>
                 <Input type='number' step='1' value={this.props.numberOfWorkflow} onChange={proxy => {
                   const ivalue = Number(proxy.target.value)
-                  if (ivalue <= 0 || ivalue > 100) return
+                  if (ivalue <= 0 || ivalue > 10000) return
                   this.props.setSettings({numberOfWorkflow: {$set: ivalue}})
                 }} />
                 <InputGroupAddon>{'1 ~ 100'}</InputGroupAddon>
@@ -164,7 +164,7 @@ export default class ModalSettings extends React.Component {
               <Col sm={6}><InputGroup>
                 <Input type='number' step='1' value={this.props.numberOfForkJoin} onChange={proxy => {
                   const ivalue = Number(proxy.target.value)
-                  if (ivalue <= 0 || ivalue > 2) return
+                  if (ivalue <= 0 || ivalue > 10) return
                   this.props.setSettings({numberOfForkJoin: {$set: ivalue}})
                 }} />
                 <InputGroupAddon>{'1 ~ 2'}</InputGroupAddon>
@@ -175,7 +175,7 @@ export default class ModalSettings extends React.Component {
               <Col sm={6}><InputGroup>
                 <Input type='number' step='1' value={this.props.numberOfBranch} onChange={proxy => {
                   const ivalue = Number(proxy.target.value)
-                  if (ivalue <= 0 || ivalue > 5) return
+                  if (ivalue <= 0 || ivalue > 10) return
                   this.props.setSettings({numberOfBranch: {$set: ivalue}})
                 }} />
                 <InputGroupAddon>{'1 ~ 5'}</InputGroupAddon>
@@ -186,10 +186,10 @@ export default class ModalSettings extends React.Component {
               <Col sm={6}><InputGroup>
                 <Input type='number' step='1' value={this.props.nodesForEachBranch} onChange={proxy => {
                   const ivalue = Number(proxy.target.value)
-                  if (ivalue <= 0 || ivalue > 5) return
+                  if (ivalue <= 0 || ivalue > 10) return
                   this.props.setSettings({nodesForEachBranch: {$set: ivalue}})
                 }} />
-                <InputGroupAddon>{'1 ~ 5'}</InputGroupAddon>
+                <InputGroupAddon>{'1 ~ 10'}</InputGroupAddon>
               </InputGroup></Col>
             </FormGroup>
             <FormGroup row>

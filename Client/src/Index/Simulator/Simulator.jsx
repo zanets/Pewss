@@ -25,13 +25,15 @@ const propTypes = {
 export default class Simulator extends React.Component {
   constructor (props) {
     super(props)
+
     this.state = {
       envs: props.envs,
       class_list: this.fixClassName(props.class_list),
       isOpenNewTask: false,
-      isOpenCompare: false,
-      tasks: []
+      isOpenCompare: false
     }
+    const oldTasks = window.localStorage.getItem('Tasks')
+    this.state.tasks = oldTasks ? JSON.parse(oldTasks) : []
 
     this.compare = {
       body: '',
@@ -72,6 +74,7 @@ export default class Simulator extends React.Component {
     })
 
     this.setState({tasks: tasks})
+    window.localStorage.setItem('Tasks', JSON.stringify(tasks))
     this.toggleNewTaskModal(false)
   }
 

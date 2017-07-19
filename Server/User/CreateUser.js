@@ -24,6 +24,6 @@ UserManager.init().then(async () => {
     await UserManager.createUser(name, name)
     console.log(`Create user ${name}`)
   }
+  process.exit(0)
 })
 
-process.exit(0)

@@ -2,17 +2,7 @@ import { ChildProcess } from 'child_process'
 
 module.exports = class Job {
   constructor (data) {
-    this.ttl = data.ttl || 60000
-  }
-
-  static onOutData (data, res) {
-    res.type = 'stdout'
-    res.msg += data
-  }
-
-  static onErrData (data, res) {
-    res.type = 'stderr'
-    res.msg += data
+    this.ttl = data.ttl || 600000
   }
 
   static setKiller (target, ttl, result) {
