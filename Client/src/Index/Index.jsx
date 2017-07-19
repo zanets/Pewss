@@ -36,6 +36,7 @@ class Index extends React.Component {
   constructor (props) {
     super(props)
     this.state = INIT_STATE
+    this.state.envs = []
   }
 
   componentWillMount () {
@@ -45,7 +46,12 @@ class Index extends React.Component {
   }
 
   componentDidMount () {
-    this.toSimulator()
+    API.getEnvs((res) => {
+      this.setState({
+        envs: res.map(e => { return { Name: e, Owner: 'admin' } })
+      })
+      this.toSimulator()
+    })
   }
 
   setInitState () {
@@ -103,7 +109,9 @@ class Index extends React.Component {
 
   render () {
     let page = (
-      <Simulator class_list={this.state.classList}
+      <Simulator
+        class_list={this.state.classList}
+        envs={this.state.envs}
         username={this.state.username} />
     )
 

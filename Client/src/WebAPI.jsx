@@ -1,5 +1,9 @@
 import jq from 'jquery'
 class WebAPI {
+  getEnvs (success, fail, always) {
+    jq.get('/api/sim', success).fail(fail).always(always)
+  }
+
   getClassList (env, success, fail, always) {
     jq.get(`/api/users/uname/files/class`, {
       env

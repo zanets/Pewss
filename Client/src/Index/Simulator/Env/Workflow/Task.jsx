@@ -10,6 +10,7 @@ import {
 
 const propTypes = {
   id: PropTypes.string.isRequired,
+  env: PropTypes.string.isRequired,
   generator: PropTypes.object.isRequired,
   scheduler: PropTypes.object.isRequired,
   simulator: PropTypes.object.isRequired,
@@ -65,7 +66,7 @@ export default class Task extends React.Component {
     // TODO: filer stderr and stdout
     API.simulate(
       this.props.id,
-      'workflow',
+      this.props.env.Name,
       this.props.generator,
       this.props.scheduler,
       this.props.simulator,

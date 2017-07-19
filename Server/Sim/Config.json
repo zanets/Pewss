@@ -31,5 +31,38 @@
 				"Type": "class"
 			}
 		]
+	},
+	"workflow2": {
+		"lib": ["workflow.jar", "USES.jar", "gson-2.6.2.jar"],
+		"builtin": [
+			{
+				"Cate": "simulator",
+				"Name": "WF Static",
+				"JPath": "com.darg.simulator.dbgStaticWFSimulator",
+				"Owner": "admin",
+				"Type": "class"
+			},
+			{
+				"Cate": "generator",
+				"Name": "WF Fork-Join",
+				"JPath": "com.use.generator.ForkJoinDAGGenerator",
+				"Owner": "admin",
+				"Type": "class"
+			},
+			{
+				"Cate": "generator",
+				"Name": "WF General",
+				"JPath": "com.use.generator.GeneralDAGGenerator",
+				"Owner": "admin",
+				"Type": "class"
+			},
+			{
+				"Cate": "platform",
+				"Name": "WF Homogeneous",
+				"JPath": "com.use.resource.platform.WorkflowPlatform",
+				"Owner": "admin",
+				"Type": "class"
+			}
+		]
 	}
 }

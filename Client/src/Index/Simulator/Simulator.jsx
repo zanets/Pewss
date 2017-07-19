@@ -13,17 +13,21 @@ import {
   ModalBody,
   ModalFooter,
   Jumbotron,
-  Col
+  Col,
+  FormControl
 } from 'reactstrap'
 
 const propTypes = {
-  username: PropTypes.string.isRequired
+  username: PropTypes.string.isRequired,
+  class_list: PropTypes.array.isRequired,
+  envs: PropTypes.array.isRequired
 }
 
 export default class Simulator extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      envs: props.envs,
       class_list: this.fixClassName(props.class_list),
       isOpenNewTask: false,
       isOpenCompare: false,
@@ -61,6 +65,7 @@ export default class Simulator extends React.Component {
 
     tasks.push({
       id: uuid.v4(),
+      env: JSON.parse(ReactDOM.findDOMNode(this.refs.ienv).value),
       generator: JSON.parse(ReactDOM.findDOMNode(this.refs.igenerator).value),
       scheduler: JSON.parse(ReactDOM.findDOMNode(this.refs.ischeduler).value),
       simulator: JSON.parse(ReactDOM.findDOMNode(this.refs.isimulator).value),
@@ -137,6 +142,10 @@ export default class Simulator extends React.Component {
             <span className='fa fa-balance-scale fa-3x' />
           </Button>
 
+          <Input type='select' ref='ienv'>
+            {this.getOptionComponent(this.state.envs)}
+          </Input>
+
           {/* ---------------- Compare Modal ------------- */}
           <Modal style={{maxWidth: '90%'}} isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
             <ModalHeader>
@@ -156,14 +165,6 @@ export default class Simulator extends React.Component {
             </ModalHeader>
 
             <ModalBody>
-              <FormGroup row>
-                <Label sm={3}>{'Environment'}</Label>
-                <Col sm={9}>
-                  <Input type='select' ref='igenerator'>
-                    {this.getOptionComponent(this.state.class_list.generator)}
-                  </Input>
-                </Col>
-              </FormGroup>
 
               <FormGroup row>
                 <Label sm={3}>{'Generator'}</Label>
