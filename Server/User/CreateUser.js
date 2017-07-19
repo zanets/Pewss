@@ -15,7 +15,8 @@ const Users = [
 ];
 */
 const Users = [
-  'test'
+  'test',
+  'darg'
 ]
 
 UserManager.init().then(async () => {
@@ -24,3 +25,5 @@ UserManager.init().then(async () => {
     console.log(`Create user ${name}`)
   }
 })
+
+process.exit(0)

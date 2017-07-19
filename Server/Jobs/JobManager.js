@@ -25,9 +25,7 @@ module.exports = class JobManager {
   register () {
     for (const JobClass of arguments) {
       if (!('onProcess' in JobClass)) {
-        console.error(
-          `onProcess not found in ${JobClass.name || 'object'}`
-        )
+        console.error(`onProcess not found in ${JobClass.name || 'object'}`)
         process.exit(-1)
       }
       this.Q.process(JobClass.name, JobClass.onProcess)
@@ -41,9 +39,6 @@ module.exports = class JobManager {
       return
     }
     cQ[jobId].proc = proc
-    setTimeout(() => {
-      JobManager.remove(jobId)
-    }, 5000)
   }
 
   /* remove job from c queue and kill proc */
@@ -71,5 +66,4 @@ module.exports = class JobManager {
       }
     }
   }
-
 }

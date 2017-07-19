@@ -17,7 +17,6 @@ module.exports = class JSimulation extends Job {
     const d = job.data
     const sim = SimController.simulate(d.env, d.gen, d.sche, d.sim, d.plat, d.argu)
     const killer = Job.setKiller(sim, job.data.ttl)
-    console.log(job)
     JobManager.addProc(job.id, sim)
     let result = { status: null, msg: '' }
     sim.stdout.on('data', data => Job.onOutData(data, result))

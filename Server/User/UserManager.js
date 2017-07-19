@@ -49,6 +49,11 @@ class UserManager {
       .setName(Name)
       .setPasswd(Encrypt.enc(Passwd))
 
+    if (this.Users.find(u => u.getId() === Id || u.getName() === Name)) {
+      log(`Create exist user ${Name}`, 'warn')
+      return
+    }
+
     await MongoController
       .insertDocument(this.CollectionName, newUser.getProperty())
       .catch(global.eErrHandler)
@@ -58,7 +63,7 @@ class UserManager {
     return Id
   }
 
-  createUsers () {
+  restoreUsers () {
     this.Users = []
     for (const pro of this.Props) {
       const newUser = new User()
