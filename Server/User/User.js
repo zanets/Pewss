@@ -1,4 +1,3 @@
-import {pErrHandler, HomeDir} from '../utils.js'
 import {
   FileController,
   ClassFile,
@@ -11,22 +10,29 @@ import {
 } from '../File'
 
 module.exports = class User {
-  constructor (pros) {
-    this.Name = pros.Name || null
-    this.Passwd = pros.Passwd || null
-    this.Jobs = []
+  constructor () {
+    this.Id = null
+    this.Name = null
+    this.Passwd = null
     this.Files = {}
     this.Files[fTypes.Class] = []
     this.Files[fTypes.Java] = []
-    this.pros = pros
   }
 
   restore () {
-    this.pros.Files[fTypes.Class].forEach(reFile => {
+    this.Files[fTypes.Class].forEach(reFile => {
       let f = this.getFile(fTypes.Class, reFile.Cate, reFile.Name)
       if (f !== undefined) { f.setPub(reFile.Pub) }
     })
-    this.pros = null
+  }
+
+  setId (n) {
+    this.Id = n
+    return this
+  }
+
+  getId () {
+    return this.Id
   }
 
   getName () {
@@ -35,6 +41,7 @@ module.exports = class User {
 
   setName (n) {
     this.Name = n
+    return this
   }
 
   getPasswd () {
@@ -43,6 +50,7 @@ module.exports = class User {
 
   setPasswd (n) {
     this.Passwd = n
+    return this
   }
 
   addPub (fType, fCate, fName) {
@@ -133,9 +141,9 @@ module.exports = class User {
 
   getProperty () {
     return {
+      Id: this.Id,
       Name: this.Name,
       Passwd: this.Passwd,
-      Jobs: this.Jobs,
       Files: this.Files
     }
   }

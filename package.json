@@ -4,7 +4,7 @@
   "description": "Scheduling algorithm research cloud platform.",
   "main": "Entry.js",
   "scripts": {
-    "dstart": "nodemon --ignore Server/Database/Mongo --ignore Server/Home Server/Entry.js --exec babel-node --presets es2015",
+    "dstart": "nodemon --ignore Server/MongoDB --ignore Server/Home Server/Entry.js --inspect --exec babel-node --presets es2015 ",
     "dpack": "webpack -d --progress --colors --watch",
     "dpro": "webpack --progress --colors ",
     "db": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
@@ -28,7 +28,6 @@
     "compression": "^1.6.2",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.0",
-    "eslint": "^3.16.1",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
     "extract-text-webpack-plugin": "^2.1.0",
@@ -46,7 +45,6 @@
     "node-uuid": "^1.4.7",
     "nodemon": "^1.11.0",
     "passport": "^0.3.2",
-    "passport-jwt": "^2.1.0",
     "passport-local": "^1.0.0",
     "react": "^15.3.1",
     "react-addons-css-transition-group": "^15.3.2",
@@ -58,9 +56,9 @@
     "reactstrap": "4.2.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
+    "uuid": "^3.1.0",
     "vis": "^4.16.1",
     "webpack": "^2.2.1",
-    "webpack-bundle-size-analyzer": "^2.5.0",
-    "ws": "^3.0.0"
+    "webpack-bundle-size-analyzer": "^2.5.0"
   }
 }

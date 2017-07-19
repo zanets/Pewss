@@ -1,5 +1,4 @@
 import fs from 'fs'
-import { pErrHandler } from '../Utils.js'
 
 module.exports = class FileController {
   static async scanDirAll (dirPath, files) {
@@ -8,9 +7,8 @@ module.exports = class FileController {
 
     for (let name of entries) {
       const path = `${dirPath}/${name}`
-
       if (await this.isDir(path)) {
-        await this.scanDirAll(path, files)
+        await this.scanDirAll(path, files).catch(pErrHandler)
       } else {
         files.push({ name, path })
       }

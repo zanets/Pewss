@@ -7,5 +7,6 @@ module.exports = {
     cert: fs.readFileSync(`${__dirname}/TLS/cert.pem`),
     passphrase: conf.TLS.phrase
   },
-  Session: conf.Session
+  Session: conf.Session,
+  Passport: conf.Jwt
 }

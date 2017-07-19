@@ -1,5 +1,4 @@
 import { spawn } from 'child_process'
-import { SimDir, HomeDir } from '../Utils.js'
 import conf from './Config.json'
 
 module.exports = class SimController {

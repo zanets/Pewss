@@ -1,52 +1,42 @@
 import process from 'process'
 import Logger from './Logger.js'
 
-const BaseDir = process.cwd()
-const ServerDir = `${BaseDir}/Server`
-const ClientDir = `${BaseDir}/Client`
-const HomeDir = `${ServerDir}/Home`
-const SimDir = `${ServerDir}/Sim`
+module.exports = () => {
+  global.BaseDir = process.cwd()
 
-const log = (msg, lv, orig) => {
-  orig = orig || {}
+  global.ServerDir = `${global.BaseDir}/Server`
 
-  msg = `${('name' in orig) ? orig.name : '*'} - ` +
-    `${('ip' in orig) ? orig.ip : '*'} - ` +
-    `${('sc' in orig) ? orig.sc : '*'} - ` +
-    `${('err' in orig) ? orig.err : '*'} - ` +
-    `${msg}`
+  global.ClientDir = `${global.BaseDir}/Client`
 
-  if (typeof Logger[lv] === 'function') { Logger[lv](msg) }
-}
+  global.HomeDir = `${global.ServerDir}/Home`
 
-const pErrHandler = (err) => {
-  log(err, 'error')
-}
+  global.SimDir = `${global.ServerDir}/Sim`
 
-const eErrHandler = (err) => {
-  log(err, 'error')
-  process.exit(-1)
-}
+  global.log = (msg, lv, orig) => {
+    orig = orig || {}
 
-const thErrHandler = (err) => {
-  throw err
-}
+    msg = `${('name' in orig) ? orig.name : '*'} - ` +
+      `${('ip' in orig) ? orig.ip : '*'} - ` +
+      `${('sc' in orig) ? orig.sc : '*'} - ` +
+      `${('err' in orig) ? orig.err : '*'} - ` +
+      `${msg}`
 
-const JobState = {
-  Q: 'in-queue',
-  R: 'running',
-  E: 'error',
-  F: 'finish'
-}
+    if (typeof Logger[lv] === 'function') {
+      Logger[lv](msg)
+    } else {
+      console.log(`Wrong log level ${lv}`)
+    }
+  }
 
-module.exports = {
-  BaseDir,
-  HomeDir,
-  ClientDir,
-  SimDir,
-  pErrHandler,
-  eErrHandler,
-  thErrHandler,
-  log,
-  JobState
+  global.pErrHandler = (err) => {
+    global.log(err, 'error')
+  }
+
+  global.eErrHandler = (err) => {
+    global.log(err, 'error')
+    process.exit(-1)
+  }
+  global.thErrHandler = (err) => {
+    throw err
+  }
 }

@@ -1,16 +1,14 @@
 import bcrypt from 'bcrypt'
 
 class Encrypt {
-  constructor () {
-    this.salt = bcrypt.genSaltSync(10)
-  }
-
   enc (pwd) {
-    return bcrypt.hashSync(pwd, this.salt)
+    return bcrypt.hashSync(pwd, 10)
   }
 
-  compare (pwd, hash) {
-    return bcrypt.compare(pwd, hash)
+  async compare (pwd, hash) {
+    const res = await bcrypt.compare(pwd, hash)
+    console.log(res)
+    return res
   }
 }
 

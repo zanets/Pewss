@@ -1,5 +1,5 @@
-import LocalPass from './LocalPass.js'
+import LocalStrategy from './LocalStrategy.js'
 
 module.exports = {
-  LocalPass
+  LocalStrategy
 }

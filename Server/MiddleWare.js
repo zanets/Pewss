@@ -1,8 +1,7 @@
 import { UserManager } from './User'
-import { log } from './Utils.js'
 
 const getUser = (req) => {
-  return UserManager.getUser(req.user.Name)
+  return UserManager.getUser(req.user.Id)
 }
 
 const PewssAPI = (req, res, next) => {
@@ -11,6 +10,7 @@ const PewssAPI = (req, res, next) => {
 }
 
 const isLogin = (req, res, next) => {
+  console.log(req.user)
   if (req.isAuthenticated() && getUser(req)) {
     req.pewss.user = getUser(req)
     next()

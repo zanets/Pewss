@@ -7,10 +7,9 @@ import https from 'https'
 import helmet from 'helmet'
 
 import Secrets from './Secrets'
-import { LocalPass } from './Passport'
+import { LocalStrategy } from './Passport'
 import { SimController } from './Sim'
 import { UserManager } from './User'
-import { BaseDir, log } from './Utils.js'
 import { PewssAPI, isLogin, writeLog } from './MiddleWare.js'
 import { fTypes } from './File'
 import {
@@ -23,6 +22,7 @@ import {
   JobManager
 } from './Jobs'
 
+require('./utils.js')()
 const APP = Express()
 const RTR = Express.Router()
 const PORT = 8081
@@ -57,12 +57,11 @@ APP.use('/doc-workflow', Express.static(`${BaseDir}/Server/Sim/env/workflow.doc`
 UserManager.init().then(async () => {
   await UserManager.loadUsers()
   UserManager.createUsers()
-  const Users = UserManager.getUsers()
-  for (const user in Users) {
-    await Users[user].scanHome()
-    Users[user].restore()
-  }
-  LocalPass(Passport, Users)
+  UserManager.getUsers().forEach(async u => {
+    await u.scanHome()
+    u.restore()
+  })
+  LocalStrategy(Passport)
 })
 
 APP.all('/*', PewssAPI, writeLog)
@@ -79,7 +78,7 @@ APP.get('/login', (req, res) => {
   res.status(200).sendFile(`${BaseDir}/Client/Login.html`)
 })
 
-APP.post('/login', Passport.authenticate('json'), (req, res) => {
+APP.post('/login', Passport.authenticate('local'), (req, res) => {
   res.status(200).send('/index')
 })
 
@@ -101,8 +100,8 @@ RTR.route('/users/:uname/profile')
   })
   /* update user profile */
   .patch(async (req, res) => {
-    const uname = req.pewss.user.getName()
-    JobManager.add(new JUserMod(uname, {
+    const uid = req.pewss.user.getId()
+    JobManager.add(new JUserMod(uid, {
       $setPasswd: req.body
     }), (result) => {
       res.status(200).json(result)
@@ -111,25 +110,25 @@ RTR.route('/users/:uname/profile')
     })
   })
 
-const getAllClassFiles = (type, env, uname) => {
+const getAllClassFiles = (type, env, uid) => {
   if (type === fTypes.Class) {
-    return UserManager.getClassFiles(uname)
+    return UserManager.getClassFiles(uid)
       .concat(SimController.getBuiltin(env))
   } else if (type === fTypes.Java) {
-    return UserManager.getJavaFiles(uname)
+    return UserManager.getJavaFiles(uid)
   }
 }
 
 RTR.route('/users/:uname/files/:type')
   /* get file list */
   .get((req, res, next) => {
-    const uname = req.pewss.user.getName()
-    res.status(200).json(getAllClassFiles(req.params.type, req.query.env, uname))
+    const uid = req.pewss.user.getId()
+    res.status(200).json(getAllClassFiles(req.params.type, req.query.env, uid))
   })
   /* create new file */
   .post(async (req, res) => {
     const User = req.pewss.user
-    JobManager.add(new JFileStore(User.getName(), req.body), async (result) => {
+    JobManager.add(new JFileStore(User.getId(), req.body), async (result) => {
       res.status(200).json(result)
       await User.scanHome()
     }, (result) => {
@@ -139,7 +138,7 @@ RTR.route('/users/:uname/files/:type')
   /* delete file */
   .delete(async (req, res) => {
     const User = req.pewss.user
-    JobManager.add(new JFileDelete(User.getName(), req.body), async (result) => {
+    JobManager.add(new JFileDelete(User.getId(), req.body), async (result) => {
       res.status(200).json(result)
       await User.scanHome()
     }, (result) => {
@@ -150,8 +149,8 @@ RTR.route('/users/:uname/files/:type')
 RTR.route('/users/:uname/files/source/:fname')
   /* get file content */
   .get(async (req, res) => {
-    const uname = req.pewss.user.getName()
-    JobManager.add(new JFileRead(uname, req.query), async (result) => {
+    const uid = req.pewss.user.getId()
+    JobManager.add(new JFileRead(uid, req.query), async (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(404).send(result)
@@ -169,8 +168,8 @@ RTR.route('/users/:uname/files/source/:fname')
   })
   /* update file content */
   .patch(async (req, res) => {
-    const uname = req.pewss.user.getName()
-    JobManager.add(new JFileStore(uname, req.body), (result) => {
+    const uid = req.pewss.user.getId()
+    JobManager.add(new JFileStore(uid, req.body), (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)
@@ -180,8 +179,8 @@ RTR.route('/users/:uname/files/source/:fname')
 RTR.route('/users/:uname/files/public/:fname')
   /* add public file */
   .patch(async (req, res) => {
-    const uname = req.pewss.user.getName()
-    JobManager.add(new JUserMod(uname, {
+    const uid = req.pewss.user.getId()
+    JobManager.add(new JUserMod(uid, {
       $addPub: req.body
     }), (result) => {
       res.status(200).json(result)
@@ -191,8 +190,8 @@ RTR.route('/users/:uname/files/public/:fname')
   })
   /* remove public file */
   .delete(async (req, res) => {
-    const uname = req.pewss.user.getName()
-    JobManager.add(new JUserMod(uname, {
+    const uid = req.pewss.user.getId()
+    JobManager.add(new JUserMod(uid, {
       $removePub: req.body
     }), (result) => {
       res.status(200).json(result)
