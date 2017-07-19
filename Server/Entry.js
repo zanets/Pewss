@@ -121,7 +121,8 @@ const getAllClassFiles = (type, env, uid) => {
 
 RTR.route('/users/:uname/files/:type')
   /* get file list */
-  .get((req, res, next) => {
+  .get(async (req, res, next) => {
+    await req.user.scanHome()
     const uid = req.user.getId()
     res.status(200).json(getAllClassFiles(req.params.type, req.query.env, uid))
   })
