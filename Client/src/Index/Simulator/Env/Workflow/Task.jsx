@@ -117,7 +117,7 @@ export default class Task extends React.Component {
   setSettings (meta) {
     const n = update(this.state.settings, meta)
     this.setState({settings: n})
-    window.localStorage.setItem(`Settings-${this.props.id}`, JSON.stringify(this.state.settings))
+    localStorage.setItem(`Settings-${this.props.id}`, JSON.stringify(this.state.settings))
   }
 
   toggleRes (isOpen) {

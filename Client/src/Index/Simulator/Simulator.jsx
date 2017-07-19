@@ -74,14 +74,14 @@ export default class Simulator extends React.Component {
     })
 
     this.setState({tasks: tasks})
-    window.localStorage.setItem('Tasks', JSON.stringify(tasks))
     this.toggleNewTaskModal(false)
+    localStorage.setItem('Tasks', JSON.stringify(tasks))
   }
 
   delTask (id) {
     const newTasks = this.state.tasks.filter(task => id !== task.id)
-
     this.setState({tasks: newTasks})
+    localStorage.setItem('Tasks', JSON.stringify(newTasks))
   }
 
   getTaskComponent () {
