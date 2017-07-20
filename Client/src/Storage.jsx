@@ -1,21 +1,21 @@
 class Storage {
-  setUname(uname){
+  setUname (uname) {
     sessionStorage.setItem('uname', uname)
   }
-  getUname(){
+  getUname () {
     return sessionStorage.getItem('uname')
   }
-  setTasks(tasks){
+  setTasks (tasks) {
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }
-  getTasks(){
+  getTasks () {
     const str = localStorage.getItem('tasks')
     return str ? JSON.parse(str) : null
   }
-  setTaskSettings(taskId, settings){
+  setTaskSettings (taskId, settings) {
     localStorage.setItem(`Settings-${taskId}`, JSON.stringify(settings))
   }
-  getTaskSettings(taskId){
+  getTaskSettings (taskId) {
     const str = localStorage.getItem(`Settings-${taskId}`)
     return str ? JSON.parse(str) : null
   }

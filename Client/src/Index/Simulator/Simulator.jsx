@@ -34,7 +34,7 @@ export default class Simulator extends React.Component {
       uname: Storage.getUname()
     }
     const oldTasks = Storage.getTasks()
-    this.state.tasks = oldTasks ? JSON.parse(oldTasks) : []
+    this.state.tasks = oldTasks || []
 
     this.compare = {
       body: '',

@@ -208,7 +208,7 @@ RTR.route('/sim')
   })
   /* simulate */
   .post(async (req, res) => {
-    JobManager.add(new JSimulation(req.body), (result) => {
+    JobManager.add(new JSimulation(req.user.getName(), req.body), (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)

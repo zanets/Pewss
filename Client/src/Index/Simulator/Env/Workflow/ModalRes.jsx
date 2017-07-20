@@ -122,11 +122,15 @@ export default class ModalRes extends React.Component {
     )
   }
 
+  getMessage () {
+
+  }
+
   render () {
     return (
       <Modal size='lg' isOpen={this.state.isOpen} toggle={this.props.toggle}>
         <ModalBody>
-          {this.getDbgBody()}
+          {this.getMessage()}
         </ModalBody>
       </Modal>
     )
