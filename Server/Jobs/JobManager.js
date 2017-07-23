@@ -4,29 +4,41 @@ module.exports = class JobManager {
   constructor () {
     this.registered = []
     this.Q = kue.createQueue()
-    this.Q.setMaxListeners(1000)
+    this.simQ = kue.createQueue()
+
+    /*
+    Resolve MaxListenersExceededWarning.
+      Be careful about memory leak from event emitter.
+      The number of listener should not exceed it
+    */
+    this.Q.setMaxListeners(60)
+    this.simQ.setMaxListeners(90)
   }
 
   add (job, onComplete, onFailed) {
-    const qJob = this.createKJob(job)
+    const qJob = this.createJob(job)
     qJob.on('complete', onComplete)
     qJob.on('failed', onFailed)
   }
 
   register () {
     for (const JobClass of arguments) {
-      if (!('onProcess' in JobClass)) {
-        console.error(`onProcess not found in ${JobClass.name || 'object'}`)
-        process.exit(-1)
-      }
       this.registered.push(JobClass.name)
-      this.Q.process(JobClass.name, 10, JobClass.onProcess)
+
+      this.getQ(JobClass.name)
+        .process(JobClass.name, 15, JobClass.onProcess)
     }
   }
 
-  createKJob (job) {
-    return this.Q.create(
+  createJob (job) {
+    return this.getQ(job.constructor.name).create(
       job.constructor.name, job.getData()
     ).ttl(job.getTTL()).removeOnComplete(true).save()
+  }
+
+  getQ (jname) {
+    return (jname === 'JSimulation')
+      ? this.simQ
+      : this.Q
   }
 }
