@@ -92,12 +92,13 @@ class UserManager {
     const op = Object.keys(operate)[0]
     const v = operate[op]
 
+    log(`ModUser command : ${op}  with ${v}`, 'info')
     if (op === '$addPub') {
       tarUser.addPub(v.fType, v.fCate, v.fName)
     } else if (op === '$removePub') {
       tarUser.removePub(v.fType, v.fCate, v.fName)
     } else if (op === '$setPasswd') {
-      tarUser.setPasswd(v)
+      tarUser.setPasswd(Encrypt.enc(v))
     } else {
       log(`Unknown modUser command : ${op}`, 'error')
     }

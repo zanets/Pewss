@@ -10,7 +10,7 @@ import Secrets from './Secrets'
 import { LocalStrategy } from './Passport'
 import { SimController } from './Sim'
 import { UserManager } from './User'
-import { PewssAPI, isLogin, writeLog } from './MiddleWare.js'
+import { isLogin, writeLog } from './MiddleWare.js'
 import { fTypes } from './File'
 import {
   JFileRead,
@@ -23,6 +23,7 @@ import {
 } from './Jobs'
 
 require('./utils.js')()
+
 const APP = Express()
 const RTR = Express.Router()
 const PORT = 8081
@@ -30,7 +31,7 @@ const PORT = 8081
 const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
-// require('events').EventEmitter.prototype._maxListeners = 0
+
 JobManager.register(
   JFileRead,
   JFileDelete,
@@ -94,16 +95,12 @@ RTR.param(['uname', 'type', 'fname', 'info'], (req, res, next, id) => {
 RTR.all('*', isLogin)
 
 RTR.route('/users/:uname/profile')
-  /* get user name */
-  .get((req, res, next) => {
-    res.status(200).send(req.user.getName())
-  })
   /* update user profile */
   .patch(async (req, res) => {
     const uid = req.user.getId()
-    JobManager.add(new JUserMod(uid, {
-      $setPasswd: req.body
-    }), (result) => {
+    JobManager.add(new JUserMod(uid,
+      req.body
+    ), (result) => {
       res.status(200).json(result)
     }, (result) => {
       res.status(500).send(result)

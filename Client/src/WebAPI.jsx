@@ -84,7 +84,7 @@ class WebAPI {
   updatePassword (name, passwd, success, fail, always) {
     jq.ajax({
       url: `/api/users/${name}/profile`,
-      data: { passwd },
+      data: { $setPasswd: passwd },
       type: 'patch'
     }).done(success).fail(fail).always(always)
   }

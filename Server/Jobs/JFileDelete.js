@@ -11,6 +11,7 @@ module.exports = class JFileDelete extends Job {
 
   static async onProcess (job, done) {
     const d = job.data
+
     try {
       const User = UserManager.getUser(d.uid)
       await User.deleteFile('java', d.fCate, d.fName)

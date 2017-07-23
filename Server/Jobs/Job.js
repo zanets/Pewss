@@ -24,4 +24,14 @@ module.exports = class Job {
   getTTL () {
     return this.ttl
   }
+
+  static onOutData (data, res) {
+    res.type = 'stdout'
+    res.msg += data
+  }
+
+  static onErrData (data, res) {
+    res.type = 'stderr'
+    res.msg += data
+  }
 }
