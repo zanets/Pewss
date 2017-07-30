@@ -4,6 +4,7 @@ import { default as MixParallelTask } from './Env/MixParallel/Task.jsx'
 import ReactDOM from 'react-dom'
 import uuid from 'node-uuid'
 import Storage from '../../Storage.jsx'
+import API from '../../WebAPI.jsx'
 import {
   Input,
   Button,
@@ -19,7 +20,6 @@ import {
 } from 'reactstrap'
 
 const propTypes = {
-  class_list: PropTypes.array.isRequired,
   envs: PropTypes.array.isRequired
 }
 
@@ -28,8 +28,14 @@ export default class Simulator extends React.Component {
     super(props)
 
     this.state = {
+      class_list: {
+        generator: [],
+        scheduler: [],
+        platform: [],
+        simulator: []
+      },
       envs: props.envs,
-      class_list: this.fixClassName(props.class_list),
+      env: props.envs[0],
       isOpenNewTask: false,
       isOpenCompare: false,
       uname: Storage.getUname()
@@ -42,7 +48,6 @@ export default class Simulator extends React.Component {
       header: ''
     }
   }
-
   fixClassName (raw) {
     let fixed = {
       generator: [],
@@ -132,6 +137,23 @@ export default class Simulator extends React.Component {
     this.compare.body = targetsComp
   }
 
+  getClassList (env, callback) {
+    API.getClassList(env, res => {
+      this.setState({class_list: this.fixClassName(res)})
+      callback(res)
+    }, res => {
+      console.error(res)
+    })
+  }
+
+  setEnvironment (event) {
+    const value = event.target.value
+
+    this.getClassList(JSON.parse(value).Name, res => {
+      this.setState({env: value})
+    })
+  }
+
   render () {
     const nullTaskHint = (this.state.tasks.length === 0)
       ? <Jumbotron>
@@ -174,7 +196,7 @@ export default class Simulator extends React.Component {
               <FormGroup row>
                 <Label sm={3}>{'Environment'}</Label>
                 <Col sm={9}>
-                  <Input type='select' ref='ienv'>
+                  <Input type='select' value={this.state.env} ref='ienv' onChange={this.setEnvironment.bind(this)}>
                     {this.getOptionComponent(this.state.envs)}
                   </Input>
                 </Col>

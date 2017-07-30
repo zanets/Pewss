@@ -26,7 +26,6 @@ const PAGES = {
 }
 const INIT_STATE = {
   ready: false,
-  classList: null,
   sourceList: null,
   page: null,
   isMemberOpen: false,
@@ -62,16 +61,11 @@ class Index extends React.Component {
 
   toSimulator () {
     this.setInitState()
-    API.getClassList(
-      'Workflow'
-    , (res) => {
-      setTimeout(() => {
-        this.setState({
-          ready: true,
-          classList: res,
-          page: PAGES.SIM
-        })
-      }, 1000)
+    setTimeout(() => {
+      this.setState({
+        ready: true,
+        page: PAGES.SIM
+      })
     })
   }
 
@@ -114,7 +108,7 @@ class Index extends React.Component {
     } else if (this.state.page === PAGES.PRO) {
       page = <Profile />
     } else if (this.state.page === PAGES.SIM) {
-      page = <Simulator envs={this.state.envs} class_list={this.state.classList} />
+      page = <Simulator envs={this.state.envs} />
     }
 
     return (

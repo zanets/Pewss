@@ -37,28 +37,28 @@
 		"builtin": [
 			{
 				"Cate": "simulator",
-				"Name": "WF Static",
+				"Name": "MixParallelSimulator",
 				"JPath": "com.darg.simulator.dbgStaticWFSimulator",
 				"Owner": "admin",
 				"Type": "class"
 			},
 			{
 				"Cate": "generator",
-				"Name": "WF Fork-Join",
+				"Name": "MixParallelGenerator",
 				"JPath": "com.use.generator.ForkJoinDAGGenerator",
 				"Owner": "admin",
 				"Type": "class"
 			},
 			{
 				"Cate": "generator",
-				"Name": "WF General",
+				"Name": "MixParallelGenerator2",
 				"JPath": "com.use.generator.GeneralDAGGenerator",
 				"Owner": "admin",
 				"Type": "class"
 			},
 			{
 				"Cate": "platform",
-				"Name": "WF Homogeneous",
+				"Name": "MixParallelplatform",
 				"JPath": "com.use.resource.platform.WorkflowPlatform",
 				"Owner": "admin",
 				"Type": "class"
