@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react'
 import { default as WorkflowTask } from './Env/Workflow/Task.jsx'
+import { default as MixParallelTask } from './Env/MixParallel/Task.jsx'
 import ReactDOM from 'react-dom'
 import uuid from 'node-uuid'
 import Storage from '../../Storage.jsx'
@@ -86,9 +87,15 @@ export default class Simulator extends React.Component {
   }
 
   getTaskComponent () {
-    return this.state.tasks.map(ele =>
-      <WorkflowTask key={ele.id} ref={ele.id} {...ele} del={this.delTask.bind(this)} />
-    )
+    let cmps = []
+    this.state.tasks.forEach(task => {
+      if (task.env.Name === 'Workflow') {
+        cmps.push(<WorkflowTask key={task.id} ref={task.id} {...task} del={this.delTask.bind(this)} />)
+      } else if (task.env.Name === 'MixParallel') {
+        cmps.push(<MixParallelTask key={task.id} ref={task.id} {...task} del={this.delTask.bind(this)} />)
+      }
+    })
+    return cmps
   }
 
   getOptionComponent (arr) {
@@ -145,10 +152,6 @@ export default class Simulator extends React.Component {
             <span className='fa fa-balance-scale fa-3x' />
           </Button>
 
-          <Input type='select' ref='ienv'>
-            {this.getOptionComponent(this.state.envs)}
-          </Input>
-
           {/* ---------------- Compare Modal ------------- */}
           <Modal style={{maxWidth: '90%'}} isOpen={this.state.isOpenCompare} toggle={this.toggleCompare.bind(this)}>
             <ModalHeader>
@@ -168,6 +171,14 @@ export default class Simulator extends React.Component {
             </ModalHeader>
 
             <ModalBody>
+              <FormGroup row>
+                <Label sm={3}>{'Environment'}</Label>
+                <Col sm={9}>
+                  <Input type='select' ref='ienv'>
+                    {this.getOptionComponent(this.state.envs)}
+                  </Input>
+                </Col>
+              </FormGroup>
 
               <FormGroup row>
                 <Label sm={3}>{'Generator'}</Label>

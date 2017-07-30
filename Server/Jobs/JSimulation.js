@@ -20,15 +20,13 @@ module.exports = class JSimulation extends Job {
 
     let result = { type: null, msg: '' }
     const killer = Job.setKiller(sim, job.data.ttl, result)
-    const outPath = `${d.uname}/log/${d.id}.out.log`
-    const errPath = `${d.uname}/log/${d.id}.err.log`
-    sim.stdout.pipe(fs.createWriteStream(`./Server/home/${outPath}`))
-    sim.stderr.pipe(fs.createWriteStream(`./Server/home/${errPath}`))
+    sim.stdout.on('data', data => Job.onOutData(data, result))
+    sim.stderr.on('data', data => Job.onErrData(data, result))
 
     sim.on('exit', (code) => {
       Job.clearKiller(killer)
       if (code === 0) {
-        done(null, {out: `/log/${outPath}`, err: `/log/${errPath}`})
+        done(null, result)
       } else {
         done(`Exit with ${code}. Msg:\n${result.msg}`)
       }

@@ -1,5 +1,5 @@
 {
-	"workflow": {
+	"Workflow": {
 		"lib": ["workflow.jar", "USES.jar", "gson-2.6.2.jar"],
 		"builtin": [
 			{
@@ -32,7 +32,7 @@
 			}
 		]
 	},
-	"workflow2": {
+	"MixParallel": {
 		"lib": ["workflow.jar", "USES.jar", "gson-2.6.2.jar"],
 		"builtin": [
 			{

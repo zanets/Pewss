@@ -63,7 +63,7 @@ class Index extends React.Component {
   toSimulator () {
     this.setInitState()
     API.getClassList(
-      'workflow'
+      'Workflow'
     , (res) => {
       setTimeout(() => {
         this.setState({
@@ -110,11 +110,11 @@ class Index extends React.Component {
     let page = null
 
     if (this.state.page === PAGES.EDI) {
-      page = <Editor source_list={this.state.sourceList}/>
+      page = <Editor source_list={this.state.sourceList} />
     } else if (this.state.page === PAGES.PRO) {
-      page = <Profile/>
+      page = <Profile />
     } else if (this.state.page === PAGES.SIM) {
-      page = <Simulator envs={this.state.envs} class_list={this.state.classList}/>
+      page = <Simulator envs={this.state.envs} class_list={this.state.classList} />
     }
 
     return (

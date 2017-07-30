@@ -1,8 +1,8 @@
 import React, {PropTypes} from 'react'
 import uuid from 'node-uuid'
 import Status from '../../Status.jsx'
-import RDag from './RDag.jsx'
-import RTimeline from './RTimeline.jsx'
+import Visualizer from './Visualizer.jsx'
+
 import {
   Nav,
   NavItem,
@@ -58,41 +58,31 @@ export default class ModalRes extends React.Component {
   }
 
   getTabs () {
-    if (this.state.errcode !== Status.FIN_OK.code) { return }
-
     let cmps = []
-    this.dbgs.forEach((dbg, index) => {
-      const tab_id = index + 1
-      cmps.push(
-        <NavItem key={uuid.v4()}>
-          <NavLink
-            className={(this.state.active === tab_id) ? 'active' : ''}
-            onClick={this.switch.bind(this, tab_id)}>
-            # {tab_id}
-          </NavLink>
-        </NavItem>
-      )
-    })
+
+    cmps.push(
+      <NavItem key={uuid.v4()}>
+        <NavLink
+          className={(this.state.active === 1) ? 'active' : ''}
+          onClick={this.switch.bind(this, 1)}>
+          # {1}
+        </NavLink>
+      </NavItem>
+    )
+
     return cmps
   }
 
   getTabcontents () {
-    if (this.state.errcode !== Status.FIN_OK.code) { return }
-
     let cmps = []
+    cmps.push(
+      <TabPane key={uuid.v4()} tabId={1}>
+        <div style={{'display': 'grid'}}>
+          <Visualizer />
+        </div>
+      </TabPane>
+    )
 
-    this.dbgs.forEach((dbg, index) => {
-      const tab_id = index + 1
-      const o_dbg = JSON.parse(dbg)
-      cmps.push(
-        <TabPane key={uuid.v4()} tabId={tab_id}>
-          <div style={{'display': 'grid'}}>
-            <RDag data={o_dbg} />
-            <RTimeline data={o_dbg} />
-          </div>
-        </TabPane>
-      )
-    })
     return cmps
   }
 
@@ -120,10 +110,6 @@ export default class ModalRes extends React.Component {
         </TabContent>
       </div>
     )
-  }
-
-  getMessage () {
-
   }
 
   render () {

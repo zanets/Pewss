@@ -79,7 +79,7 @@ export default class Task extends React.Component {
       console.log(res)
       this.setState({
         resStatus: Status.FIN_OK,
-        res: this.filter(res.msg, Status.FIN_OK)
+        res: res
       })
     }, (res) => {
       console.log(res)
@@ -88,30 +88,6 @@ export default class Task extends React.Component {
         res: {errcode: Status.FIN_ERR.code, dbgs: null, raw: res.responseText }
       })
     })
-  }
-
-  filter (raw, status) {
-    const f_start = '<WF-DBG-START>'
-    const f_end = '<WF-DBG-FINISH>'
-
-    /*
-     * dbgs contains json string for visualization.
-     * raw contains standard output.
-     * */
-    let p_start = 0,
-      dbgs = []
-
-    while ((p_start = raw.indexOf(f_start)) != -1) {
-      const p_end = raw.indexOf(f_end)
-      dbgs.push(raw.slice(p_start + f_start.length, p_end))
-      raw = raw.slice(0, p_start) + raw.slice(p_end + f_end.length)
-    }
-
-    return {
-      errcode: status.code,
-      dbgs,
-      raw
-    }
   }
 
   setSettings (meta) {
