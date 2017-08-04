@@ -1,5 +1,5 @@
 import React from 'react'
-import timeline from './timeline.jsx'
+import timeline from './Timeline.jsx'
 
 class RTimeline extends React.Component {
   constructor (props) {

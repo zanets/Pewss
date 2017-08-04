@@ -1,5 +1,5 @@
 import React from 'react'
-import network from './network.jsx'
+import network from './Network.jsx'
 
 class RDag extends React.Component {
   constructor (props) {

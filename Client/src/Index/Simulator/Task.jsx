@@ -6,8 +6,8 @@ import {
   Button
 } from 'reactstrap'
 
-import { default as ModalRes } from './Env/Workflow/ModalRes.jsx'
-import { default as ModalSettings } from './Env/Workflow/ModalSettings.jsx'
+import WorkflowTask from './Env/Workflow/Index.jsx'
+import MixParallelTask from './Env/MixParallel/Index.jsx'
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -100,6 +100,12 @@ export default class Task extends React.Component {
 
   render () {
     const status = this.state.resStatus
+    let Task = null
+    if (this.props.env.Name === 'Workflow') {
+      Task = WorkflowTask
+    } else if (this.props.env.Name === 'MixParallel') {
+      Task = MixParallelTask
+    }
     return (
       <tr>
         <td>
@@ -150,13 +156,13 @@ export default class Task extends React.Component {
         </td>
         <td>
 
-          <ModalRes
+          <Task.ModalRes
             resStatus={this.state.resStatus}
             res={this.state.res}
             isOpen={this.state.showRes}
             toggle={this.toggleRes.bind(this)}
             ref='modal_res' />
-          <ModalSettings
+          <Task.ModalSettings
             id={this.props.id}
             isOpen={this.state.showSettings}
             toggle={this.toggleSettings.bind(this)}

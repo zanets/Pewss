@@ -14,17 +14,15 @@ import {
 } from 'reactstrap'
 
 const propTypes = {
-  errcode: PropTypes.number,
-  dbgs: PropTypes.array,
-  raw: PropTypes.string,
+  res: PropTypes.string,
+  resStatus: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired
 }
 
 const defaultProps = {
-  errcode: Status.WAIT.code,
-  dbgs: [],
-  raw: ''
+  resStatus: Status.WAIT,
+  res: ''
 }
 
 export default class ModalRes extends React.Component {
@@ -32,24 +30,18 @@ export default class ModalRes extends React.Component {
     super(props)
 
     this.state = {
-      errcode: Status.WAIT.code,
+      resStatus: Status.WAIT,
       active: '0',
       isOpen: false
     }
   }
 
-  /*
-  * I store dbgs and raw in this properties because
-  * I want to keep state small.
-  * Its work because every time dbgs and raw changed,
-  * errcode is also changed, hence the component re-render.
-  */
   componentWillReceiveProps (nextProps) {
-    this.dbgs = nextProps.dbgs
-    this.raw = nextProps.raw
+    this.raw = nextProps.res
+
     this.setState({
       isOpen: nextProps.isOpen,
-      errcode: nextProps.errcode
+      resStatus: nextProps.resStatus
     })
   }
 

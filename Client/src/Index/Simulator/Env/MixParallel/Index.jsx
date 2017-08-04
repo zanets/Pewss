@@ -1,8 +1,7 @@
 import ModalRes from './ModalRes.jsx'
 import ModalSettings from './ModalSettings.jsx'
 
-module.exports = {
+export default {
   ModalRes,
   ModalSettings
 }
-
