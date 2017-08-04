@@ -14,7 +14,7 @@ import {
 } from 'reactstrap'
 
 const propTypes = {
-  res: PropTypes.string.isRequired,
+  res: PropTypes.string,
   resStatus: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired
