@@ -13,6 +13,8 @@ module.exports = () => {
   global.SimDir = `${global.ServerDir}/Sim`
 
   global.log = (msg, lv, orig) => {
+    console.log(msg)
+
     orig = orig || {}
 
     msg = `${('name' in orig) ? orig.name : '*'} - ` +
