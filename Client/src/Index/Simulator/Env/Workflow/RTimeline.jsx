@@ -1,5 +1,5 @@
 import React from 'react'
-import timeline from './Timeline.jsx'
+import Timeline from './Timeline.jsx'
 
 class RTimeline extends React.Component {
   constructor (props) {
@@ -8,7 +8,7 @@ class RTimeline extends React.Component {
   }
 
   componentDidMount () {
-    this.graph = new timeline(this.refs.container)
+    this.graph = new Timeline(this.refs.container)
     this.graph.render(this.state.data)
   }
 

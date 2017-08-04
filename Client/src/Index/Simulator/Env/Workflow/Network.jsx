@@ -14,7 +14,7 @@ const defaultOpts = {
   }
 }
 
-export default class network {
+export default class Network {
   constructor (dom) {
     this.dom = dom
     this.opts = defaultOpts

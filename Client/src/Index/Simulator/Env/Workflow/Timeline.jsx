@@ -14,7 +14,7 @@ const defaultOpts = {
   width: '100%'
 }
 
-export default class timeline {
+export default class Timeline {
   constructor (dom) {
     this.currentTime = new Date('2016-01-01T00:00:00')
     this.instance = new vis.Timeline(dom)

@@ -1,5 +1,5 @@
 import React from 'react'
-import network from './Network.jsx'
+import Network from './Network.jsx'
 
 class RDag extends React.Component {
   constructor (props) {
@@ -7,7 +7,7 @@ class RDag extends React.Component {
     this.state = props
   }
   componentDidMount () {
-    this.graph = new network(this.refs.container)
+    this.graph = new Network(this.refs.container)
     this.graph.render(this.state.data)
   }
   render () {
