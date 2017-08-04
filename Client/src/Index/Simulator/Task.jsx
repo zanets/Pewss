@@ -1,16 +1,17 @@
 import React, {PropTypes} from 'react'
-import Status from '../../Status.jsx'
-import ModalRes from './ModalRes.jsx'
-import ModalSettings from './ModalSettings.jsx'
-import update from 'immutability-helper'
-import API from '../../../../WebAPI.jsx'
+import Status from './Status.jsx'
+// import {default as MixParallel} from './Env/MixParallel'
+import API from '../../WebAPI.jsx'
 import {
   Button
 } from 'reactstrap'
 
+import { default as ModalRes } from './Env/Workflow/ModalRes.jsx'
+import { default as ModalSettings } from './Env/Workflow/ModalSettings.jsx'
+
 const propTypes = {
   id: PropTypes.string.isRequired,
-  env: PropTypes.string.isRequired,
+  env: PropTypes.object.isRequired,
   generator: PropTypes.object.isRequired,
   scheduler: PropTypes.object.isRequired,
   simulator: PropTypes.object.isRequired,
@@ -26,32 +27,8 @@ export default class Task extends React.Component {
       res: null,
       resStatus: Status.WAIT,
       showRes: false,
-      showSettings: false,
-      settings: {
-        randomSeed: 1,
-        numberOfExperiments: 3,
-        communicationToComputationRatio: 1,
-        numberOfResource: 3,
-        rankingMethod: 'BottomAmountRank',
-        groupingMethod: 'NewPCHGrouping',
-        numberOfWorkflow: 1,
-        minComputationTime: 20,
-        maxComputationTime: 100,
-        maxInterArrivalTime: 1,
-        numberOfForkJoin: 1,
-        numberOfBranch: 3,
-        nodesForEachBranch: 3,
-        numberOfLevel: 2,
-        numberOfNodesPerLevel: 2,
-        fitnessWeight: 1,
-        EFTWeight: 2,
-        remainingTimeWeight: 3,
-        visualization: [0, 0, 0]
-      }
+      showSettings: false
     }
-
-    const oldData = window.localStorage.getItem(`Settings-${this.props.id}`)
-    this.state.settings = oldData ? JSON.parse(oldData) : this.state.settings
   }
 
   toggleIsSelected () {
@@ -74,50 +51,20 @@ export default class Task extends React.Component {
       this.props.scheduler,
       this.props.simulator,
       this.props.platform,
-      this.state.settings
+      this.refs.modal_settings.getSettings()
     , (res) => {
-      console.log(res)
+      // console.log(res)
       this.setState({
         resStatus: Status.FIN_OK,
-        res: this.filter(res.msg, Status.FIN_OK)
+        res: res.msg
       })
     }, (res) => {
-      console.log(res)
+      // console.log(res)
       this.setState({
         resStatus: Status.FIN_ERR,
-        res: {errcode: Status.FIN_ERR.code, dbgs: null, raw: res.responseText }
+        res: res.responseText
       })
     })
-  }
-
-  filter (raw, status) {
-    const f_start = '<WF-DBG-START>'
-    const f_end = '<WF-DBG-FINISH>'
-
-    /*
-     * dbgs contains json string for visualization.
-     * raw contains standard output.
-     * */
-    let p_start = 0,
-      dbgs = []
-
-    while ((p_start = raw.indexOf(f_start)) != -1) {
-      const p_end = raw.indexOf(f_end)
-      dbgs.push(raw.slice(p_start + f_start.length, p_end))
-      raw = raw.slice(0, p_start) + raw.slice(p_end + f_end.length)
-    }
-
-    return {
-      errcode: status.code,
-      dbgs,
-      raw
-    }
-  }
-
-  setSettings (meta) {
-    const n = update(this.state.settings, meta)
-    this.setState({settings: n})
-    localStorage.setItem(`Settings-${this.props.id}`, JSON.stringify(this.state.settings))
   }
 
   toggleRes (isOpen) {
@@ -147,7 +94,7 @@ export default class Task extends React.Component {
   }
 
   /* get data when its selected */
-  getSlectedData () {
+  getSelectedData () {
     return this.refs.modal_res.getDbgBody()
   }
 
@@ -202,14 +149,18 @@ export default class Task extends React.Component {
           </Button>
         </td>
         <td>
-          <ModalRes {...this.state.res}
+
+          <ModalRes
+            resStatus={this.state.resStatus}
+            res={this.state.res}
             isOpen={this.state.showRes}
             toggle={this.toggleRes.bind(this)}
             ref='modal_res' />
-          <ModalSettings {...this.state.settings}
+          <ModalSettings
+            id={this.props.id}
             isOpen={this.state.showSettings}
             toggle={this.toggleSettings.bind(this)}
-            setSettings={this.setSettings.bind(this)} />
+            ref='modal_settings' />
         </td>
       </tr>
     )

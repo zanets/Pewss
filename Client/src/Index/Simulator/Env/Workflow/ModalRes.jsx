@@ -14,17 +14,15 @@ import {
 } from 'reactstrap'
 
 const propTypes = {
-  errcode: PropTypes.number,
-  dbgs: PropTypes.array,
-  raw: PropTypes.string,
+  res: PropTypes.string.isRequired,
+  resStatus: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired
 }
 
 const defaultProps = {
-  errcode: Status.WAIT.code,
-  dbgs: [],
-  raw: ''
+  resStatus: Status.WAIT,
+  res: ''
 }
 
 export default class ModalRes extends React.Component {
@@ -32,24 +30,47 @@ export default class ModalRes extends React.Component {
     super(props)
 
     this.state = {
-      errcode: Status.WAIT.code,
+      resStatus: Status.WAIT,
       active: '0',
       isOpen: false
     }
   }
 
-  /*
-  * I store dbgs and raw in this properties because
-  * I want to keep state small.
-  * Its work because every time dbgs and raw changed,
-  * errcode is also changed, hence the component re-render.
-  */
+  filter (raw) {
+    const f_start = '<WF-DBG-START>'
+    const f_end = '<WF-DBG-FINISH>'
+
+    /*
+     * dbgs contains json string for visualization.
+     * raw contains standard output.
+     * */
+    let p_start = 0, dbgs = []
+
+    while ((p_start = raw.indexOf(f_start)) != -1) {
+      const p_end = raw.indexOf(f_end)
+      dbgs.push(raw.slice(p_start + f_start.length, p_end))
+      raw = raw.slice(0, p_start) + raw.slice(p_end + f_end.length)
+    }
+
+    return {
+      dbgs,
+      raw
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
-    this.dbgs = nextProps.dbgs
-    this.raw = nextProps.raw
+    if (nextProps.resStatus.code === Status.FIN_OK.code) {
+      const filted = this.filter(nextProps.res)
+      this.dbgs = filted.dbgs
+      this.raw = filted.raw
+    } else {
+      this.dbgs = []
+      this.raw = nextProps.res
+    }
+
     this.setState({
       isOpen: nextProps.isOpen,
-      errcode: nextProps.errcode
+      resStatus: nextProps.resStatus
     })
   }
 
@@ -58,7 +79,7 @@ export default class ModalRes extends React.Component {
   }
 
   getTabs () {
-    if (this.state.errcode !== Status.FIN_OK.code) { return }
+    if (this.state.resStatus.code !== Status.FIN_OK.code || this.dbgs === null) { return }
 
     let cmps = []
     this.dbgs.forEach((dbg, index) => {
@@ -77,7 +98,7 @@ export default class ModalRes extends React.Component {
   }
 
   getTabcontents () {
-    if (this.state.errcode !== Status.FIN_OK.code) { return }
+    if (this.state.resStatus.code !== Status.FIN_OK.code) { return }
 
     let cmps = []
 
@@ -120,10 +141,6 @@ export default class ModalRes extends React.Component {
         </TabContent>
       </div>
     )
-  }
-
-  getMessage () {
-
   }
 
   render () {

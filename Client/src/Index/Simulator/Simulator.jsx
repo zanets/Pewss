@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react'
-import { default as WorkflowTask } from './Env/Workflow/Task.jsx'
-import { default as MixParallelTask } from './Env/MixParallel/Task.jsx'
+import { default as Task } from './Task.jsx'
 import ReactDOM from 'react-dom'
 import uuid from 'node-uuid'
 import Storage from '../../Storage.jsx'
@@ -94,11 +93,7 @@ export default class Simulator extends React.Component {
   getTaskComponent () {
     let cmps = []
     this.state.tasks.forEach(task => {
-      if (task.env.Name === 'Workflow') {
-        cmps.push(<WorkflowTask key={task.id} ref={task.id} {...task} del={this.delTask.bind(this)} />)
-      } else if (task.env.Name === 'MixParallel') {
-        cmps.push(<MixParallelTask key={task.id} ref={task.id} {...task} del={this.delTask.bind(this)} />)
-      }
+      cmps.push(<Task key={task.id} ref={task.id} {...task} del={this.delTask.bind(this)} />)
     })
     return cmps
   }
@@ -129,7 +124,7 @@ export default class Simulator extends React.Component {
       this.compare.header += `##${task.scheduler.Name} @ ${task.scheduler.Owner} `
       targetsComp.push(
         <div style={{width: `${size}%`, marginLeft: '1%'}}>
-          {this.refs[task.id].getSlectedData()}
+          {this.refs[task.id].getSelectedData()}
         </div>
       )
     }
