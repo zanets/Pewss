@@ -49,9 +49,9 @@ class WebAPI {
     }).done(success).fail(fail).always(always)
   }
 
-  compile (env, fName, fCate, fOwner, success, fail, always) {
+  compile (fName, fCate, fOwner, success, fail, always) {
     jq.post(`/api/users/${fName}/files/source/${fName}`, {
-      env, fName, fCate, fOwner
+      fName, fCate, fOwner
     }, success).fail(fail).always(always)
   }
 

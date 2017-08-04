@@ -12,8 +12,8 @@ module.exports = class SimController {
     return proc
   }
 
-  static compile (env, owner, cate, fname) {
-    const argus = `-Xlint:unchecked -cp ${this.getEnvLibrary(env)} ${HomeDir}/${owner}/${cate}/${fname}.java`
+  static compile (owner, cate, fname) {
+    const argus = `-Xlint:unchecked -cp ${this.getEnvLibrary()} ${HomeDir}/${owner}/${cate}/${fname}.java`
     log(`javac ${argus}`, 'info')
     const proc = spawn('javac', argus.split(' '))
     return proc
@@ -38,11 +38,15 @@ module.exports = class SimController {
   }
 
   static getEnvLibrary (env) {
-    const _libs = conf[env].lib
-
     let libs = ''
 
-    for (const _lib of _libs) { libs += `${SimDir}/env/${_lib}:` }
+    if (env) {
+      for (const lib of conf[env].lib) { libs += `${SimDir}/env/${lib}:` }
+    } else {
+      for (const innerEnv in conf) {
+        for (const lib of conf[innerEnv].lib) { libs += `${SimDir}/env/${lib}:` }
+      }
+    }
 
     libs += `${HomeDir}`
 

@@ -4,7 +4,6 @@ import { SimController } from '../Sim'
 module.exports = class JCompile extends Job {
   constructor (data) {
     super(data)
-    this.env = data.env || null
     this.fOwner = data.fOwner || null
     this.fCate = data.fCate || null
     this.fName = data.fName || null
@@ -12,7 +11,7 @@ module.exports = class JCompile extends Job {
 
   static onProcess (job, done) {
     const d = job.data
-    const sim = SimController.compile(d.env, d.fOwner, d.fCate, d.fName)
+    const sim = SimController.compile(d.fOwner, d.fCate, d.fName)
     const killer = Job.setKiller(sim, job.data.ttl)
     let result = { type: null, msg: '' }
     sim.stdout.on('data', data => Job.onOutData(data, result))
@@ -29,7 +28,6 @@ module.exports = class JCompile extends Job {
 
   getData () {
     return {
-      env: this.env,
       fOwner: this.fOwner,
       fCate: this.fCate,
       fName: this.fName,

@@ -148,7 +148,6 @@ export default class BarTool extends React.Component {
     }
     this.props.toggleMainLoader(true)
     API.compile(
-      'workflow',
       this.props.fileEdit.Name,
       this.props.fileEdit.Cate,
       this.props.fileEdit.Owner
