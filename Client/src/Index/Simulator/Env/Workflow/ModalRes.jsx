@@ -37,19 +37,20 @@ export default class ModalRes extends React.Component {
   }
 
   filter (raw) {
-    const f_start = '<WF-DBG-START>'
-    const f_end = '<WF-DBG-FINISH>'
+    const fStart = '<WF-DBG-START>'
+    const fEnd = '<WF-DBG-FINISH>'
 
     /*
      * dbgs contains json string for visualization.
      * raw contains standard output.
      * */
-    let p_start = 0, dbgs = []
+    let pStart = 0
+    let dbgs = []
 
-    while ((p_start = raw.indexOf(f_start)) != -1) {
-      const p_end = raw.indexOf(f_end)
-      dbgs.push(raw.slice(p_start + f_start.length, p_end))
-      raw = raw.slice(0, p_start) + raw.slice(p_end + f_end.length)
+    while ((pStart = raw.indexOf(fStart)) !== -1) {
+      const pEnd = raw.indexOf(fEnd)
+      dbgs.push(raw.slice(pStart + fStart.length, pEnd))
+      raw = raw.slice(0, pStart) + raw.slice(pEnd + fEnd.length)
     }
 
     return {
