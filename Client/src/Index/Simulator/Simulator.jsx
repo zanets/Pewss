@@ -47,6 +47,11 @@ export default class Simulator extends React.Component {
       header: ''
     }
   }
+
+  componentDidMount () {
+    this.getClassList(this.state.env.Name, (res) => {})
+  }
+
   fixClassName (raw) {
     let fixed = {
       generator: [],
