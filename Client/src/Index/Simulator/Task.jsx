@@ -1,13 +1,17 @@
 import React, {PropTypes} from 'react'
 import Status from './Status.jsx'
-// import {default as MixParallel} from './Env/MixParallel'
 import API from '../../WebAPI.jsx'
 import {
   Button
 } from 'reactstrap'
 
-import WorkflowTask from './Env/Workflow/Index.jsx'
-import MixParallelTask from './Env/MixParallel/Index.jsx'
+import Workflow from './Env/Workflow/Index.jsx'
+import MixParallel from './Env/MixParallel/Index.jsx'
+
+const Tasks = {
+  Workflow,
+  MixParallel
+}
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -100,12 +104,7 @@ export default class Task extends React.Component {
 
   render () {
     const status = this.state.resStatus
-    let Task = null
-    if (this.props.env.Name === 'Workflow') {
-      Task = WorkflowTask
-    } else if (this.props.env.Name === 'MixParallel') {
-      Task = MixParallelTask
-    }
+    const TaskComp = Tasks[this.props.env.Name]
     return (
       <tr>
         <td>
@@ -155,14 +154,13 @@ export default class Task extends React.Component {
           </Button>
         </td>
         <td>
-
-          <Task.ModalRes
+          <TaskComp.ModalRes
             resStatus={this.state.resStatus}
             res={this.state.res}
             isOpen={this.state.showRes}
             toggle={this.toggleRes.bind(this)}
             ref='modal_res' />
-          <Task.ModalSettings
+          <TaskComp.ModalSettings
             id={this.props.id}
             isOpen={this.state.showSettings}
             toggle={this.toggleSettings.bind(this)}
