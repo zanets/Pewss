@@ -22,7 +22,7 @@ import {
   JobManager
 } from './Jobs'
 
-require('./utils.js')()
+require('./Utils.js')()
 
 const APP = Express()
 const RTR = Express.Router()
