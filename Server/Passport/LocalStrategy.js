@@ -15,14 +15,14 @@ module.exports = (passport) => {
     usernameField: 'name',
     passwordField: 'passwd',
     session: true
-  }, async (username, password, done) => {
+  }, (username, password, done) => {
     let user = UserManager.getUser(null, username)
     if (user === undefined) {
       log(`Unknown user ${username} try to log-in`, 'warn')
       return done(null, false)
     }
 
-    const isValid = await Encrypt.compare(
+    const isValid = Encrypt.compare(
       password, user.getPasswd()
     )
 
