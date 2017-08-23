@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt-nodejs'
 
 class Encrypt {
   enc (pwd) {
-    return bcrypt.hashSync(pwd, 10)
+    return bcrypt.hashSync(pwd, bcrypt.genSaltSync(10))
   }
 
   async compare (pwd, hash) {
