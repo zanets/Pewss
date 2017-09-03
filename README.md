@@ -1,10 +1,6 @@
 # Parallel Extensible Workflow Scheduling Simulator (Pewss)
 *Cloud platform for scheduling algorithm research*
 
-Code Review Branch
-
-- Coding Style
-- Unused staff
-- Logic
+[![Build Status](https://travis-ci.org/darg20127/Pewss.svg?branch=master)](https://travis-ci.org/darg20127/Pewss)
 
  
