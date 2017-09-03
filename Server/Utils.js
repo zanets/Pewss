@@ -2,7 +2,6 @@ import process from 'process'
 import Logger from './Logger.js'
 
 module.exports = () => {
-  console.log(process.env.NODE_ENV)
   global.BaseDir = process.env.NODE_ENV === "development"
     ? `${process.cwd()}`
     : `${process.cwd()}/Build`
@@ -14,6 +13,8 @@ module.exports = () => {
   global.HomeDir = `${global.ServerDir}/Home`
 
   global.SimDir = `${global.ServerDir}/Sim`
+
+  global.NodeModulesDir = `${process.cwd()}/node_modules`
 
   global.log = (msg, lv, orig) => {
     console.log(msg)
