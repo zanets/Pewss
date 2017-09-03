@@ -4,10 +4,8 @@
   "description": "Scheduling algorithm research cloud platform.",
   "main": "Entry.js",
   "scripts": {
-    "dstart": "nodemon --ignore Server/MongoDB --ignore Server/Home Server/Entry.js --inspect --exec babel-node --presets es2015 ",
+    "dstart": "nodemon --ignore Server/Home Server/Entry.js --inspect --exec babel-node --presets es2015 ",
     "dpack": "webpack -d --progress --colors --watch",
-    "dpro": "webpack --progress --colors ",
-    "db": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
     "ctuser": "babel-node --presets es2015 Server/User/CreateUser.js"
   },
   "author": "darg@NTCU CIS System Lab 2016",
