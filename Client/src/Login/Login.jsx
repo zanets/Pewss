@@ -21,9 +21,9 @@ class Login extends React.Component {
   login () {
     const name = ReactDOM.findDOMNode(this.refs['login-name']).value
     const passwd = ReactDOM.findDOMNode(this.refs['login-passwd']).value
-    API.login(name, passwd, (data) => {
+    API.login(name, passwd, data => {
       Storage.setUname(name)
-      location = data
+      window.location.replace(data)
     })
   }
 

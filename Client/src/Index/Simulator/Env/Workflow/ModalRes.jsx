@@ -84,13 +84,13 @@ export default class ModalRes extends React.Component {
 
     let cmps = []
     this.dbgs.forEach((dbg, index) => {
-      const tab_id = index + 1
+      const id = index + 1
       cmps.push(
         <NavItem key={uuid.v4()}>
           <NavLink
-            className={(this.state.active === tab_id) ? 'active' : ''}
-            onClick={this.switch.bind(this, tab_id)}>
-            # {tab_id}
+            className={(this.state.active === id) ? 'active' : ''}
+            onClick={this.switch.bind(this, id)}>
+            # {id}
           </NavLink>
         </NavItem>
       )
@@ -104,13 +104,13 @@ export default class ModalRes extends React.Component {
     let cmps = []
 
     this.dbgs.forEach((dbg, index) => {
-      const tab_id = index + 1
-      const o_dbg = JSON.parse(dbg)
+      const id = index + 1
+      const odbg = JSON.parse(dbg)
       cmps.push(
-        <TabPane key={uuid.v4()} tabId={tab_id}>
+        <TabPane key={uuid.v4()} tabId={id}>
           <div style={{'display': 'grid'}}>
-            <RDag data={o_dbg} />
-            <RTimeline data={o_dbg} />
+            <RDag data={odbg} />
+            <RTimeline data={odbg} />
           </div>
         </TabPane>
       )

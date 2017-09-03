@@ -83,7 +83,7 @@ module.exports = class User {
       let _nfs = await FileController
         .scanDirAll(`${HomeDir}/${this.Name}/${fCate}`)
         .catch(pErrHandler)
-      _nfs.forEach(_n => _n.cate = fCate)
+      _nfs.forEach(_n => { _n.cate = fCate })
       nfs = nfs.concat(_nfs)
     }
 

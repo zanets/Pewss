@@ -12,6 +12,7 @@
   "license": "MIT",
   "standard": {
     "globals": [
+	  "window",
 	  "d3",
 	  "vis",
       "BaseDir", 

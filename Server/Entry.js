@@ -28,7 +28,7 @@ const APP = Express()
 const RTR = Express.Router()
 const PORT = 8081
 
-const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
+https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   log(`Https server listening on port ${PORT}.`, 'info')
 })
 
