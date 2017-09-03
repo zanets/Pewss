@@ -6,14 +6,18 @@
   "scripts": {
     "develop": ". ./scripts/develop.sh",
     "build": ". ./scripts/build.sh",
-    "ctuser": "babel-node --presets es2015 Server/User/CreateUser.js"
+    "ctuser": "babel-node Server/User/CreateUser.js a"
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",
   "babel": {
-    "presets": [
-      "es2015"
-    ]
+    "presets": [[
+      "env", {
+        "targets": {
+          "node": "current"
+         }
+       }
+     ]]
   },
   "standard": {
     "globals": [
@@ -37,16 +41,16 @@
     "babel-cli": "^6.16.0",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
-    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.14.0",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-0": "^6.16.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.0",
     "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.10.0",
     "nodemon": "^1.11.0",
     "react-loader": "^2.4.0",
-    "file-loader": "^0.10.0",
     "standard": "^10.0.3",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",

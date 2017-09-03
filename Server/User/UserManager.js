@@ -4,7 +4,8 @@ import User from './User.js'
 import {fTypes} from '../File'
 import uuid from 'uuid/v4'
 import Encrypt from '../Encrypt.js'
-class UserManager {
+
+module.exports = class UserManager {
   async init () {
     this.Users = []
     this.CollectionName = 'User'
@@ -125,4 +126,4 @@ class UserManager {
   }
 }
 
-module.exports = new UserManager()
+

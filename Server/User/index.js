@@ -1,7 +1,8 @@
-import User from './User.js'
 import UserManager from './UserManager.js'
+import User from './User.js'
 
 module.exports = {
-  UserManager,
-  User
+  User: User,
+  UserManager: new UserManager()
 }
+
