@@ -4,7 +4,7 @@ import { eErrHandler } from './Utils.js'
 
 class MongoController {
   constructor () {
-    this.url = 'mongodb://localhost:6000/Pewss'
+    this.url = 'mongodb://127.0.0.1:27017/Pewss'
     this.db = null
   }
 

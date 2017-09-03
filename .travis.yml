@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+  - "8"
+  - "7"
+
+sudo: false
+
+cache: yarn
+
+branches:
+  only:
+    - master
+
+install:
+  - yarn install
+
+script:
+  - ./node_modules/babel-cli/bin/babel.js Server -d build  
+  - ./node_modules/webpack/bin/webpack.js --progress --colors 
+
+notifications:
+  email: false

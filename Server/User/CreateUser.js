@@ -26,4 +26,3 @@ UserManager.init().then(async () => {
   }
   process.exit(0)
 })
-

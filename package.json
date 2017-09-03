@@ -12,6 +12,21 @@
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",
+  "standard": {
+    "globals": [
+      "BaseDir", 
+      "ServerDir", 
+      "ClientDir", 
+      "HomeDir", 
+      "SimDir", 
+      "log", 
+      "pErrHandler", 
+      "eErrHandler",
+      "thErrHandler",
+      "sessionStorage",
+      "localStorage"
+    ]
+  },
   "dependencies": {
     "babel-cli": "^6.16.0",
     "babel-core": "^6.14.0",
@@ -54,6 +69,7 @@
     "react-loader": "^2.4.0",
     "react-modal": "^1.5.2",
     "reactstrap": "4.2.0",
+    "standard": "^10.0.3",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "uuid": "^3.1.0",

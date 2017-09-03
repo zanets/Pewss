@@ -102,18 +102,18 @@ module.exports = class User {
       return nfile
     })
     const isFileEqual = (of, nf) => {
-      return of.getName() === nf.getName()
-          && of.getCate() === nf.getCate()
-          && nf.getType() === nf.getType()
+      return of.getName() === nf.getName() &&
+          of.getCate() === nf.getCate() &&
+          nf.getType() === nf.getType()
     }
     for (let fType of ['class', 'java']) {
       /* delete old files not exist in new files */
-      this.Files[fType] = this.Files[fType].filter( of => nfs.find(nf => isFileEqual(of, nf)) )
+      this.Files[fType] = this.Files[fType].filter(of => nfs.find(nf => isFileEqual(of, nf)))
       /* add new file not exist in old files */
       nfs.forEach(nf => {
-        if(nf.getType()!== fType)return
-        const isExist = this.Files[fType].find( of => isFileEqual(of, nf) )
-        if (!isExist) {this.Files[fType].push(nf)}
+        if (nf.getType() !== fType) return
+        const isExist = this.Files[fType].find(of => isFileEqual(of, nf))
+        if (!isExist) { this.Files[fType].push(nf) }
       })
     }
 
