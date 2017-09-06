@@ -1,7 +1,7 @@
 {
-  "name": "Simulator",
+  "name": "Pewss",
   "version": "3.1.0",
-  "description": "Scheduling algorithm research cloud platform.",
+  "description": "Parallel Extensible Workflow Scheduling Simulator.",
   "main": "Entry.js",
   "scripts": {
     "develop": "./scripts/develop.sh",
@@ -26,6 +26,7 @@
       "window",
       "d3",
       "vis",
+      "NodeModulesDir",
       "BaseDir",
       "ServerDir",
       "ClientDir",

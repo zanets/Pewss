@@ -1,4 +1,4 @@
-import { User, UserManager } from './'
+import { UserManager } from './'
 
 const name = process.argv[2]
 

@@ -9,15 +9,14 @@ cache: yarn
 
 branches:
   only:
-    - master
+    - dev-ts
 
 install:
   - yarn install
 
 script:
   - ./node_modules/standard/bin/cmd.js --fix
-  - ./node_modules/babel-cli/bin/babel.js Server -d build
-  - ./node_modules/webpack/bin/webpack.js --progress --colors
+  - yarn build
 
 notifications:
   email: false
