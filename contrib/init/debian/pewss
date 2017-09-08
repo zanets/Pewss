@@ -9,36 +9,34 @@
 # Description:          Pewss Server
 ### END INIT INFO
 
-# ln -s ./pewss /etc/init.d/pewss
-# sudo update-rc.d pewss defaults
-# sudo update-rc.d pewss enable
+NAME='pewss'
 
-NAME="pewss"
-export NODE_ENV="production"
-export PATH=/home/tsmh/.nvm/versions/node/v8.4.0/bin:$PATH
+export NODE_ENV='production'
 
 [ -r /etc/default/pewss ] && . /etc/default/pewss
 
-: ${APPPATH:="/pewss"}
-NMODULES="$APPPATH/node_modules"
-FOREVER="$NMODULES/forever/bin/forever"
-APP="$APPPATH/Build/Server/Entry.js"
+: ${DIE_TIME:=10}
+: ${START_TIME:=2}
 
-: ${DIETIME:=10}
-: ${STARTTIME:=2}
+APP="$APP_DIR/Build/Server/Entry.js"
+PID_FILE="/var/run/pewss.pid"
 
 is_start () {
-  $FOREVER list 2>/dev/null | grep $APP 2>&1 >/dev/null
-  return $?
+  if [ -f $PID_FILE ]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 do_start () {
-  $FOREVER start $APP 2>&1 >/dev/null
+  start-stop-daemon -S -d $APP_DIR -c $USER -m -p $PID_FILE -b -x $NODE -- $APP
   return $?
 }
 
 do_stop () {
-  $FOREVER stop $APP 2>&1 >/dev/null
+  start-stop-daemon -K -c $USER -p $PID_FILE
+  rm $PID_FILE
   return $?
 }
 
@@ -53,7 +51,7 @@ start () {
   fi
 
   if do_start; then
-    sleep $STARTTIME
+    sleep $START_TIME
     if is_start; then
       log_end_msg 0
     else
