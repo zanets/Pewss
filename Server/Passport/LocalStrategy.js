@@ -18,7 +18,7 @@ module.exports = (passport) => {
   }, (username, password, done) => {
     let user = UserManager.getUser(null, username)
     if (user === undefined) {
-      log(`Unknown user ${username} try to log-in`, 'warn')
+      global.log(`Unknown user ${username} try to log-in`, 'warn')
       return done(null, false)
     }
 
@@ -27,10 +27,10 @@ module.exports = (passport) => {
     )
 
     if (isValid) {
-      log(`User ${username} log-in`, 'info')
+      global.log(`User ${username} log-in`, 'info')
       return done(null, user)
     } else {
-      log(`User ${username} try to log-in with wrong passwd`, 'warn')
+      global.log(`User ${username} try to log-in with wrong passwd`, 'warn')
       return done(null, false)
     }
   }))

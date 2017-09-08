@@ -81,8 +81,8 @@ module.exports = class User {
     for (let fCate in fCates) {
       fCate = fCates[fCate]
       let _nfs = await FileController
-        .scanDirAll(`${HomeDir}/${this.Name}/${fCate}`)
-        .catch(pErrHandler)
+        .scanDirAll(`${global.path.home}/${this.Name}/${fCate}`)
+        .catch(global.error.log)
       _nfs.forEach(_n => { _n.cate = fCate })
       nfs = nfs.concat(_nfs)
     }
@@ -132,19 +132,19 @@ module.exports = class User {
   }
 
   async newFile (fCate, fName, fContent) {
-    return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
+    return FileController.writeFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
   async deleteFile (fType, fCate, fName) {
-    return FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.${fType}`)
+    return FileController.deleteFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.${fType}`)
   }
 
   async getFileContent (fCate, fName) {
-    return FileController.readFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`)
+    return FileController.readFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.java`)
   }
 
   async setFileContent (fCate, fName, fContent) {
-    return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
+    return FileController.writeFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
   getProperty () {

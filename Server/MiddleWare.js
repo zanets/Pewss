@@ -37,7 +37,7 @@ const writeLog = (req, res, next) => {
     }
 
     orig['sc'] = sc
-    log(msg, msgType, orig)
+    global.log(msg, msgType, orig)
 
     res.removeListener('finish', writeLogAfter)
   }

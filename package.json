@@ -4,7 +4,7 @@
   "description": "Parallel Extensible Workflow Scheduling Simulator.",
   "main": "Entry.js",
   "scripts": {
-    "develop": "./scripts/develop.sh",
+    "dev": "./scripts/develop.sh",
     "build": "./scripts/build.sh"
   },
   "author": "darg@NTCU CIS System Lab 2016",
@@ -24,20 +24,9 @@
   "standard": {
     "globals": [
       "window",
+      "global",
       "d3",
-      "vis",
-      "NodeModulesDir",
-      "BaseDir",
-      "ServerDir",
-      "ClientDir",
-      "HomeDir",
-      "SimDir",
-      "log",
-      "pErrHandler",
-      "eErrHandler",
-      "thErrHandler",
-      "sessionStorage",
-      "localStorage"
+      "vis"
     ]
   },
   "devDependencies": {

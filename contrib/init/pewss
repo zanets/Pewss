@@ -11,7 +11,7 @@
 
 # ln -s ./pewss /etc/init.d/pewss
 # sudo update-rc.d pewss defaults
-# sudo update-rc.d celeryd enable
+# sudo update-rc.d pewss enable
 
 NAME="pewss"
 export NODE_ENV="production"

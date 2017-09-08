@@ -1,5 +1,5 @@
 import { UserManager } from './'
-
+require('../Utils.js')()
 const name = process.argv[2]
 
 if (!name) {

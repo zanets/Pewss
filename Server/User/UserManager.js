@@ -39,7 +39,7 @@ module.exports = class UserManager {
     await MongoController
       .removeDocument(this.CollectionName, { Id: uid })
       .then(() => delete this.Users[uid])
-      .catch(global.eErrHandler)
+      .catch(global.error.log)
   }
 
   // create new user to DB
@@ -51,13 +51,13 @@ module.exports = class UserManager {
       .setPasswd(Encrypt.enc(Passwd))
 
     if (this.Users.find(u => u.getId() === Id || u.getName() === Name)) {
-      log(`Create exist user ${Name}`, 'warn')
+      global.log(`Create exist user ${Name}`, 'warn')
       return
     }
 
     await MongoController
       .insertDocument(this.CollectionName, newUser.getProperty())
-      .catch(global.eErrHandler)
+      .catch(global.error.exit)
 
     this.Users.push(newUser)
 
@@ -93,7 +93,7 @@ module.exports = class UserManager {
     const op = Object.keys(operate)[0]
     const v = operate[op]
 
-    log(`ModUser command : ${op}  with ${v}`, 'info')
+    global.log(`ModUser command : ${op}  with ${v}`, 'info')
     if (op === '$addPub') {
       tarUser.addPub(v.fType, v.fCate, v.fName)
     } else if (op === '$removePub') {
@@ -101,7 +101,7 @@ module.exports = class UserManager {
     } else if (op === '$setPasswd') {
       tarUser.setPasswd(Encrypt.enc(v))
     } else {
-      log(`Unknown modUser command : ${op}`, 'error')
+      global.log(`Unknown modUser command : ${op}`, 'error')
     }
 
     return this.updateDB(tarUser)
