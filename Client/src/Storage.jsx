@@ -1,22 +1,22 @@
 class Storage {
   setUname (uname) {
-    sessionStorage.setItem('uname', uname)
+    window.sessionStorage.setItem('uname', uname)
   }
   getUname () {
-    return sessionStorage.getItem('uname')
+    return window.sessionStorage.getItem('uname')
   }
   setTasks (tasks) {
-    localStorage.setItem('tasks', JSON.stringify(tasks))
+    window.localStorage.setItem('tasks', JSON.stringify(tasks))
   }
   getTasks () {
-    const str = localStorage.getItem('tasks')
+    const str = window.localStorage.getItem('tasks')
     return str ? JSON.parse(str) : null
   }
   setTaskSettings (taskId, settings) {
-    localStorage.setItem(`Settings-${taskId}`, JSON.stringify(settings))
+    window.localStorage.setItem(`Settings-${taskId}`, JSON.stringify(settings))
   }
   getTaskSettings (taskId) {
-    const str = localStorage.getItem(`Settings-${taskId}`)
+    const str = window.localStorage.getItem(`Settings-${taskId}`)
     return str ? JSON.parse(str) : null
   }
 }

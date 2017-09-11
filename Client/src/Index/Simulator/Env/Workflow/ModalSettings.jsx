@@ -11,6 +11,7 @@ import {
   InputGroupAddon
 } from 'reactstrap'
 import update from 'immutability-helper'
+import Storage from '../../../../Storage.jsx'
 const propTypes = {
   id: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
@@ -41,14 +42,14 @@ export default class ModalSettings extends React.Component {
       remainingTimeWeight: 3,
       visualization: [0, 0, 0]
     }
-    const oldData = window.localStorage.getItem(`Settings-${this.props.id}`)
+    const oldData = Storage.getTaskSettings(this.props.id)
     this.state = oldData ? JSON.parse(oldData) : this.state
   }
 
   setSettings (meta) {
     const n = update(this.state, meta)
     this.setState(n)
-    localStorage.setItem(`Settings-${this.props.id}`, JSON.stringify(this.state))
+    Storage.setTaskSettings(this.props.id, JSON.stringify(this.state))
   }
 
   getSettings () {

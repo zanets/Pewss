@@ -69,7 +69,7 @@ export default class Timeline {
     this.opts.max = new Date(this.currentTime.getTime() + this.maxTime * 1000 + 20 * 1000)
   }
 
-  parseTime (datum)	{
+  parseTime (datum) {
     this.addGroup('Time')
     for (let t = 0; t < this.maxTime; t = t + 100) {
       const tp = {

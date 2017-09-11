@@ -81,9 +81,9 @@ module.exports = class User {
     for (let fCate in fCates) {
       fCate = fCates[fCate]
       let _nfs = await FileController
-        .scanDirAll(`${HomeDir}/${this.Name}/${fCate}`)
-        .catch(pErrHandler)
-      _nfs.forEach(_n => _n.cate = fCate)
+        .scanDirAll(`${global.path.home}/${this.Name}/${fCate}`)
+        .catch(global.error.log)
+      _nfs.forEach(_n => { _n.cate = fCate })
       nfs = nfs.concat(_nfs)
     }
 
@@ -102,18 +102,18 @@ module.exports = class User {
       return nfile
     })
     const isFileEqual = (of, nf) => {
-      return of.getName() === nf.getName()
-          && of.getCate() === nf.getCate()
-          && nf.getType() === nf.getType()
+      return of.getName() === nf.getName() &&
+          of.getCate() === nf.getCate() &&
+          nf.getType() === nf.getType()
     }
     for (let fType of ['class', 'java']) {
       /* delete old files not exist in new files */
-      this.Files[fType] = this.Files[fType].filter( of => nfs.find(nf => isFileEqual(of, nf)) )
+      this.Files[fType] = this.Files[fType].filter(of => nfs.find(nf => isFileEqual(of, nf)))
       /* add new file not exist in old files */
       nfs.forEach(nf => {
-        if(nf.getType()!== fType)return
-        const isExist = this.Files[fType].find( of => isFileEqual(of, nf) )
-        if (!isExist) {this.Files[fType].push(nf)}
+        if (nf.getType() !== fType) return
+        const isExist = this.Files[fType].find(of => isFileEqual(of, nf))
+        if (!isExist) { this.Files[fType].push(nf) }
       })
     }
 
@@ -132,19 +132,19 @@ module.exports = class User {
   }
 
   async newFile (fCate, fName, fContent) {
-    return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
+    return FileController.writeFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
   async deleteFile (fType, fCate, fName) {
-    return FileController.deleteFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.${fType}`)
+    return FileController.deleteFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.${fType}`)
   }
 
   async getFileContent (fCate, fName) {
-    return FileController.readFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`)
+    return FileController.readFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.java`)
   }
 
   async setFileContent (fCate, fName, fContent) {
-    return FileController.writeFile(`${HomeDir}/${this.Name}/${fCate}/${fName}.java`, fContent)
+    return FileController.writeFile(`${global.path.home}/${this.Name}/${fCate}/${fName}.java`, fContent)
   }
 
   getProperty () {

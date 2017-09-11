@@ -1,0 +1,3 @@
+APP_DIR=/home/tsmh/Projects/Pewss
+NODE=/home/tsmh/.nvm/versions/node/v8.4.0/bin/node
+USER=tsmh

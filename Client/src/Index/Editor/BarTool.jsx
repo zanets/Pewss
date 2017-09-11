@@ -218,7 +218,7 @@ export default class BarTool extends React.Component {
       this.props.fileEdit.Name,
       this.props.fileEdit.Cate
     , () => {
-      location.reload(true)
+      window.location.reload(true)
     }, (err) => {
       console.error(err)
     })

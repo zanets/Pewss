@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
 import update from 'immutability-helper'
 import API from '../../WebAPI.jsx'
 import Storage from '../../Storage.jsx'
