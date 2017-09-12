@@ -5,9 +5,9 @@ module.exports = () => {
 
   /* environment */
   global.path = {}
-  global.path.base= process.env.NODE_ENV === "development" ? `${process.cwd()}` : `${process.cwd()}/Build`
-  global.path.server = `${global.path.base}/Server`
-  global.path.client = `${global.path.base}/Client`
+  global.path.base = `${process.cwd()}`
+  global.path.server = `${global.path.base}/${process.env.NODE_ENV === "production" ? "Build/Server" : "Server"}`
+  global.path.client = `${global.path.base}/Build/Client`
   global.path.home = `${global.path.server}/Home`
   global.path.sim = `${global.path.server}/Sim`
   global.path.node_modules = `${process.cwd()}/node_modules`
@@ -30,6 +30,8 @@ module.exports = () => {
       console.log(`Wrong log level ${lv}`)
     }
   }
+
+  global.node_env = process.env.NODE_ENV
 
 
   /* error handler */

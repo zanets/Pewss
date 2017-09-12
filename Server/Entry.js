@@ -29,7 +29,7 @@ const RTR = Express.Router()
 const PORT = 8081
 
 https.createServer(Secrets.TLS, APP).listen(PORT, () => {
-  global.log(`Https server listening on port ${PORT}.`, 'info')
+  global.log(`Start Pewss on ${global.node_env} mode. Listening on port ${PORT}.`, 'info')
 })
 
 JobManager.register(
@@ -50,13 +50,11 @@ APP.use(Passport.initialize())
 APP.use(Passport.session())
 
 APP.use('/Client',
-  Express.static(`${ global.path.base }/Client`))
+  Express.static(`${ global.path.client }`))
 APP.use('/vs',
   Express.static(`${ global.path.node_modules }/monaco-editor/min/vs`))
 APP.use('/node_modules',
   Express.static(`${ global.path.node_modules }`))
-APP.use('/',
-  Express.static(`${ global.path.base }/Client`))
 APP.use('/doc-kernel',
   Express.static(`${ global.path.sim }/env/kernel.doc`))
 APP.use('/doc-workflow',
