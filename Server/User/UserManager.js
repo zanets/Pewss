@@ -23,6 +23,12 @@ module.exports = class UserManager {
     return this.Users
   }
 
+  isExist (uid, uname) {
+    return (uid !== null)
+      ? this.getUsers().some( u => u.getId() === uid )
+      : this.getUsers().some( u => u.getName() === uname );
+  }
+
   async loadUsers () {
     // init DB
     assert.ok(MongoController.isConnect(), 'DB NOT connected')
@@ -44,16 +50,17 @@ module.exports = class UserManager {
 
   // create new user to DB
   async createUser (Name, Passwd) {
+
+    if ( !this.isExist(null, Name) ) {
+      global.log(`Create existed user ${Name}. Abort`, "warning")
+      return
+    }
+
     const Id = uuid()
     const newUser = new User()
       .setId(Id)
       .setName(Name)
       .setPasswd(Encrypt.enc(Passwd))
-
-    if (this.Users.find(u => u.getId() === Id || u.getName() === Name)) {
-      global.log(`Create exist user ${Name}`, 'warn')
-      return
-    }
 
     await MongoController
       .insertDocument(this.CollectionName, newUser.getProperty())
