@@ -1,0 +1,17 @@
+[Unit]
+Description=Pewss
+After=network.target
+After=mongod.service
+After=redis.service
+
+[Service]
+Type=simple
+User=nobody
+Group=nobody
+WorkingDirectory=/var/www/Pewss/
+ExecStart=/var/www/Pewss/Build/Entry.js
+Restart=always
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
