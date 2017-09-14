@@ -15,6 +15,9 @@ export NODE_ENV='production'
 
 [ -r /etc/default/pewss ] && . /etc/default/pewss
 
+: ${APP_DIR:='/Pewss'}
+: ${USER:='root'}
+: ${NODE:='/usr/bin/node'}
 : ${DIE_TIME:=10}
 : ${START_TIME:=2}
 
