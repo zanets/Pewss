@@ -51,7 +51,7 @@ module.exports = class UserManager {
   // create new user to DB
   async createUser (Name, Passwd) {
 
-    if ( !this.isExist(null, Name) ) {
+    if ( this.isExist(null, Name) ) {
       global.log(`Create existed user ${Name}. Abort`, "warning")
       return
     }
