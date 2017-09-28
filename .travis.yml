@@ -9,7 +9,7 @@ cache: yarn
 
 branches:
   only:
-    - dev-ts
+    - master
 
 install:
   - yarn install
