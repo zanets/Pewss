@@ -26,7 +26,7 @@ require('./Utils.js')()
 
 const APP = Express()
 const RTR = Express.Router()
-const PORT = 8081
+const PORT = 8080
 
 https.createServer(Secrets.TLS, APP).listen(PORT, () => {
   global.log(`Start Pewss on ${global.node_env} mode. Listening on port ${PORT}.`, 'info')
