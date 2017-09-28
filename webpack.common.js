@@ -26,9 +26,8 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: [
-            'es2015',
-            'react',
-            'babel-preset-stage-0'
+            'babel-preset-env',
+            'babel-preset-react'
           ]
         }
       },
