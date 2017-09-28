@@ -3,12 +3,12 @@ import fs from 'fs'
 module.exports = class FileController {
   static async scanDirAll (dirPath, files) {
     files = files || []
-    const entries = await this.scanDir(dirPath).catch(pErrHandler)
+    const entries = await this.scanDir(dirPath).catch(global.error.log)
 
     for (let name of entries) {
       const path = `${dirPath}/${name}`
       if (await this.isDir(path)) {
-        await this.scanDirAll(path, files).catch(pErrHandler)
+        await this.scanDirAll(path, files).catch(global.error.log)
       } else {
         files.push({ name, path })
       }

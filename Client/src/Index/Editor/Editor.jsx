@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
 import Loader from 'react-loader'
 import update from 'immutability-helper'
 import NewFileGenerator from './NewFileGnerator.jsx'

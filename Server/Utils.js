@@ -2,16 +2,17 @@ import process from 'process'
 import Logger from './Logger.js'
 
 module.exports = () => {
-  global.BaseDir = process.cwd()
 
-  global.ServerDir = `${global.BaseDir}/Server`
+  /* environment */
+  global.path = {}
+  global.path.base = `${process.cwd()}`
+  global.path.server = `${global.path.base}/${process.env.NODE_ENV === "production" ? "Build/Server" : "Server"}`
+  global.path.client = `${global.path.base}/Build/Client`
+  global.path.home = `${global.path.server}/Home`
+  global.path.sim = `${global.path.server}/Sim`
+  global.path.node_modules = `${process.cwd()}/node_modules`
 
-  global.ClientDir = `${global.BaseDir}/Client`
-
-  global.HomeDir = `${global.ServerDir}/Home`
-
-  global.SimDir = `${global.ServerDir}/Sim`
-
+  /* help functions */
   global.log = (msg, lv, orig) => {
     console.log(msg)
 
@@ -30,15 +31,19 @@ module.exports = () => {
     }
   }
 
-  global.pErrHandler = (err) => {
+  global.node_env = process.env.NODE_ENV
+
+
+  /* error handler */
+  global.error = {}
+  global.error.log = (err) => {
     global.log(err, 'error')
   }
-
-  global.eErrHandler = (err) => {
+  global.error.exit = (err) => {
     global.log(err, 'error')
     process.exit(-1)
   }
-  global.thErrHandler = (err) => {
+  global.error.throw = (err) => {
     throw err
   }
 }

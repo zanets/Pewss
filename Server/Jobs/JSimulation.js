@@ -1,6 +1,6 @@
 import Job from './Job.js'
 import { SimController } from '../Sim'
-import fs from 'fs'
+
 module.exports = class JSimulation extends Job {
   constructor (uname, data) {
     super(data)

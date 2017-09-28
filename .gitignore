@@ -1,9 +1,7 @@
 node_modules/
-build/
+Build/
 plugins/
 Logs/
-Server/MongoDB/
-mongodLogs/
 Server/Sim/env/*.doc
 Server/Home/*
 npm-debug.log

@@ -4,7 +4,8 @@ import User from './User.js'
 import {fTypes} from '../File'
 import uuid from 'uuid/v4'
 import Encrypt from '../Encrypt.js'
-class UserManager {
+
+module.exports = class UserManager {
   async init () {
     this.Users = []
     this.CollectionName = 'User'
@@ -20,6 +21,12 @@ class UserManager {
 
   getUsers () {
     return this.Users
+  }
+
+  isExist (uid, uname) {
+    return (uid !== null)
+      ? this.getUsers().some( u => u.getId() === uid )
+      : this.getUsers().some( u => u.getName() === uname );
   }
 
   async loadUsers () {
@@ -38,25 +45,26 @@ class UserManager {
     await MongoController
       .removeDocument(this.CollectionName, { Id: uid })
       .then(() => delete this.Users[uid])
-      .catch(global.eErrHandler)
+      .catch(global.error.log)
   }
 
   // create new user to DB
   async createUser (Name, Passwd) {
+
+    if ( this.isExist(null, Name) ) {
+      global.log(`Create existed user ${Name}. Abort`, "warning")
+      return
+    }
+
     const Id = uuid()
     const newUser = new User()
       .setId(Id)
       .setName(Name)
       .setPasswd(Encrypt.enc(Passwd))
 
-    if (this.Users.find(u => u.getId() === Id || u.getName() === Name)) {
-      log(`Create exist user ${Name}`, 'warn')
-      return
-    }
-
     await MongoController
       .insertDocument(this.CollectionName, newUser.getProperty())
-      .catch(global.eErrHandler)
+      .catch(global.error.exit)
 
     this.Users.push(newUser)
 
@@ -92,7 +100,7 @@ class UserManager {
     const op = Object.keys(operate)[0]
     const v = operate[op]
 
-    log(`ModUser command : ${op}  with ${v}`, 'info')
+    global.log(`ModUser command : ${op}  with ${v}`, 'info')
     if (op === '$addPub') {
       tarUser.addPub(v.fType, v.fCate, v.fName)
     } else if (op === '$removePub') {
@@ -100,7 +108,7 @@ class UserManager {
     } else if (op === '$setPasswd') {
       tarUser.setPasswd(Encrypt.enc(v))
     } else {
-      log(`Unknown modUser command : ${op}`, 'error')
+      global.log(`Unknown modUser command : ${op}`, 'error')
     }
 
     return this.updateDB(tarUser)
@@ -125,4 +133,4 @@ class UserManager {
   }
 }
 
-module.exports = new UserManager()
+

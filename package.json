@@ -1,39 +1,70 @@
 {
-  "name": "Simulator",
-  "version": "3.1.0",
-  "description": "Scheduling algorithm research cloud platform.",
+  "name": "Pewss",
+  "version": "1.0.0",
+  "description": "Parallel Extensible Workflow Scheduling Simulator.",
   "main": "Entry.js",
   "scripts": {
-    "dstart": "nodemon --ignore Server/MongoDB --ignore Server/Home Server/Entry.js --inspect --exec babel-node --presets es2015 ",
-    "dpack": "webpack -d --progress --colors --watch",
-    "dpro": "webpack --progress --colors ",
-    "db": "mkdir Server/MongoDB; mongod --dbpath=Server/MongoDB --port 6000",
-    "ctuser": "babel-node --presets es2015 Server/User/CreateUser.js"
+    "dev": "./scripts/develop.sh",
+    "build": "./scripts/build.sh"
   },
   "author": "darg@NTCU CIS System Lab 2016",
   "license": "MIT",
-  "dependencies": {
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "react"
+    ],
+    "plugins": [
+      [
+        "transform-object-rest-spread"
+      ]
+    ]
+  },
+  "standard": {
+    "globals": [
+      "window",
+      "global",
+      "d3",
+      "vis"
+    ]
+  },
+  "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-core": "^6.14.0",
-    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.5",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-0": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.26.0",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.10.0",
+    "nodemon": "^1.11.0",
+    "react-loader": "^2.4.0",
+    "standard": "^10.0.3",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.2.1",
+    "webpack-bundle-size-analyzer": "^2.5.0",
+    "webpack-merge": "^4.1.0"
+  },
+  "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.15.2",
     "bootstrap": "^4.0.0-alpha.6",
     "bootstrap-material-design": "^0.5.10",
     "colors": "^1.1.2",
     "compression": "^1.6.2",
-    "copy-webpack-plugin": "^4.0.1",
-    "css-loader": "^0.26.0",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
-    "extract-text-webpack-plugin": "^2.1.0",
-    "file-loader": "^0.10.0",
     "font-awesome": "^4.6.3",
-    "forever": "^0.15.3",
     "helmet": "^3.6.1",
     "immutability-helper": "^2.1.1",
     "jquery": "^3.1.1",
@@ -43,7 +74,6 @@
     "monaco-editor": "^0.8.0",
     "mongodb": "^2.2.24",
     "node-uuid": "^1.4.7",
-    "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "react": "^15.3.1",
@@ -51,14 +81,9 @@
     "react-addons-shallow-compare": "^15.4.1",
     "react-addons-transition-group": "^15.3.2",
     "react-dom": "^15.3.1",
-    "react-loader": "^2.4.0",
     "react-modal": "^1.5.2",
     "reactstrap": "4.2.0",
-    "style-loader": "^0.13.1",
-    "url-loader": "^0.5.7",
     "uuid": "^3.1.0",
-    "vis": "^4.16.1",
-    "webpack": "^2.2.1",
-    "webpack-bundle-size-analyzer": "^2.5.0"
+    "vis": "^4.16.1"
   }
 }

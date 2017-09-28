@@ -26,10 +26,10 @@ require('./Utils.js')()
 
 const APP = Express()
 const RTR = Express.Router()
-const PORT = 8081
+const PORT = 8080
 
-const Server = https.createServer(Secrets.TLS, APP).listen(PORT, () => {
-  log(`Https server listening on port ${PORT}.`, 'info')
+https.createServer(Secrets.TLS, APP).listen(PORT, () => {
+  global.log(`Start Pewss on ${global.node_env} mode. Listening on port ${PORT}.`, 'info')
 })
 
 JobManager.register(
@@ -48,13 +48,17 @@ APP.use(BodyParser.urlencoded({ extended: true }))
 APP.use(Compression())
 APP.use(Passport.initialize())
 APP.use(Passport.session())
-APP.use('/build', Express.static(`${BaseDir}/Client/build`))
-APP.use('/log', Express.static(`${BaseDir}/Server/Home/`))
-APP.use('/vs', Express.static(`${BaseDir}/node_modules/monaco-editor/min/vs`))
-APP.use('/node_modules', Express.static(`${BaseDir}/node_modules`))
-APP.use('/', Express.static(`${BaseDir}/Client/build`))
-APP.use('/doc-kernel', Express.static(`${BaseDir}/Server/Sim/env/kernel.doc`))
-APP.use('/doc-workflow', Express.static(`${BaseDir}/Server/Sim/env/workflow.doc`))
+
+APP.use('/Client',
+  Express.static(`${ global.path.client }`))
+APP.use('/vs',
+  Express.static(`${ global.path.node_modules }/monaco-editor/min/vs`))
+APP.use('/node_modules',
+  Express.static(`${ global.path.node_modules }`))
+APP.use('/doc-kernel',
+  Express.static(`${ global.path.sim }/env/kernel.doc`))
+APP.use('/doc-workflow',
+  Express.static(`${ global.path.sim }/Server/Sim/env/workflow.doc`))
 
 UserManager.init().then(async () => {
   await UserManager.loadUsers()
@@ -68,7 +72,7 @@ UserManager.init().then(async () => {
 APP.all('/*', writeLog)
 
 APP.get('/index', isLogin, (req, res) => {
-  res.status(200).sendFile(`${BaseDir}/Client/Index.html`)
+  res.status(200).sendFile(`${global.path.client}/Index.html`)
 })
 
 APP.get('/', isLogin, (req, res) => {
@@ -76,7 +80,7 @@ APP.get('/', isLogin, (req, res) => {
 })
 
 APP.get('/login', (req, res) => {
-  res.status(200).sendFile(`${BaseDir}/Client/Login.html`)
+  res.status(200).sendFile(`${global.path.client}/Login.html`)
 })
 
 APP.post('/login', Passport.authenticate('local'), (req, res) => {

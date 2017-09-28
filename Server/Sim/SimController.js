@@ -5,7 +5,7 @@ module.exports = class SimController {
   static simulate (env, gen, sche, sim, plat, argu) {
     const envArgu = this.getEnvArgument(argu)
     const procArgu = `-cp ${this.getEnvLibrary(env)} com.use.CLILauncher --generator ${gen} --scheduler ${sche} --simulator ${sim} --platform ${plat}`
-    log(`java ${procArgu}`, 'info')
+    global.log(`java ${procArgu}`, 'info')
     const proc = spawn('java', procArgu.split(' '))
     proc.stdin.write(envArgu)
     proc.stdin.end()
@@ -13,8 +13,8 @@ module.exports = class SimController {
   }
 
   static compile (owner, cate, fname) {
-    const argus = `-Xlint:unchecked -cp ${this.getEnvLibrary()} ${HomeDir}/${owner}/${cate}/${fname}.java`
-    log(`javac ${argus}`, 'info')
+    const argus = `-Xlint:unchecked -cp ${this.getEnvLibrary()} ${global.path.home}/${owner}/${cate}/${fname}.java`
+    global.log(`javac ${argus}`, 'info')
     const proc = spawn('javac', argus.split(' '))
     return proc
   }
@@ -41,14 +41,14 @@ module.exports = class SimController {
     let libs = ''
 
     if (env) {
-      for (const lib of conf[env].lib) { libs += `${SimDir}/env/${lib}:` }
+      for (const lib of conf[env].lib) { libs += `${global.path.sim}/env/${lib}:` }
     } else {
       for (const innerEnv in conf) {
-        for (const lib of conf[innerEnv].lib) { libs += `${SimDir}/env/${lib}:` }
+        for (const lib of conf[innerEnv].lib) { libs += `${global.path.sim}/env/${lib}:` }
       }
     }
 
-    libs += `${HomeDir}`
+    libs += `${global.path.home}`
 
     return libs
   }

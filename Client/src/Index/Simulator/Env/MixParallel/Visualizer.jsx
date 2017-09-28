@@ -10,7 +10,6 @@ class Visualizer extends React.Component {
     var w = 600
     var h = 400
     var padding = 40
-    var input
     var dataset = [
             [0, 0, 0, 1, 8], [1, 0, 1, 235, 3],
             [2, 0, 1, 222, 1], [3, 0, 1, 212, 2],

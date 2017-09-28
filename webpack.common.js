@@ -4,14 +4,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   target: 'node',
-  devtool: '#source-map',
   entry: {
     Index: `${__dirname}/Client/src/Index/Index.jsx`,
     Login: `${__dirname}/Client/src/Login/Login.jsx`
   },
   output: {
     filename: '[name].js',
-    path: `${__dirname}/Client/build`
+    path: `${__dirname}/Build/Client`
   },
   module: {
     rules: [
@@ -27,9 +26,8 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: [
-            'es2015',
-            'react',
-            'babel-preset-stage-0'
+            'babel-preset-env',
+            'babel-preset-react'
           ]
         }
       },
@@ -46,24 +44,13 @@ module.exports = {
       }
     }),
     new ExtractTextPlugin('[name]-lib.css'),
-    new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      compress: {
-        unused: true,
-        dead_code: true,
-        warnings: false,
-        drop_debugger: true,
-        conditionals: true,
-        evaluate: true,
-        sequences: true,
-        booleans: true
-      }
-    }),
     new CopyWebpackPlugin([
-			{from: `${__dirname}/Client/src/Login/Login.css`},
-			{from: `${__dirname}/Client/src/Index/Index.css`},
-			{from: `${__dirname}/Client/src/Index/Editor/Editor.css`},
-			{from: `${__dirname}/Client/src/Index/Simulator/Simulator.css`}
+        {from: `${__dirname}/Client/Index.html`},
+        {from: `${__dirname}/Client/Login.html`},
+        {from: `${__dirname}/Client/src/Login/Login.css`},
+        {from: `${__dirname}/Client/src/Index/Index.css`},
+        {from: `${__dirname}/Client/src/Index/Editor/Editor.css`},
+        {from: `${__dirname}/Client/src/Index/Simulator/Simulator.css`}
     ])
   ]
 }

@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+  - "8"
+  - "7"
+
+sudo: false
+
+cache: yarn
+
+branches:
+  only:
+    - dev-ts
+
+install:
+  - yarn install
+
+script:
+  - ./node_modules/standard/bin/cmd.js --fix
+  - yarn build
+
+notifications:
+  email: false
