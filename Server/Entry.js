@@ -3,7 +3,7 @@ import BodyParser from 'body-parser'
 import Compression from 'compression'
 import Passport from 'passport'
 import Session from 'express-session'
-import https from 'https'
+import http from 'http'
 import helmet from 'helmet'
 
 import Secrets from './Secrets'
@@ -28,7 +28,7 @@ const APP = Express()
 const RTR = Express.Router()
 const PORT = 443
 
-https.createServer(Secrets.TLS, APP).listen(PORT, () => {
+http.createServer(APP).listen(PORT, () => {
   global.log(`Start Pewss on ${global.node_env} mode. Listening on port ${PORT}.`, 'info')
 })
 
