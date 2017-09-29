@@ -1,0 +1,9 @@
+{
+  "Mongodb": {
+    "Port": 6006,
+    "Name": "Pewss"
+  },
+  "Server": {
+    "Port": 8081
+  }
+}

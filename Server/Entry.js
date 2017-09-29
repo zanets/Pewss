@@ -7,6 +7,7 @@ import http from 'http'
 import helmet from 'helmet'
 
 import Secrets from './Secrets'
+import Config from './Config.json'
 import { LocalStrategy } from './Passport'
 import { SimController } from './Sim'
 import { UserManager } from './User'
@@ -26,7 +27,7 @@ require('./Utils.js')()
 
 const APP = Express()
 const RTR = Express.Router()
-const PORT = 443
+const PORT = Config.Server.Port
 
 http.createServer(APP).listen(PORT, () => {
   global.log(`Start Pewss on ${global.node_env} mode. Listening on port ${PORT}.`, 'info')

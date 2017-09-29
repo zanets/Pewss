@@ -1,9 +1,10 @@
 import { MongoClient } from 'mongodb'
+import Config from './Config.json'
 import assert from 'assert'
 
 class MongoController {
   constructor () {
-    this.url = 'mongodb://127.0.0.1:27017/Pewss'
+    this.url = `mongodb://127.0.0.1:${Config.Mongodb.Port}/${Config.Mongodb.Name}`
     this.db = null
   }
 
