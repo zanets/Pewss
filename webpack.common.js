@@ -38,11 +38,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('development')
-      }
-    }),
     new ExtractTextPlugin('[name]-lib.css'),
     new CopyWebpackPlugin([
         {from: `${__dirname}/Client/Index.html`},
