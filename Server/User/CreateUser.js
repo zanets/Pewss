@@ -7,11 +7,11 @@ if (!name) {
   process.exit(-1)
 }
 
-const passwd = process.argv.length >= 4
-  ? process.argv[3]
-  : name
+const passwd = process.argv[3]
 
-UserManager.init().then(async () => {
+  UserManager.init().then(async () => {
+  await UserManager.loadUsers()
+  UserManager.restoreUsers()
   await UserManager.createUser(name, passwd)
   console.log(`Create user ${name} with passwd ${passwd}`)
   process.exit(0)
