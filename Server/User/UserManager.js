@@ -52,7 +52,7 @@ module.exports = class UserManager {
   async createUser (Name, Passwd) {
 
     if ( this.isExist(null, Name) ) {
-      global.log(`Create existed user ${Name}. Abort`, "warning")
+      global.log(`Create existed user ${Name}. Abort`, "warn")
       return
     }
 
