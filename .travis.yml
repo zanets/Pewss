@@ -15,7 +15,7 @@ install:
   - npm install
 
 script:
-  - ./node_modules/standard/bin/cmd.js --fix
+  - ./node_modules/standard/bin/cmd.js
   - ./scripts/build.sh
 
 notifications:

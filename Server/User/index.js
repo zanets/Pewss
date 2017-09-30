@@ -5,4 +5,3 @@ module.exports = {
   User: User,
   UserManager: new UserManager()
 }
-

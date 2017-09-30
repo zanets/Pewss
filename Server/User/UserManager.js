@@ -25,8 +25,8 @@ module.exports = class UserManager {
 
   isExist (uid, uname) {
     return (uid !== null)
-      ? this.getUsers().some( u => u.getId() === uid )
-      : this.getUsers().some( u => u.getName() === uname );
+      ? this.getUsers().some(u => u.getId() === uid)
+      : this.getUsers().some(u => u.getName() === uname)
   }
 
   async loadUsers () {
@@ -50,9 +50,8 @@ module.exports = class UserManager {
 
   // create new user to DB
   async createUser (Name, Passwd) {
-
-    if ( this.isExist(null, Name) ) {
-      global.log(`Create existed user ${Name}. Abort`, "warn")
+    if (this.isExist(null, Name)) {
+      global.log(`Create existed user ${Name}. Abort`, 'warn')
       return
     }
 
@@ -131,5 +130,3 @@ module.exports = class UserManager {
     return res
   }
 }
-
-

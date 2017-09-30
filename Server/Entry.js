@@ -51,15 +51,15 @@ APP.use(Passport.initialize())
 APP.use(Passport.session())
 
 APP.use('/Client',
-  Express.static(`${ global.path.client }`))
+  Express.static(`${global.path.client}`))
 APP.use('/vs',
-  Express.static(`${ global.path.node_modules }/monaco-editor/min/vs`))
+  Express.static(`${global.path.node_modules}/monaco-editor/min/vs`))
 APP.use('/node_modules',
-  Express.static(`${ global.path.node_modules }`))
+  Express.static(`${global.path.node_modules}`))
 APP.use('/doc-kernel',
-  Express.static(`${ global.path.sim }/env/kernel.doc`))
+  Express.static(`${global.path.sim}/env/kernel.doc`))
 APP.use('/doc-workflow',
-  Express.static(`${ global.path.sim }/Server/Sim/env/workflow.doc`))
+  Express.static(`${global.path.sim}/Server/Sim/env/workflow.doc`))
 
 UserManager.init().then(async () => {
   await UserManager.loadUsers()

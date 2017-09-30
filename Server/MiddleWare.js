@@ -21,11 +21,11 @@ const mStatusCode = {
 const filteSensitive = (oring) => {
   let filted = Object.assign({}, oring)
 
-  if ( 'passwd' in filted ) {
+  if ('passwd' in filted) {
     delete filted['passwd']
   }
 
-  if ( '$setPasswd' in filted ) {
+  if ('$setPasswd' in filted) {
     delete filted['$setPasswd']
   }
 
