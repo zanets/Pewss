@@ -100,7 +100,6 @@ module.exports = class UserManager {
     const op = Object.keys(operate)[0]
     const v = operate[op]
 
-    global.log(`ModUser command : ${op}  with ${v}`, 'info')
     if (op === '$addPub') {
       tarUser.addPub(v.fType, v.fCate, v.fName)
     } else if (op === '$removePub') {

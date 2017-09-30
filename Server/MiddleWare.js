@@ -18,16 +18,27 @@ const mStatusCode = {
   info: [200]
 }
 
+const filteSensitive = (oring) => {
+  let filted = Object.assign({}, oring)
+
+  if ( 'passwd' in filted ) {
+    delete filted['passwd']
+  }
+
+  if ( '$setPasswd' in filted ) {
+    delete filted['$setPasswd']
+  }
+
+  return filted
+}
+
 const writeLog = (req, res, next) => {
   let orig = {
     name: (req.user) ? req.user.Name : '*',
     ip: (req.ip) ? req.ip : '*'
   }
 
-  let body = Object.assign({}, req.body)
-  if ( 'passwd' in body ) {
-    delete body.passwd
-  }
+  let body = filteSensitive(req.body)
 
   let msg = `${req.method} ${req.originalUrl} ${JSON.stringify(body)} `
 
