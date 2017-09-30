@@ -8,8 +8,8 @@ After=redis.service
 Type=simple
 User=nobody
 Group=nobody
-WorkingDirectory=/home/tsmh/Pewss/
-ExecStart=/usr/local/bin/node /home/tsmh/Pewss/Build/Entry.js
+WorkingDirectory=
+ExecStart=
 Restart=always
 Environment=NODE_ENV=production
 
