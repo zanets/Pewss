@@ -24,7 +24,12 @@ const writeLog = (req, res, next) => {
     ip: (req.ip) ? req.ip : '*'
   }
 
-  let msg = `${req.method} ${req.originalUrl} ${JSON.stringify(req.body)} `
+  let body = Object.assign({}, req.body)
+  if ( 'passwd' in body ) {
+    delete body.passwd
+  }
+
+  let msg = `${req.method} ${req.originalUrl} ${JSON.stringify(body)} `
 
   const writeLogAfter = () => {
     let sc = res.statusCode
