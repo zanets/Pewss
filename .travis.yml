@@ -5,18 +5,18 @@ node_js:
 
 sudo: false
 
-cache: yarn
+cache: npm
 
 branches:
   only:
     - master
 
 install:
-  - yarn install
+  - npm install
 
 script:
   - ./node_modules/standard/bin/cmd.js --fix
-  - yarn build
+  - ./scripts/build.sh
 
 notifications:
   email: false
